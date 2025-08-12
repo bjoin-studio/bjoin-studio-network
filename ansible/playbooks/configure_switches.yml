@@ -1,0 +1,23 @@
+---
+- name: Configure VLANs on Network Switches
+  hosts: switches
+  gather_facts: no
+  connection: network_cli
+
+  tasks:
+    - name: Display VLAN information to be configured
+      debug:
+        msg: "ID: {{ item.id }}, Name: {{ item.name }}, Description: {{ item.description }}"
+      loop: "{{ vlans }}"
+      tags:
+        - debug
+
+    # - name: EXAMPLE TASK - Create VLANs on Cisco NX-OS
+    #   cisco.nxos.nxos_vlan:
+    #     vlan_id: "{{ item.id }}"
+    #     name: "{{ item.name }}"
+    #     state: present
+    #   loop: "{{ vlans }}"
+    #   when: ansible_network_os == 'cisco.nxos.nxos'
+    #   tags:
+    #     - config

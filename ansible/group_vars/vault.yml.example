@@ -1,0 +1,5 @@
+# This is an example file. DO NOT store real secrets here.
+# Create your real, encrypted vault file by running this command:
+# ansible-vault create ansible/group_vars/vault.yml
+# ---
+# ansible_password: YourSecurePasswordHere

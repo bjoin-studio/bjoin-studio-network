@@ -1,0 +1,16 @@
+---
+vlans:
+  - { id: 11, name: 'PROD_GENERAL', description: 'Production - General wired traffic' }
+  - { id: 12, name: 'PROD_PERF', description: 'Production - High-performance traffic' }
+  - { id: 14, name: 'PROD_WIFI', description: 'Production - Wireless access' }
+  - { id: 21, name: 'STAGE_CONTROL', description: 'Stage - Tethered capture & control' }
+  - { id: 22, name: 'STAGE_TRANSFER', description: 'Stage - High-speed image transfer' }
+  - { id: 24, name: 'STAGE_WIFI', description: 'Stage - Wireless access' }
+  - { id: 31, name: 'STUDIO_GENERAL', description: 'Studio - General creative workstations' }
+  - { id: 32, name: 'STUDIO_PERF', description: 'Studio - High-performance media editing' }
+  - { id: 33, name: 'STUDIO_ULTRA', description: 'Studio - Ultra-high bandwidth media flow' }
+  - { id: 34, name: 'STUDIO_WIFI', description: 'Studio - Wireless access' }
+  - { id: 41, name: 'WORKSHOP_ENG', description: 'Workshop - Engineering & prototyping' }
+  - { id: 44, name: 'WORKSHOP_WIFI', description: 'Workshop - Wireless access' }
+  - { id: 51, name: 'MGMT_DEVICES', description: 'Management - Network device control' }
+  - { id: 61, name: 'GUEST_WIFI', description: 'Guest WiFi - Internet-only wireless access' }
