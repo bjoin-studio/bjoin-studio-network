@@ -77,4 +77,21 @@ This step reconfigures the LAN interface to match your defined IP scheme for the
 
 ---
 
-This concludes the initial installation and basic port configuration. The next step is to create all the VLANs as defined in the main network design document.
+## 6. OPNsense Setup Wizard Configuration
+
+Once you log in to the Web GUI for the first time (or after a factory reset), you will be greeted by the setup wizard. Here are the recommended settings for your bjoin.studio environment.
+
+| Wizard Step      | Parameter          | Recommended Value         | Notes                                                                                                                            |
+|:-----------------|:-------------------|:--------------------------|:---------------------------------------------------------------------------------------------------------------------------------|
+| **General Info** | Hostname           | `opnsense-fw`             | A simple, descriptive name for your firewall.                                                                                    |
+|                  | Domain             | `bjoin.studio`            | This is the domain for your entire internal network.                                                                             |
+|                  | Primary DNS        | `1.1.1.1`                 | Use a public DNS server for now to ensure internet access works. You can change this later to an internal DNS server (e.g., FreeIPA). |
+|                  | Secondary DNS      | `1.0.0.1`                 | A reliable public DNS backup.                                                                                                    |
+| **Time Server**  | Timezone           | `Your_Time_Zone`          | **Important:** Select your correct local timezone (e.g., `America/New_York`).                                                    |
+| **WAN Config**   | Selected Type      | `DHCP`                    | This should already be correct from the initial setup.                                                                           |
+| **LAN Config**   | LAN IP Address     | `10.20.51.1`              | This should also be correct from the initial setup.                                                                              |
+| **Root Password**| Root Password      | `YourNewSecurePassword`   | **Crucial:** Change the default password now to a strong, unique one.                                                              |
+
+---
+
+This concludes the initial installation and basic configuration. The next step is to create all the VLANs as defined in the main network design document.

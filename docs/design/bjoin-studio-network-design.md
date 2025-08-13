@@ -23,6 +23,8 @@ This table serves as the single source of truth for VLANs, subnets, and IP addre
 | **41**  | Workshop     | Engineering & prototyping        | 1 Gb      | CAD stations, programming setups | `10.20.41.0/24` | `10.20.41.1`   | `10.20.41.100 – 200`        |
 | **44**  | Workshop     | Wireless access                  | WiFi      | Tool-connected devices           | `10.20.44.0/24` | `10.20.44.1`   | `10.20.44.100 – 200`        |
 | **51**  | Management   | Network device control           | 1 Gb      | Switches, APs, firewalls         | `10.20.51.0/24` | `10.20.51.1`   | Static only                 |
+| **52**  | Management   | Reserved                         | 1 Gb      | Future management needs          | `10.20.52.0/24` | `10.20.52.1`   | Static only                 |
+| **53**  | Management   | Monitoring & Telemetry           | 1 Gb      | Syslog, SNMP, NetFlow            | `10.20.53.0/24` | `10.20.53.1`   | `10.20.53.100 – 200`        |
 | **61**  | Guest WiFi   | Internet-only wireless access    | WiFi      | Visitor laptops, phones          | `10.20.61.0/24` | `10.20.61.1`   | `10.20.61.100 – 200`        |
 
 ---
@@ -51,15 +53,25 @@ This table serves as the single source of truth for VLANs, subnets, and IP addre
 
 ## 🧱 Hardware Roles
 
-| Device                  | Role                                |
-|-------------------------|-------------------------------------|
-| Protectli Vault         | OPNsense firewall/router            |
-| Netgear R6220           | ISP router, NAT, DHCP for WAN       |
-| Cisco Nexus 9236C       | Core switch (100Gb backbone)        |
-| Sodola 8-Port 10G       | Aggregation switch (SFP+)           |
-| BitEngine SW08XM        | High-speed LAN switch (RJ45 10G)    |
-| Netgear GS105           | Basic unmanaged switch (RJ45 1G)    |
-| WiFi Controller         | VLAN-aware SSID provisioning        |
+| Device                  | Role                                | Notes                                                              |
+|:------------------------|:------------------------------------|:-------------------------------------------------------------------|
+| Protectli Vault         | OPNsense Firewall/Router            | The single point of control for all inter-VLAN routing and security. |
+| Netgear R6220           | ISP Router                          | Provides the WAN connection; acts as the gateway to the internet.  |
+| **Sodola 8-Port 10G**   | **Distribution Switch**             | The main switch connected to the firewall, distributes the VLAN trunk. |
+| **BitEngine SW08XM**    | **Access/Aggregation Switch**       | Provides high-speed 10G RJ45 access for servers and workstations.  |
+| Cisco Nexus 9236C       | 100G Core Switch                    | The high-performance backbone for the Studio Ultra VLAN.           |
+| Netgear GS105           | Unmanaged Access Switch             | For simple, single-VLAN device connections.                        |
+| **Mac Pro 6,1**         | **Proxmox VE Hypervisor**           | Hosts critical VMs like FreeIPA. Management in VLAN 51.            |
+| Wireless APs/Controller | WiFi Access Points                  | Provides wireless access for various VLANs.                        |
+
+---
+
+## 🧠 Core Network Services
+
+| Service        | Server Hostname(s)                     | VLAN | IP Address(es)                  | Purpose                                                      |
+|:---------------|:---------------------------------------|:-----|:--------------------------------|:-------------------------------------------------------------|
+| Identity & DNS | `ipa1.bjoin.studio`, `ipa2.bjoin.studio` | 51   | `10.20.51.10`, `10.20.51.11`    | Centralized user authentication (FreeIPA) and internal DNS.  |
+| Virtualization | `pmx-01.bjoin.studio`                  | 51   | `10.20.51.20`                   | Proxmox VE host for running critical VMs.                    |
 
 ---
 
