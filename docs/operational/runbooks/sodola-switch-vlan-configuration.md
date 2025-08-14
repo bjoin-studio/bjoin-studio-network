@@ -89,14 +89,14 @@ This is the most critical step. You will define which VLANs each port belongs to
 
 | Port | Role | VLANs (Tagged/Untagged) | PVID | Notes |
 |:-----|:-----|:------------------------|:-----|:------|
-| **TE1** | **Access Port (Example: Production General)** | VLAN 11 (Untagged) | 11 | For general Production workstations. Requires SFP+ to RJ45 transceiver. |
+| **TE1** | **Uplink to Firewall** | All VLANs (Tagged) | 1 (Default) | Main trunk from OPNsense. Requires SFP+ to RJ45 transceiver. |
 | **TE2** | **Uplink to BitEngine** | All VLANs (Tagged) | 1 (Default) | Trunk to BitEngine. Requires SFP+ to RJ45 transceiver. |
 | **TE3** | **Uplink to Cisco Nexus** | All VLANs (Tagged) | 1 (Default) | Trunk to Cisco Nexus. |
-| **TE4** | **Access Port (Example: Stage General)** | VLAN 21 (Untagged) | 21 | For general Stage workstations. Requires SFP+ to RJ45 transceiver. |
-| **Port 5** | **Uplink to Firewall** | All VLANs (Tagged) | 1 (Default) | Main trunk from OPNsense. |
+| **TE4** | **Uplink to Netgear GS108Ev4** | All VLANs (Tagged) | 1 (Default) | Trunk to Netgear GS108Ev4. Requires SFP+ to RJ45 transceiver. |
+| **Port 5** | **Access Port (Example: Studio Perf)** | VLAN 32 (Untagged) | 32 | For high-performance Studio workstations. |
 | **Port 6** | **Access Port (Example: Management)** | VLAN 51 (Untagged) | 51 | For connecting management devices directly. |
 | **Port 7** | **Access Port (Example: Guest WiFi)** | VLAN 61 (Untagged) | 61 | For connecting Guest WiFi Access Points. |
-| **Port 8** | **Uplink to Netgear GS108Ev4** | All VLANs (Tagged) | 1 (Default) | Trunk to Netgear GS108Ev4. |
+| **Port 8** | **Access Port (Example: Production General)** | VLAN 11 (Untagged) | 11 | For general Production workstations. |
 
 ### Understanding the VLAN Membership Table (Sodola Specific)
 
@@ -104,7 +104,7 @@ When configuring VLAN membership on the Sodola switch, you'll encounter specific
 
 *   **`1UP`:** This indicates that VLAN 1 is configured as the **Untagged** VLAN (also known as the Native VLAN) for that port, and it's also the **PVID** (Port VLAN ID). This is a common and often recommended configuration for trunk ports.
 *   **`XXT` (e.g., `11T`, `51T`):** This signifies that the specified VLAN (e.g., VLAN 11, VLAN 51) is configured as a **Tagged** member on that port. This is essential for trunk ports carrying multiple VLANs.
-*   **`TE1`, `TE2`, `TE3`, `TE4`:** These are specific names for the 10 Gigabit Ethernet (SFP+) ports on the Sodola switch. In your configuration, `TE2` is the uplink to BitEngine and `TE3` is the uplink to Cisco Nexus. `TE1` and `TE4` are configured as access ports.
+*   **`TE1`, `TE2`, `TE3`, `TE4`:** These are specific names for the 10 Gigabit Ethernet (SFP+) ports on the Sodola switch. In your configuration, `TE1` is the uplink to OPNsense, `TE2` is the uplink to BitEngine, `TE3` is the uplink to Cisco Nexus, and `TE4` is the uplink to the Netgear GS108Ev4. All are correctly configured as trunk ports carrying all necessary VLANs.
 *   **`LAG1`:** This refers to a **Link Aggregation Group**. Unless you have intentionally configured multiple physical ports to act as a single logical link (for increased bandwidth or redundancy), you should generally leave `LAG1` untagged or excluded. It's not typically used for standard single-cable connections.
 
 Your configuration for `TE1`, `TE2`, `TE3`, and `TE4` (all relevant VLANs as `XXT` and `1UP`) is correct for their role as trunk ports. While you've included all defined VLANs, a small optimization for future configurations is to only tag VLANs that are actively in use on a given trunk, which can simplify troubleshooting.
