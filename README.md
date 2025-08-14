@@ -103,6 +103,7 @@ One of the spare ports on the Protectli firewall is the perfect tool to create a
     *   [server-onboarding.md](docs/operational/runbooks/server-onboarding.md)
     *   [sodola-switch-vlan-configuration.md](docs/operational/runbooks/sodola-switch-vlan-configuration.md)
     *   [cisco-nexus-9236c-initial-setup.md](docs/operational/runbooks/cisco-nexus-9236c-initial-setup.md)
+    *   [vlan-testing-procedure.md](docs/operational/runbooks/vlan-testing-procedure.md)
 
 ### Security
 *   **plans/**
