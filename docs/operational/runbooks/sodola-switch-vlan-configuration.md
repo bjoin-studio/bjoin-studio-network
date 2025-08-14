@@ -19,15 +19,71 @@ This guide provides step-by-step instructions for configuring VLANs on the Sodol
 2.  Open a web browser and navigate to `http://10.20.51.3`.
 3.  Log in with your credentials.
 
-## 4. Step-by-Step VLAN Configuration
+## 4. Changing the Management VLAN (from Default VLAN 1 to 51)
+
+For security, the switch's management interface should be moved from the default VLAN 1 to the dedicated management VLAN 51. This guide assumes you are initially connected to the switch on its default IP on VLAN 1.
+
+The switch's web GUI provides three key submenus under the main **VLAN Menu**:
+*   **Create VLAN**
+*   **VLAN Configuration Membership**
+*   **Port Setting**
+
+Here is the step-by-step process to move the management interface to VLAN 51.
+
+### Step 4.1: Create VLAN 51
+
+The switch must be aware that VLAN 51 exists before you can assign it to anything.
+
+*   Navigate to the **Create VLAN** submenu.
+*   If VLAN 51 is not already in the list, create it.
+
+### Step 4.2: Configure Port Settings (PVID)
+
+This step configures a dedicated, *untagged* port that you can use to directly manage the switch. We will use **Port 6** as the example from the runbook.
+
+*   Navigate to the **Port Setting** submenu. This is where you configure the **PVID (Port VLAN ID)**.
+*   For **Port 6**, set its **PVID** to **51**.
+
+This tells the switch: "Any device that plugs into Port 6 and sends normal, untagged traffic should be considered part of VLAN 51."
+
+### Step 4.3: Configure VLAN Membership
+
+Now, you must define how VLAN 51 behaves on all critical ports.
+
+*   Navigate to the **VLAN Configuration Membership** submenu.
+*   Select **VLAN 51** to configure its port membership.
+    *   **Port 6 (Your Management Port):** Set this to **Untagged**. This makes it an access port for VLAN 51.
+    *   **Port 1 (Uplink to Firewall):** Set this to **Tagged**. This is essential for the trunk to carry management traffic.
+    *   **Port 4 (Uplink to Netgear):** Set this to **Tagged**. This is also a trunk port.
+    *   **Other Ports:** You can leave them as "Not Member" for now.
+
+### Step 4.4: Change the Switch's Management IP and VLAN
+
+This is the final step. You must find the settings for the switch's own IP address. This is typically **not** in the VLAN menu.
+
+*   Look for a different top-level menu, such as **"System"**, **"Management"**, or **"IP Configuration"**.
+*   Inside that menu, configure the following:
+    *   **IP Address:** `10.20.51.3`
+    *   **Subnet Mask:** `255.255.255.0`
+    *   **Default Gateway:** `10.20.51.1`
+    *   **Management VLAN:** Change this setting from `1` to **`51`**.
+
+**IMPORTANT: You will lose access to the switch after applying these changes.**
+
+To regain access, you must:
+1.  Connect your computer directly to **Port 6** (the untagged port you configured).
+2.  Ensure your computer has a static IP in the same subnet (e.g., `10.20.51.99`).
+3.  Navigate to the new management IP in your browser: **`http://10.20.51.3`**.
+
+## 5. Step-by-Step VLAN Configuration
 
 Navigate to the VLAN configuration section in the switch's web interface (usually under "VLAN" or "802.1Q VLAN").
 
-### Step 4.1: Create All VLANs
+### Step 5.1: Create All VLANs
 
 Create all the VLANs that this switch will carry. For the Sodola, this means all VLANs from our design (11, 12, 14, 21, 22, 24, 31, 32, 33, 34, 41, 44, 51, 52, 53, 61).
 
-### Step 4.2: Configure Port VLAN Membership
+### Step 5.2: Configure Port VLAN Membership
 
 This is the most critical step. You will define which VLANs each port belongs to and whether traffic is tagged or untagged.
 
@@ -62,6 +118,6 @@ Your configuration for `TE1`, `TE2`, `TE3`, and `TE4` (all relevant VLANs as `XX
 3.  Go to "VLAN" -> "802.1Q VLAN" -> "PVID" (or "Port VLAN ID").
 4.  For each port, set its PVID. For access ports, this should be the VLAN ID it's untagged for. For trunk ports, it's typically 1 (default) or the ID of the native VLAN if you're using one.
 
-## 5. Save Configuration
+## 6. Save Configuration
 
 **Important:** After making all changes, ensure you save the configuration to the switch's startup-config. Otherwise, changes will be lost on reboot.
