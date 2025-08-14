@@ -4,7 +4,7 @@ This repository serves as a centralized location for all documentation related t
 
 ## Overview
 
-The goal of this repository is to maintain a living record of our network infrastructure. This includes high-level designs, standards, operational procedures, security policies, and more.
+The goal of this repository is to maintain a living record of our network infrastructure. This includes high-level designs, standards, operational procedures, security policies, and more. The network is designed with granular VLAN segmentation, including dedicated monitoring VLANs for each zone.
 
 ## Key Architectural Decision: "Router-on-a-Stick"
 
@@ -17,25 +17,6 @@ Here’s why we do it this way:
 *   **Flexibility:** We can add dozens of new VLANs in the future without ever needing to change the physical cabling on the firewall.
 
 The spare ports on the firewall give us great options for the future, like a dedicated high-security DMZ or a redundant link to the core switch.
-
-## What is a DMZ (Demilitarized Zone)?
-
-The concept of a DMZ can seem a bit confusing, but it's a simple and very powerful security tool. Think of your network like a secure office building.
-
-*   Your **Internal LAN** (VLANs 11, 32, etc.) is the secure main office where all your trusted employees and sensitive documents are. You don't want random people from the street wandering in.
-*   The **Internet** is the public street outside.
-*   A **DMZ** is like the **lobby** of your building.
-
-Visitors from the street (the internet) are allowed into the lobby (the DMZ) to talk to a receptionist or drop off a package (e.g., access your public web server). However, the lobby is separated from the main office by locked, secure doors (the firewall). A visitor in the lobby can't get into the main office.
-
-In network terms, a DMZ is a small, isolated network that sits between the internet and your trusted internal LAN. It's where you place any services that need to be accessible from the internet.
-
-The firewall rules are simple and strict:
-*   The **Internet** can talk to servers in the **DMZ**.
-*   The **Internet** can **NOT** talk to your **Internal LAN**.
-*   The **DMZ** can **NOT** talk to your **Internal LAN**. This is the most important rule. If a server in your DMZ is compromised, the attacker is still trapped in the lobby and can't access your secure internal network.
-
-One of the spare ports on the Protectli firewall is the perfect tool to create a dedicated, physical DMZ if you ever decide to host a public-facing service.
 
 ## A Note on Performance and Bottlenecks
 
@@ -67,6 +48,25 @@ When configuring VLANs, you will see references to different tagging standards. 
 
 **In short: For all VLAN configuration, 802.1Q is the correct and only standard you need to use.**
 
+## What is a DMZ (Demilitarized Zone)?
+
+The concept of a DMZ can seem a bit confusing, but it's a simple and very powerful security tool. Think of your network like a secure office building.
+
+*   Your **Internal LAN** (e.g., Production Wired VLAN 11, Studio Wired VLAN 32) is the secure main office where all your trusted employees and sensitive documents are. You don't want random people from the street wandering in.
+*   The **Internet** is the public street outside.
+*   A **DMZ** is like the **lobby** of your building.
+
+Visitors from the street (the internet) are allowed into the lobby (the DMZ) to talk to a receptionist or drop off a package (e.g., access your public web server). However, the lobby is separated from the main office by locked, secure doors (the firewall). A visitor in the lobby can't get into the main office.
+
+In network terms, a DMZ is a small, isolated network that sits between the internet and your trusted internal LAN. It's where you place any services that need to be accessible from the internet.
+
+The firewall rules are simple and strict:
+*   The **Internet** can talk to servers in the **DMZ**.
+*   The **Internet** can **NOT** talk to your **Internal LAN**.
+*   The **DMZ** can **NOT** talk to your **Internal LAN**. This is the most important rule. If a server in your DMZ is compromised, the attacker is still trapped in the lobby and can't access your secure internal network.
+
+One of the spare ports on the Protectli firewall is the perfect tool to create a dedicated, physical DMZ if you ever decide to host a public-facing service.
+
 ## Table of Contents
 
 ### Project Files
@@ -91,13 +91,13 @@ When configuring VLANs, you will see references to different tagging standards. 
 *   **ipam/**
     *   [ip-address-management.md](docs/operational/ipam/ip-address-management.md)
 *   **runbooks/**
+    *   [bootstrapping-managed-switch-guide.md](docs/operational/runbooks/bootstrapping-managed-switch-guide.md)
     *   [firewall-firmware-updates.md](docs/operational/runbooks/firewall-firmware-updates.md)
     *   [opnsense-initial-setup-guide.md](docs/operational/runbooks/opnsense-initial-setup-guide.md)
     *   [opnsense-vlan-config-1x-production.md](docs/operational/runbooks/opnsense-vlan-config-1x-production.md)
     *   [opnsense-vlan-config-2x-stage.md](docs/operational/runbooks/opnsense-vlan-config-2x-stage.md)
     *   [opnsense-vlan-config-3x-studio.md](docs/operational/runbooks/opnsense-vlan-config-3x-studio.md)
     *   [opnsense-vlan-config-4x-workshop.md](docs/operational/runbooks/opnsense-vlan-config-4x-workshop.md)
-    *   [opnsense-vlan-config-5x.md](docs/operational/runbooks/opnsense-vlan-config-5x.md)
     *   [opnsense-vlan-config-6x-guest.md](docs/operational/runbooks/opnsense-vlan-config-6x-guest.md)
     *   [proxmox-host-setup-guide.md](docs/operational/runbooks/proxmox-host-setup-guide.md)
     *   [server-onboarding.md](docs/operational/runbooks/server-onboarding.md)

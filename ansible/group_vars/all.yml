@@ -1,16 +1,37 @@
 ---
 vlans:
-  - { id: 11, name: 'PROD_GENERAL', description: 'Production - General wired traffic' }
-  - { id: 12, name: 'PROD_PERF', description: 'Production - High-performance traffic' }
-  - { id: 14, name: 'PROD_WIFI', description: 'Production - Wireless access' }
-  - { id: 21, name: 'STAGE_CONTROL', description: 'Stage - Tethered capture & control' }
-  - { id: 22, name: 'STAGE_TRANSFER', description: 'Stage - High-speed image transfer' }
-  - { id: 24, name: 'STAGE_WIFI', description: 'Stage - Wireless access' }
-  - { id: 31, name: 'STUDIO_GENERAL', description: 'Studio - General creative workstations' }
-  - { id: 32, name: 'STUDIO_PERF', description: 'Studio - High-performance media editing' }
-  - { id: 33, name: 'STUDIO_ULTRA', description: 'Studio - Ultra-high bandwidth media flow' }
-  - { id: 34, name: 'STUDIO_WIFI', description: 'Studio - Wireless access' }
-  - { id: 41, name: 'WORKSHOP_ENG', description: 'Workshop - Engineering & prototyping' }
-  - { id: 44, name: 'WORKSHOP_WIFI', description: 'Workshop - Wireless access' }
-  - { id: 51, name: 'MGMT_DEVICES', description: 'Management - Network device control' }
-  - { id: 61, name: 'GUEST_WIFI', description: 'Guest WiFi - Internet-only wireless access' }
+  - { id: 11, name: 'PROD_WIRED_1', description: 'Production Wired (1Gb)' }
+  - { id: 12, name: 'PROD_WIRED_2', description: 'Production Wired (10Gb)' }
+  - { id: 13, name: 'PROD_WIRED_3', description: 'Production Wired (100Gb) - Reserved' }
+  - { id: 14, name: 'PROD_WIFI', description: 'Production Wireless' }
+  - { id: 15, name: 'PROD_MONITOR', description: 'Production Monitoring' }
+
+  - { id: 21, name: 'STAGE_WIRED_1', description: 'Stage Wired (1Gb)' }
+  - { id: 22, name: 'STAGE_WIRED_2', description: 'Stage Wired (10Gb)' }
+  - { id: 23, name: 'STAGE_WIRED_3', description: 'Stage Wired (100Gb) - Reserved' }
+  - { id: 24, name: 'STAGE_WIFI', description: 'Stage Wireless' }
+  - { id: 25, name: 'STAGE_MONITOR', description: 'Stage Monitoring' }
+
+  - { id: 31, name: 'STUDIO_WIRED_1', description: 'Studio Wired (1Gb)' }
+  - { id: 32, name: 'STUDIO_WIRED_2', description: 'Studio Wired (10Gb)' }
+  - { id: 33, name: 'STUDIO_WIRED_3', description: 'Studio Wired (100Gb)' }
+  - { id: 34, name: 'STUDIO_WIFI', description: 'Studio Wireless' }
+  - { id: 35, name: 'STUDIO_MONITOR', description: 'Studio Monitoring' }
+
+  - { id: 41, name: 'WORKSHOP_WIRED_1', description: 'Workshop Wired (1Gb)' }
+  - { id: 42, name: 'WORKSHOP_WIRED_2', description: 'Workshop Wired (10Gb) - Reserved' }
+  - { id: 43, name: 'WORKSHOP_WIRED_3', description: 'Workshop Wired (100Gb) - Reserved' }
+  - { id: 44, name: 'WORKSHOP_WIFI', description: 'Workshop Wireless' }
+  - { id: 45, name: 'WORKSHOP_MONITOR', description: 'Workshop Monitoring' }
+
+  - { id: 51, name: 'MGMT_WIRED_1', description: 'Management Wired (1Gb)' }
+  - { id: 52, name: 'MGMT_WIRED_2', description: 'Management Wired (10Gb)' }
+  - { id: 53, name: 'MGMT_WIRED_3', description: 'Management Wired (100Gb) - Reserved' }
+  - { id: 54, name: 'MGMT_WIFI', description: 'Management Wireless' }
+  - { id: 55, name: 'MGMT_MONITOR', description: 'Management Monitoring' }
+
+  - { id: 61, name: 'GUEST_WIRED_1', description: 'Guest Wired (1Gb)' }
+  - { id: 62, name: 'GUEST_WIRED_2', description: 'Guest Wired (10Gb) - Reserved' }
+  - { id: 63, name: 'GUEST_WIRED_3', description: 'Guest Wired (100Gb) - Reserved' }
+  - { id: 64, name: 'GUEST_WIFI', description: 'Guest Wireless' }
+  - { id: 65, name: 'GUEST_MONITOR', description: 'Guest Monitoring' }

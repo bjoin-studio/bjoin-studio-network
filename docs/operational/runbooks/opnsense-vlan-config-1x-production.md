@@ -4,11 +4,12 @@ This guide provides step-by-step instructions for configuring the Production VLA
 
 ## 1. VLAN Definitions
 
-| VLAN ID | Name          | Subnet           | Gateway IP     | DHCP Range           | Purpose                                      |
-|:--------|:--------------|:-----------------|:---------------|:---------------------|:---------------------------------------------|
-| **11**  | PROD_GENERAL  | `10.20.11.0/24`  | `10.20.11.1`   | `10.20.11.100 – 200` | For general wired office and admin workstations. |
-| **12**  | PROD_PERF     | `10.20.12.0/24`  | `10.20.12.1`   | `10.20.12.100 – 200` | For render nodes and high-performance systems.   |
-| **14**  | PROD_WIFI     | `10.20.14.0/24`  | `10.20.14.1`   | `10.20.14.100 – 200` | For staff wireless devices.                  |
+| VLAN ID | Name           | Subnet           | Gateway IP     | DHCP Range           | Purpose                                      |
+|:--------|:---------------|:-----------------|:---------------|:---------------------|:---------------------------------------------|
+| **11**  | PROD_WIRED_1   | `10.20.11.0/24`  | `10.20.11.1`   | `10.20.11.100 – 200` | Production Wired (1Gb)                       |
+| **12**  | PROD_WIRED_2   | `10.20.12.0/24`  | `10.20.12.1`   | `10.20.12.100 – 200` | Production Wired (10Gb)                      |
+| **14**  | PROD_WIFI      | `10.20.14.0/24`  | `10.20.14.1`   | `10.20.14.100 – 200` | Production Wireless                          |
+| **15**  | PROD_MONITOR   | `10.20.15.0/24`  | `10.20.15.1`   | `10.20.15.100 – 200` | Production Monitoring                        |
 
 ---
 
@@ -20,14 +21,14 @@ These steps assume you have already configured your LAN and WAN interfaces.
 
 **Note:** OPNsense and your switches will use the **802.1Q** VLAN standard, which is the universal protocol for this type of network segmentation. When you create a VLAN, this is the standard being used.
 
-For each VLAN (11, 12, 14):
+For each VLAN (11, 12, 14, 15):
 
 1.  Navigate to **Interfaces > Other Types > VLAN**.
 2.  Click **+ Add**.
 3.  Fill in the details:
     -   **Parent interface:** Your main LAN interface (e.g., `igb1`).
-    -   **VLAN tag:** The VLAN ID (`11`, `12`, or `14`).
-    -   **Description:** A clear name (e.g., `PROD_GENERAL`).
+    -   **VLAN tag:** The VLAN ID (`11`, `12`, `14`, or `15`).
+    -   **Description:** A clear name (e.g., `PROD_WIRED_1`).
 4.  Click **Save**. Repeat for all three VLANs.
 
 ### Step 2.2: Assign and Enable the Interfaces
@@ -36,7 +37,7 @@ For each VLAN (11, 12, 14):
 2.  Assign each new VLAN to an interface.
 3.  Click on each new interface to configure it:
     -   Check the **Enable** box.
-    -   Change the **Description** to the VLAN name (e.g., `PROD_GENERAL`).
+    -   Change the **Description** to the VLAN name (e.g., `PROD_WIRED_1`).
     -   Set **IPv4 Configuration Type** to **Static**.
     -   Set the **IPv4 Address** (e.g., `10.20.11.1` / `24`).
     -   Click **Save** and **Apply Changes**.
@@ -53,13 +54,13 @@ For each VLAN (11, 12, 14):
 
 Navigate to **Firewall > Rules** and select the tab for each Production VLAN to create these rules.
 
-#### For PROD_GENERAL (VLAN 11):
+#### For PROD_WIRED_1 (VLAN 11):
 
 1.  **Allow DNS:** Allow traffic to your DNS servers (e.g., `10.20.51.10`, `10.20.51.11`) on port 53.
-2.  **Allow Internet Access:** Allow traffic from `PROD_GENERAL net` to any destination, but block it from reaching internal production zones.
+2.  **Allow Internet Access:** Allow traffic from `PROD_WIRED_1 net` to any destination, but block it from reaching internal production zones.
     -   **Action:** Pass
-    -   **Source:** `PROD_GENERAL net`
+    -   **Source:** `PROD_WIRED_1 net`
     -   **Destination:** `! (RFC 1918)` (This is an alias that means "not any internal IP address")
-3.  **Block Internal Production Zones:** Add rules to explicitly block traffic from `PROD_GENERAL net` to `StageNet`, `StudioNet`, and `WorkshopNet` aliases.
+3.  **Block Internal Production Zones:** Add rules to explicitly block traffic from `PROD_WIRED_1 net` to `StageNet`, `StudioNet`, and `WorkshopNet` aliases.
 
-Apply similar rules for **PROD_PERF** and **PROD_WIFI**.
+Apply similar rules for **PROD_WIRED_2**, **PROD_WIFI**, and **PROD_MONITOR**.
