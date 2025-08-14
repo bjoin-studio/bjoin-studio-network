@@ -7,7 +7,7 @@ This guide provides step-by-step instructions for configuring the Production VLA
 | VLAN ID | Name           | Subnet           | Gateway IP     | DHCP Range           | Purpose                                      |
 |:--------|:---------------|:-----------------|:---------------|:---------------------|:---------------------------------------------|
 | **11**  | PROD_WIRED_1   | `10.20.11.0/24`  | `10.20.11.1`   | `10.20.11.100 – 200` | Production Wired (1Gb)                       |
-| **12**  | PROD_WIRED_2   | `10.20.12.0/24`  | `10.20.12.1`   | `10.20.12.100 – 200` | Production Wired (10Gb)                      |
+| **12**  | PROD_WIRED_10   | `10.20.12.0/24`  | `10.20.12.1`   | `10.20.12.100 – 200` | Production Wired (10Gb)                      |
 | **14**  | PROD_WIFI      | `10.20.14.0/24`  | `10.20.14.1`   | `10.20.14.100 – 200` | Production Wireless                          |
 | **15**  | PROD_MONITOR   | `10.20.15.0/24`  | `10.20.15.1`   | `10.20.15.100 – 200` | Production Monitoring                        |
 
@@ -63,4 +63,4 @@ Navigate to **Firewall > Rules** and select the tab for each Production VLAN to 
     -   **Destination:** `! (RFC 1918)` (This is an alias that means "not any internal IP address")
 3.  **Block Internal Production Zones:** Add rules to explicitly block traffic from `PROD_WIRED_1 net` to `StageNet`, `StudioNet`, and `WorkshopNet` aliases.
 
-Apply similar rules for **PROD_WIRED_2**, **PROD_WIFI**, and **PROD_MONITOR**.
+Apply similar rules for **PROD_WIRED_10**, **PROD_WIFI**, and **PROD_MONITOR**.

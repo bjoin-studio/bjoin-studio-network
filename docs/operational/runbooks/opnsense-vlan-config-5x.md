@@ -7,7 +7,7 @@ This guide provides step-by-step instructions for configuring the Management VLA
 | VLAN ID | Name             | Subnet           | Gateway IP     | DHCP Range           | Purpose                                      |
 |:--------|:-----------------|:-----------------|:---------------|:---------------------|:---------------------------------------------|
 | **51**  | MGMT_WIRED_1     | `10.20.51.0/24`  | `10.20.51.1`   | Static only          | Management Wired (1Gb)                       |
-| **52**  | MGMT_WIRED_2     | `10.20.52.0/24`  | `10.20.52.1`   | Static only          | Management Wired (10Gb)                      |
+| **52**  | MGMT_WIRED_10     | `10.20.52.0/24`  | `10.20.52.1`   | Static only          | Management Wired (10Gb)                      |
 | **54**  | MGMT_WIFI        | `10.20.54.0/24`  | `10.20.54.1`   | `10.20.54.100 – 200` | Management Wireless                          |
 | **55**  | MGMT_MONITOR     | `10.20.55.0/24`  | `10.20.55.1`   | `10.20.55.100 – 200` | Management Monitoring                        |
 
@@ -71,4 +71,4 @@ It is critical to restrict access to these management VLANs.
     -   **Source:** Any
     -   **Destination:** Any
 
-Apply similar restrictive rules to the other management VLANs, only allowing traffic from trusted sources (e.g., **MGMT_WIRED_2**, **MGMT_WIFI**, **MGMT_MONITOR**).
+Apply similar restrictive rules to the other management VLANs, only allowing traffic from trusted sources (e.g., **MGMT_WIRED_10**, **MGMT_WIFI**, **MGMT_MONITOR**).
