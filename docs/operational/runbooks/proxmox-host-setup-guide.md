@@ -69,3 +69,11 @@ iface vmbr31 inet manual
 *   `vmbr0` is the main management bridge. It is physically connected to `eno1` (the first ethernet port) and has the static IP of the Proxmox host itself. You connect this port to a switch port that is an access port for VLAN 51.
 *   `vmbr12`, `vmbr31`, etc., are bridges for your guest VMs. They are attached to VLAN sub-interfaces on `eno2` (the second ethernet port). You connect this port to a trunk port on your switch.
 *   When you create a VM (like a render node), you will attach its virtual network card to the corresponding bridge (e.g., `vmbr12`) to place it in that VLAN.
+
+---
+
+## 3. Post-Installation: Enabling IOMMU for PCI Passthrough
+
+To enable IOMMU for passing through hardware like GPUs or network cards directly to your virtual machines, you can use the provided utility script. This is often necessary for high-performance VMs.
+
+For instructions and the script itself, see here: [mac_pro_6_1_IOMMU_config.sh](../../../src/mac_pro_6_1_IOMMU_config.sh)

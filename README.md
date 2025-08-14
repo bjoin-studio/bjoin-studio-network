@@ -57,11 +57,24 @@ If, in the future, the 1Gb/s speed for traffic *between* VLANs becomes a limitat
 *   **Sufficient RAM:** More memory is needed to handle the state table for a larger number of connections.
 *   **Awareness of Services:** Performance-intensive services like Intrusion Detection (IDS/IPS) and VPNs will always require a more powerful CPU to maintain high throughput.
 
+## VLAN Tagging Standard: 802.1Q
+
+When configuring VLANs, you will see references to different tagging standards. For this entire network, we will be using the **802.1Q** standard.
+
+*   **802.1Q** is the universal standard for creating VLANs on an internal network. It's like putting colored labels on your internal office mail to send it to the right department. All of your equipment (OPNsense, switches) uses this standard.
+
+*   You may also see an option for **802.1ad (QinQ)**. This is a specialized standard for service providers to "stack" customer VLANs inside their own. It's like FedEx putting your entire box of labeled mail inside a larger FedEx box. We are the office, not FedEx, so we will not use this.
+
+**In short: For all VLAN configuration, 802.1Q is the correct and only standard you need to use.**
+
 ## Table of Contents
 
 ### Project Files
 *   [README.md](README.md)
 *   [GEMINI.md](GEMINI.md)
+
+### Scripts
+*   [mac_pro_6_1_IOMMU_config.sh](src/mac_pro_6_1_IOMMU_config.sh) - A utility script to enable IOMMU on the Proxmox host, which is necessary for PCI(e) passthrough (e.g., giving a VM direct access to a GPU).
 
 ### Design
 *   [bjoin-studio-network-design.md](docs/design/bjoin-studio-network-design.md)

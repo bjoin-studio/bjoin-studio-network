@@ -16,6 +16,8 @@ This guide provides step-by-step instructions for configuring the Stage VLANs. T
 
 ### Step 2.1: Create, Assign, and Enable Interfaces
 
+**Note:** OPNsense and your switches will use the **802.1Q** VLAN standard, which is the universal protocol for this type of network segmentation. When you create a VLAN, this is the standard being used.
+
 Follow the procedures in the previous guides to create the VLANs (21, 22, 24) and assign them to enabled interfaces with static IPs as defined in the table above.
 
 ### Step 2.2: Configure DHCP Server

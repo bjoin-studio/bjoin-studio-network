@@ -1,97 +1,62 @@
-# OPNsense Installation and Initial Setup on Protectli Vault
+# OPNsense Initial Installation and LAN Trunk Configuration
 
-This guide provides step-by-step instructions for installing OPNsense on a Protectli device and performing the initial WAN and LAN configuration for the bjoin.studio network.
+This guide provides the definitive, step-by-step procedure for installing OPNsense and correctly configuring the physical LAN port as a VLAN trunk without losing access.
 
-## 1. Prerequisites
+## 1. Installation
 
-### Hardware
-- Protectli Vault (Model: FW4B)
-- USB stick (at least 4GB)
-- Monitor and Keyboard
-- Internet connection (from ISP modem/router, e.g., Netgear 6220)
-- Computer for accessing the Web GUI
+Follow the installation steps from the previous guide to install OPNsense on the Protectli Vault. After the installation and reboot, OPNsense will boot from the internal storage.
 
-### Software
-- Latest OPNsense VGA image (`.img.bz2` file) from the [OPNsense website](https://opnsense.org/download/).
-- A tool like [balenaEtcher](https://www.balena.io/etcher/) or [Rufus](https://rufus.ie/) to create a bootable USB drive.
+## 2. Initial Console Configuration
 
-## 2. Creating the Bootable USB
+1.  On the first boot, the OPNsense console will ask to assign interfaces. 
+2.  Assign your physical **WAN** and **LAN** ports. Do **not** set up any VLANs from the console menu.
+3.  OPNsense will assign the default IP `192.168.1.1` to your physical LAN port. This is a **temporary** address that we will use for initial setup only.
 
-1.  Download the OPNsense image. Ensure you get the `vga` version.
-2.  Use your chosen tool to write the downloaded image to the USB stick. This will erase the USB stick.
+## 3. First Web GUI Login & Creating the Management VLAN
 
-## 3. OPNsense Installation on the Protectli Vault
+The goal of this step is to create our new Management VLAN interface *before* we change the physical LAN port's configuration.
 
-1.  Connect the Protectli Vault to a monitor and keyboard.
-2.  Insert the bootable USB drive into one of the USB ports.
-3.  Power on the device. It should automatically boot from the USB drive.
-4.  When prompted, log in with the default credentials:
-    -   **Username:** `installer`
-    -   **Password:** `opnsense`
-5.  Follow the on-screen installer prompts. The default options are generally safe.
-    -   It is highly recommended to choose the **ZFS** file system for reliability and boot environment features.
-6.  Once the installation is complete, the system will prompt you to reboot. Select **Reboot** and **immediately remove the USB stick** so you don't boot into the installer again.
+1.  Connect your laptop to a switch that is connected to the firewall's **LAN** port.
+2.  Your laptop should get an IP address in the `192.168.1.x` range.
+3.  Open a browser and navigate to `https://192.168.1.1`.
+4.  Log in with the default credentials (`root` / `opnsense`).
+5.  **Skip the setup wizard for now.** We will run it later.
+    
+    **Troubleshooting Note:** If you cannot access the Web GUI at this stage, ensure the `lighttpd` service is running. From the console, you may need to enable it by running `echo 'lighttpd_enable="yes"' >> /etc/rc.conf` and then `service lighttpd start`.
+6.  Navigate to **Interfaces > Other Types > VLAN**.
+7.  Click **+ Add** and create your Management VLAN:
+    -   **Parent interface:** Select your physical LAN interface (e.g., `igb1`).
+    -   **VLAN tag:** `51`
+    -   **Description:** `Management VLAN 51`
+8.  Navigate to **Interfaces > Assignments**.
+9.  You will see a new VLAN available. Click the **+** button to assign it. It will be named `OPT1` by default.
+10. Click on the new `OPT1` interface to configure it:
+    -   Check the **Enable** box.
+    -   Change the **Description** to `MGMT_DEVICES`.
+    -   Set **IPv4 Configuration Type** to **Static**.
+    -   In the "Static IPv4 configuration" section, set the IP address: `10.20.51.1` / `24`.
+    -   Click **Save** and then **Apply Changes**.
 
-## 4. Initial Configuration (First Boot)
+At this point, you have two active interfaces: the physical `LAN` at `192.168.1.1` and the new virtual `MGMT_DEVICES` at `10.20.51.1`.
 
-After rebooting, OPNsense will boot from the internal storage.
+## 4. The Critical Switchover: Reconfiguring the LAN Port
 
-### Assigning Network Interfaces (Console)
+This is the most important step. We will now remove the IP address from the physical LAN port, turning it into a pure VLAN trunk. 
 
-1.  OPNsense will ask if you want to set up VLANs now. Enter `n` (No) for now; we will do this from the web interface later.
-2.  You will be prompted to assign the **WAN** interface. Identify the physical network port on the Protectli that is connected to your upstream ISP router (e.g., the Netgear 6220). Enter its interface name (e.g., `igb0`, `em0`).
-3.  Next, you will be prompted to assign the **LAN** interface. Identify the physical port connected to your internal network switch and enter its interface name.
-4.  You may be prompted to assign optional interfaces. Press `Enter` to skip this for now.
-5.  Confirm the assignments. OPNsense will configure the interfaces and the LAN port will be assigned the default IP address `192.168.1.1`.
-
-### Accessing the Web GUI
-
-1.  Connect your computer to a port on your main LAN switch.
-2.  Your computer should receive an IP address from OPNsense via DHCP in the `192.168.1.0/24` range.
-3.  Open a web browser and navigate to `http://192.168.1.1`.
-4.  Log in with the default credentials:
-    -   **Username:** `root`
-    -   **Password:** `opnsense`
-5.  Complete the initial setup wizard. It is highly recommended to change the `root` password during this wizard.
-
-## 5. Configuring WAN and LAN Interfaces (Web GUI)
-
-### WAN Interface
-
-1.  Navigate to **Interfaces > [WAN]**.
-2.  Set **IPv4 Configuration Type** to **DHCP**. This allows OPNsense to get its WAN IP address from your upstream router.
-3.  Ensure "Block private networks" and "Block bogon networks" are checked at the bottom of the page.
-4.  Save and apply the changes.
-
-### LAN Interface
-
-This step reconfigures the LAN interface to match your defined IP scheme for the Management VLAN.
+**WARNING:** You will lose access to the Web GUI at `https://192.168.1.1` after this step. This is expected. Ensure your laptop is physically connected to a **MANAGED switch port** that has been configured as an **ACCESS port for VLAN 51** before you proceed.
 
 1.  Navigate to **Interfaces > [LAN]**.
-2.  Set **IPv4 Configuration Type** to **Static**.
-3.  Under the "Static IPv4 configuration" section, set the IP address to the gateway for your Management VLAN:
-    -   **IPv4 Address:** `10.20.51.1` / `24`
-4.  Save and apply the changes.
+2.  Set the **IPv4 Configuration Type** to **None**.
+3.  Delete any IP addresses listed in the configuration.
+4.  Click **Save** and **Apply Changes**.
 
-**You will be disconnected.** You must now change your computer's IP address to be on the new LAN subnet (e.g., set it statically to `10.20.51.10/24`) to reconnect to the Web GUI at its new address: `http://10.20.51.1`.
+## 5. Reconnecting and Final Verification
 
----
+The firewall is now only accessible via the VLAN 51 interface.
 
-## 6. OPNsense Setup Wizard Configuration
+1.  Ensure your laptop is plugged into the switch port you configured for VLAN 51.
+2.  Manually set your laptop's IP address to be on the Management subnet (e.g., IP: `10.20.51.99`, Subnet: `255.255.255.0`, Gateway: `10.20.51.1`).
+3.  Open your browser and navigate to the new management address: **`https://10.20.51.1`**.
+4.  Log in. You can now run the initial setup wizard if you wish.
 
-Once you log in to the Web GUI for the first time (or after a factory reset), you will be greeted by the setup wizard. Here are the recommended settings for your bjoin.studio environment.
-
-| Wizard Step      | Parameter          | Recommended Value         | Notes                                                                                                                            |
-|:-----------------|:-------------------|:--------------------------|:---------------------------------------------------------------------------------------------------------------------------------|
-| **General Info** | Hostname           | `opnsense-fw`             | A simple, descriptive name for your firewall.                                                                                    |
-|                  | Domain             | `bjoin.studio`            | This is the domain for your entire internal network.                                                                             |
-|                  | Primary DNS        | `1.1.1.1`                 | Use a public DNS server for now to ensure internet access works. You can change this later to an internal DNS server (e.g., FreeIPA). |
-|                  | Secondary DNS      | `1.0.0.1`                 | A reliable public DNS backup.                                                                                                    |
-| **Time Server**  | Timezone           | `Your_Time_Zone`          | **Important:** Select your correct local timezone (e.g., `America/New_York`).                                                    |
-| **WAN Config**   | Selected Type      | `DHCP`                    | This should already be correct from the initial setup.                                                                           |
-| **LAN Config**   | LAN IP Address     | `10.20.51.1`              | This should also be correct from the initial setup.                                                                              |
-| **Root Password**| Root Password      | `YourNewSecurePassword`   | **Crucial:** Change the default password now to a strong, unique one.                                                              |
-
----
-
-This concludes the initial installation and basic configuration. The next step is to create all the VLANs as defined in the main network design document.
+Success! Your physical LAN port is now a proper trunk, and your management interface is correctly and securely isolated on VLAN 51. You can now proceed to create all your other VLAN interfaces.

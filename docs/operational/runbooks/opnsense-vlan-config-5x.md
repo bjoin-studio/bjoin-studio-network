@@ -18,6 +18,8 @@ These steps assume you have already configured your LAN and WAN interfaces as pe
 
 ### Step 2.1: Create the VLANs
 
+**Note:** OPNsense and your switches will use the **802.1Q** VLAN standard, which is the universal protocol for this type of network segmentation. When you create a VLAN, this is the standard being used.
+
 For each VLAN (51, 52, 53):
 
 1.  Navigate to **Interfaces > Other Types > VLAN**.
