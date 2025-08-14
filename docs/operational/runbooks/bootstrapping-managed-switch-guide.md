@@ -1,9 +1,22 @@
-# Bootstrapping a New Managed Switch
+# Bootstrapping a New Managed Switch (General Guide)
 
 This guide provides a step-by-step procedure for the initial configuration of a new managed switch (like the Netgear GS108E) before it is ready to be integrated into the main network. This process uses a temporary, isolated network to avoid IP conflicts and access issues.
 
 ### Goal
 To assign the switch a static IP on the Management VLAN (51) and configure its initial trunk and access ports.
+
+---
+
+## Default Switch Access Information
+
+Before bootstrapping a new managed switch, identify its default IP address, username, and password. This information is usually found on a sticker on the device or in its manual.
+
+| Switch Model        | Default IP Address | Default Username | Default Password | Notes                                                              |
+|:--------------------|:-------------------|:-----------------|:-----------------|:-------------------------------------------------------------------|
+| **Sodola 8-Port 10G** | `192.168.2.1`      | `admin`          | `admin` / `password` | Confirmed default.                                                 |
+| **Netgear GS108Ev4**| `192.168.0.239`    | `admin`          | `password`       | Common Netgear default.                                            |
+| **BitEngine SW08XM**| `192.168.0.1`      | `admin`          | `admin` / `password` | Common default for generic web-managed switches. Verify with manual. |
+| **Cisco Nexus 9236C**| (No default IP)    | `admin`          | (blank)          | Requires console access for initial setup.                         |
 
 ---
 
@@ -14,15 +27,15 @@ To assign the switch a static IP on the Management VLAN (51) and configure its i
 
 ### Step 2: Manually Configure Your Laptop's IP
 
-1.  Find the switch's factory default IP address. For the Netgear GS108E, this is typically `192.168.0.239`. If you are using a different switch, you may need to check its manual or a sticker on the device.
-2.  On your laptop, manually configure your Ethernet adapter's IP address to be on the same subnet as the switch.
-    -   **IP Address:** `192.168.0.100`
+1.  Find the switch's factory default IP address. For the **Sodola 8-Port 10G**, this is `192.168.2.1`. (For other switches, check the sticker or manual).
+2.  On your laptop, manually set your Ethernet adapter's IP address to be on the same subnet as the switch.
+    -   **IP Address:** `192.168.2.100`
     -   **Subnet Mask:** `255.255.255.0`
     -   (The Gateway and DNS fields can be left blank for this step).
 
 ### Step 3: Log In to the Switch's Web Interface
 
-1.  Open a web browser on your laptop and navigate to the switch's default IP address (e.g., `http://192.168.0.239`).
+1.  Open a web browser on your laptop and navigate to the switch's default IP address (e.g., `http://192.168.2.1`).
 2.  Log in with the default credentials (for Netgear, this is often `admin` and `password`). You should be prompted to change the password immediately.
 
 ### Step 4: The Critical Reconfiguration

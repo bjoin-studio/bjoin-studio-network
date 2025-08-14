@@ -101,6 +101,7 @@ When configuring VLANs, you will see references to different tagging standards. 
     *   [opnsense-vlan-config-6x-guest.md](docs/operational/runbooks/opnsense-vlan-config-6x-guest.md)
     *   [proxmox-host-setup-guide.md](docs/operational/runbooks/proxmox-host-setup-guide.md)
     *   [server-onboarding.md](docs/operational/runbooks/server-onboarding.md)
+    *   [sodola-switch-vlan-configuration.md](docs/operational/runbooks/sodola-switch-vlan-configuration.md)
 
 ### Security
 *   **plans/**
