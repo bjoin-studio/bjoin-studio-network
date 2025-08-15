@@ -71,7 +71,7 @@ This table serves as the single source of truth for VLANs, subnets, and IP addre
 |:------------------------|:------------------------------------|:-------------------------------------------------------------------|
 | Protectli Vault         | OPNsense Firewall/Router            | The single point of control for all inter-VLAN routing and security. |
 | Netgear R6220           | ISP Router                          | Provides the WAN connection; acts as the gateway to the internet.  |
-| **Sodola 8-Port 10G**   | **Distribution Switch**             | The main switch connected to the firewall, distributes the VLAN trunk. |
+| **Sodola KT-NOS SL-SWTGW2C8F 8-Port 10G**   | **Distribution Switch**             | The main switch connected to the firewall, distributes the VLAN trunk. |
 | **BitEngine SW08XM**    | **Access/Aggregation Switch**       | Provides high-speed 10G RJ45 access for servers and workstations.  |
 | Cisco Nexus 9236C       | 100G Core Switch                    | The high-performance backbone for the Studio Ultra VLAN.           |
 | Netgear GS105           | Unmanaged Access Switch             | For simple, single-VLAN device connections.                        |
