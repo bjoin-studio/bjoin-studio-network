@@ -1,6 +1,6 @@
 # Sodola 8-Port 10G Switch VLAN Configuration
 
-This guide provides step-by-step instructions for configuring VLANs on the Sodola 8-Port 10G managed switch. This switch acts as the main distribution switch in the bjoin.studio network.
+This guide provides step-by-step instructions for configuring VLANs on the Sodola KT-NOS SL-SWTGW2C8F managed switch. This switch acts as the main distribution switch in the bjoin.studio network.
 
 ## 1. Prerequisites
 
