@@ -1,44 +1,29 @@
-# OPNsense Guest WiFi VLAN Configuration (VLAN 61)
+# OPNsense Guest VLAN Configuration (VLANs 61-65)
 
-This guide provides step-by-step instructions for configuring the Guest WiFi VLAN. This zone is for providing internet access to visitors and must be completely isolated from the internal network.
+This guide provides step-by-step instructions for configuring the Guest VLANs (61-65). This zone is for providing internet access to visitors and must be completely isolated from the internal network.
 
-## 1. VLAN Definition
+## 1. VLAN Definitions
 
-| VLAN ID | Name             | Subnet           | Gateway IP     | DHCP Range           | Purpose                                      |
-|:--------|:-----------------|:-----------------|:---------------|:---------------------|:---------------------------------------------|
-| **61**  | GUEST_WIRED_1    | `10.20.61.0/24`  | `10.20.61.1`   | `10.20.61.100 – 200` | Guest Wired (1Gb)                            |
-| **64**  | GUEST_WIFI       | `10.20.64.0/24`  | `10.20.64.1`   | `10.20.64.100 – 200` | Guest Wireless                               |
-| **65**  | GUEST_MONITOR    | `10.20.65.0/24`  | `10.20.65.1`   | `10.20.65.100 – 200` | Guest Monitoring                             |
+| VLAN ID | Name | Purpose | Subnet | Gateway IP | DHCP Range |
+|:---|:---|:---|:---|:---|:---|
+| **61** | `GUEST_WIRED_1G` | Guest Wired (1Gb) | `10.20.61.0/24` | `10.20.61.1` | `10.20.61.100 – 200` |
+| **62** | `GUEST_RESERVED_1` | Guest Reserved | `10.20.62.0/24` | `10.20.62.1` | Static only |
+| **63** | `GUEST_RESERVED_2` | Guest Reserved | `10.20.63.0/24` | `10.20.63.1` | Static only |
+| **64** | `GUEST_WIFI` | Guest Wifi | `10.20.64.0/24` | `10.20.64.1` | `10.20.64.100 – 200` |
+| **65** | `GUEST_MONITOR` | Guest Monitoring | `10.20.65.0/24` | `10.20.65.1` | `10.20.65.100 – 200` |
 
 ---
 
 ## 2. Step-by-Step Configuration
 
-### Step 2.1: Create, Assign, and Enable Interface
+Follow the same procedure as the Production guide to create, assign, and enable the five Guest VLANs and configure their DHCP servers.
 
-**Note:** OPNsense and your switches will use the **802.1Q** VLAN standard, which is the universal protocol for this type of network segmentation. When you create a VLAN, this is the standard being used.
+### Firewall Rules
 
-Follow the procedures in the previous guides to create VLANs (61, 64, 65) and assign them to enabled interfaces with static IPs as defined in the table above.
+The key principle for the Guest zone is **internet only**.
 
-### Step 2.2: Configure DHCP Server
+#### For All Guest VLANs (61, 62, 63, 64, 65):
+1.  **Block All Internal Access:** Create a rule at the top to **block** any traffic from the VLAN's subnet to the `RFC 1918` alias (all private IP space).
+2.  **Allow Internet Access:** Create a second rule to **pass** traffic from the VLAN's subnet to `Any`.
 
-Enable the DHCP server for each Guest VLAN interface and set the correct IP range. It is also a good idea to set the DNS servers here to public ones (e.g., `1.1.1.1`, `8.8.8.8`) directly, rather than your internal DNS.
-
-### Step 2.3: Firewall Rules
-
-The key principle for the Guest WiFi is **internet only**.
-
-Navigate to **Firewall > Rules > GUEST_WIRED_1**.
-
-1.  **Block All Internal Access:** Create a rule at the top to block any traffic from the `GUEST_WIRED_1 net` to all internal networks.
-    -   **Action:** Block
-    -   **Source:** `GUEST_WIRED_1 net`
-    -   **Destination:** `RFC 1918` (This is a built-in alias for all private IP address space)
-2.  **Allow Internet Access:** Create a rule below the block rule to allow traffic to any other destination.
-    -   **Action:** Pass
-    -   **Source:** `GUEST_WIRED_1 net`
-    -   **Destination:** `Any`
-
-This simple rule set ensures guests can access the internet but are strictly prohibited from accessing any of your internal network resources.
-
-Apply similar rules for **GUEST_WIFI** and **GUEST_MONITOR**.
+This simple rule set ensures guests can access the internet but are strictly prohibited from accessing any internal resources.

@@ -4,75 +4,47 @@ This runbook provides a systematic procedure for testing and validating the conf
 
 ## 1. Prerequisites
 
-*   OPNsense is configured with all VLANs, DHCP servers, and firewall rules.
-*   Managed switches (e.g., Sodola, Netgear GS108Ev4) are configured with the appropriate VLANs and trunk links.
+*   OPNsense is configured with all VLANs, DHCP servers, and firewall rules as per the master design document.
+*   Managed switches are configured with the appropriate VLANs and trunk links, as per the `sodola-switch-vlan-configuration.md` runbook.
 *   A test device (e.g., a laptop with an Ethernet port).
 
-## 2. VLAN Testing Plan
+## 2. Systematic Testing Workflow
 
-This plan should be repeated for each VLAN you intend to test.
+For each test case in the table below, follow this four-step process.
 
-### Step 2.1: Configure an Access Port
+### Step 1: Connect to the VLAN
 
-To test a VLAN, you must first have a port that provides untagged access to it.
+*   Connect your test device to the specified **Test Port** on the Sodola switch. These ports have been pre-configured as access ports for their respective VLANs.
 
-1.  Choose a spare port on a managed switch (e.g., Sodola or Netgear GS108Ev4).
-2.  In the switch's web GUI, configure the chosen port as an **access port** for the target VLAN (e.g., VLAN 21 for Stage).
-    *   Set the port as an **Untagged** member of the VLAN.
-    *   Set the port's **PVID** to the same VLAN ID.
+### Step 2: Verify IP Address
 
-**Note:** For initial testing, **Port 8 on the Sodola switch** is pre-configured as an access port for **VLAN 11**.
+*   On your test device, ensure it automatically receives an IP address from the correct **Expected DHCP Range**. You can verify this in your device's network settings (`ipconfig` or `ip addr`).
+*   If you do not receive an IP, troubleshoot the DHCP server settings in OPNsense for that VLAN.
 
-### Step 2.2: Connect a Test Device
+### Step 3: Verify Gateway and Internet Connectivity
 
-*   Connect your test device (e.g., laptop) to the access port you just configured.
+*   Open a terminal or command prompt.
+*   Ping the VLAN's **Gateway IP**. A success confirms the switch and firewall interface are correctly configured.
+*   Ping a public address like `8.8.8.8`. A success confirms outbound NAT and internet access for the VLAN.
 
-### Step 2.3: Verify IP Address
+### Step 4: Verify Firewall Rules
 
-*   On your test device, ensure it automatically receives an IP address from the correct DHCP range for that VLAN. You can verify this in your device's network settings (e.g., `ipconfig` on Windows, `ifconfig` or `ip addr` on macOS/Linux).
+*   Attempt to ping the target specified in the **Firewall Test** column.
+*   Compare your result to the **Expected Result**. A `FAIL` can be a **SUCCESS** if you are testing a security rule meant to block traffic.
 
-| VLAN ID | Zone       | Expected DHCP Range    |
-|:--------|:-----------|:-----------------------|
-| **11**  | Production | `10.20.11.100 – 200`   |
-| **21**  | Stage      | `10.20.21.100 – 200`   |
-| **31**  | Studio     | `10.20.31.100 – 200`   |
-| **41**  | Workshop   | `10.20.41.100 – 200`   |
+## 3. VLAN-Specific Test Plan
 
-If you do not receive an IP address, troubleshoot the DHCP server settings in OPNsense for that VLAN and the port configuration on the switch.
+Use this table to validate key VLANs across your network.
 
-### Step 2.4: Test Connectivity
+| VLAN to Test | Test Port (Sodola) | Expected DHCP Range | Gateway (Ping Target) | Firewall Test | Expected Result |
+|:---|:---|:---|:---|:---|:---|
+| **11: Production Wired** | Port 5 | `10.20.11.100 – 200` | `10.20.11.1` | Ping Studio Gateway `10.20.31.1` | ❌ **FAIL** |
+| **14: Production Wifi** | (Requires AP) | `10.20.14.100 – 200` | `10.20.14.1` | Ping Guest Gateway `10.20.64.1` | ❌ **FAIL** |
+| **15: Production Monitoring** | (Manual IP) | `10.20.15.100 – 200` | `10.20.15.1` | Ping any other VLAN Gateway | ❌ **FAIL** (Should be isolated) |
+| **21: Stage Wired** | Port 6 | `10.20.21.100 – 200` | `10.20.21.1` | Ping Production Gateway `10.20.11.1` | ✅ **SUCCESS** (Assumed) |
+| **32: Studio 10Gb** | (Manual Port) | `10.20.32.100 – 200` | `10.20.32.1` | Ping Production Gateway `10.20.11.1` | ✅ **SUCCESS** (Full visibility) |
+| **41: Workshop Wired** | Port 7 | `10.20.41.100 – 200` | `10.20.41.1` | Ping Studio Gateway `10.20.31.1` | ❌ **FAIL** (Isolated) |
+| **54: Management Wifi** | (Requires AP) | `10.20.54.100 – 200` | `10.20.54.1` | Ping Guest Gateway `10.20.64.1` | ❌ **FAIL** |
+| **64: Guest Wifi** | (Requires AP) | `10.20.64.100 – 200` | `10.20.64.1` | Ping Production Gateway `10.20.11.1` | ❌ **FAIL** (Internet only) |
 
-Once your device has a valid IP address, perform the following tests from the command line (Terminal or Command Prompt).
-
-#### 1. Ping the Gateway
-
-This test confirms basic connectivity to the OPNsense firewall from within the VLAN.
-
-*   For VLAN 11: `ping 10.20.11.1`
-*   For VLAN 21: `ping 10.20.21.1`
-*   For VLAN 31: `ping 10.20.31.1`
-*   For VLAN 41: `ping 10.20.41.1`
-
-A successful ping confirms that the VLAN is correctly configured on the switch and the firewall interface is responding.
-
-#### 2. Ping a Public DNS Server
-
-This test confirms that the VLAN has a valid path to the internet.
-
-*   Run the command: `ping 8.8.8.8`
-
-A successful ping confirms that your WAN gateway and outbound NAT rules are working correctly for this VLAN.
-
-#### 3. Test Firewall Rules (Inter-VLAN Connectivity)
-
-This is the most important test for verifying your network segmentation and security policies. Attempt to ping the gateway of another VLAN to see if the firewall rules you created are being enforced.
-
-**Example Test:**
-
-*   Connect your test device to an access port for **VLAN 41 (Workshop)**.
-*   Attempt to ping the gateway of **VLAN 31 (Studio)**:
-    *   `ping 10.20.31.1`
-
-**Expected Result:** According to the "Routing & Visibility Matrix" in the network design, traffic from the Workshop VLAN to the Studio VLAN should be blocked. Therefore, this ping should **fail**. A failed ping in this case is a **success** for your security policy.
-
-Repeat this test for other source/destination VLAN combinations to fully validate your firewall ruleset.
+**Note on WiFi Testing:** To test a WiFi VLAN, you must first connect a Wireless Access Point to a switch port configured for that VLAN, then connect your test device to the corresponding wireless network.

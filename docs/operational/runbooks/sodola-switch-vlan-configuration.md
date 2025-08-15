@@ -4,13 +4,13 @@ This guide provides step-by-step instructions for configuring VLANs on the Sodol
 
 ## 1. Prerequisites
 
-*   OPNsense firewall is configured with all necessary VLANs (11-61).
+*   OPNsense firewall is configured with all necessary VLANs as defined in `bjoin-studio-network-design.md`.
 *   You have access to the Sodola switch's web management interface (e.g., `http://10.20.51.3`).
 
 ## 2. Key VLAN Concepts on Managed Switches
 
 *   **Tagged Port (Trunk Port):** A port that carries traffic for multiple VLANs. Each frame leaving or entering this port will have an 802.1Q VLAN tag. Used for connections between switches and to the firewall.
-*   **Untagged Port (Access Port):** A port that carries traffic for only one VLAN. Frames leaving or entering this port do not have a VLAN tag. Used for connecting end devices (computers, servers, printers) or unmanaged switches.
+*   **Untagged Port (Access Port):** A port that carries traffic for only one VLAN. Frames leaving or entering this port do not have a VLAN tag. Used for connecting end devices (computers, servers, printers).
 *   **PVID (Port VLAN ID):** For an untagged port, the PVID specifies which VLAN untagged traffic entering that port belongs to.
 
 ## 3. Accessing the Switch
@@ -21,102 +21,119 @@ This guide provides step-by-step instructions for configuring VLANs on the Sodol
 
 ## 4. Changing the Management VLAN (from Default VLAN 1 to 51)
 
-For security, the switch's management interface should be moved from the default VLAN 1 to the dedicated management VLAN 51. This guide assumes you are initially connected to the switch on its default IP on VLAN 1.
+For security, the switch's management interface should be moved from the default VLAN 1 to the dedicated management VLAN 51. This is a one-time setup process.
 
-The switch's web GUI provides three key submenus under the main **VLAN Menu**:
+The switch's web GUI has three key submenus under the main **VLAN Menu**:
 *   **Create VLAN**
 *   **VLAN Configuration Membership**
 *   **Port Setting**
 
-Here is the step-by-step process to move the management interface to VLAN 51.
-
 ### Step 4.1: Create VLAN 51
-
-The switch must be aware that VLAN 51 exists before you can assign it to anything.
 
 *   Navigate to the **Create VLAN** submenu.
 *   If VLAN 51 is not already in the list, create it.
 
 ### Step 4.2: Configure Port Settings (PVID)
 
-This step configures a dedicated, *untagged* port that you can use to directly manage the switch. We will use **Port 6** as the example from the runbook.
+This step configures a dedicated, *untagged* port that you can use to directly manage the switch. We will use **Port 8** as the dedicated management port in this guide.
 
-*   Navigate to the **Port Setting** submenu. This is where you configure the **PVID (Port VLAN ID)**.
-*   For **Port 6**, set its **PVID** to **51**.
+*   Navigate to the **Port Setting** submenu.
+*   For **Port 8**, set its **PVID** to **51**.
 
-This tells the switch: "Any device that plugs into Port 6 and sends normal, untagged traffic should be considered part of VLAN 51."
+This tells the switch: "Any device that plugs into Port 8 and sends normal, untagged traffic should be considered part of VLAN 51."
 
 ### Step 4.3: Configure VLAN Membership
 
-Now, you must define how VLAN 51 behaves on all critical ports.
-
 *   Navigate to the **VLAN Configuration Membership** submenu.
 *   Select **VLAN 51** to configure its port membership.
-    *   **Port 6 (Your Management Port):** Set this to **Untagged**. This makes it an access port for VLAN 51.
-    *   **Port 1 (Uplink to Firewall):** Set this to **Tagged**. This is essential for the trunk to carry management traffic.
-    *   **Port 4 (Uplink to Netgear):** Set this to **Tagged**. This is also a trunk port.
+    *   **Port 8 (Your Management Port):** Set this to **Untagged**.
+    *   **TE1 (Uplink to Firewall):** Set this to **Tagged**. This is essential for the trunk to carry management traffic.
     *   **Other Ports:** You can leave them as "Not Member" for now.
 
 ### Step 4.4: Change the Switch's Management IP and VLAN
 
-This is the final step. You must find the settings for the switch's own IP address. This is typically **not** in the VLAN menu.
-
-*   Look for a different top-level menu, such as **"System"**, **"Management"**, or **"IP Configuration"**.
-*   Inside that menu, configure the following:
+*   Navigate to the **System** or **IP Configuration** menu.
+*   Configure the following:
     *   **IP Address:** `10.20.51.3`
     *   **Subnet Mask:** `255.255.255.0`
     *   **Default Gateway:** `10.20.51.1`
     *   **Management VLAN:** Change this setting from `1` to **`51`**.
 
-**IMPORTANT: You will lose access to the switch after applying these changes.**
-
-To regain access, you must:
-1.  Connect your computer directly to **Port 6** (the untagged port you configured).
-2.  Ensure your computer has a static IP in the same subnet (e.g., `10.20.51.99`).
-3.  Navigate to the new management IP in your browser: **`http://10.20.51.3`**.
+**IMPORTANT:** You will lose access. To regain it, connect your computer to **Port 8** and set a static IP on your computer (e.g., `10.20.51.99`).
 
 ## 5. Step-by-Step VLAN Configuration
 
-Navigate to the VLAN configuration section in the switch's web interface (usually under "VLAN" or "802.1Q VLAN").
+Navigate to the VLAN configuration section in the switch's web interface.
 
 ### Step 5.1: Create All VLANs
 
-Create all the VLANs that this switch will carry. For the Sodola, this means all VLANs from our design (11, 12, 14, 21, 22, 24, 31, 32, 33, 34, 41, 44, 51, 52, 53, 61).
+You must create all VLANs from the master design plan. Navigate to the **Create VLAN** submenu and add the following entries one by one. The name should match the purpose from the design document.
+
+*   VLAN 11: `Production Wired (1Gb)`
+*   VLAN 12: `Production Wired (10Gb)`
+*   VLAN 13: `Production Reserved`
+*   VLAN 14: `Production Wifi`
+*   VLAN 15: `Production Monitoring`
+*   VLAN 21: `Stage Wired (1Gb)`
+*   VLAN 22: `Stage Wired (10Gb)`
+*   VLAN 23: `Stage Reserved`
+*   VLAN 24: `Stage Wifi`
+*   VLAN 25: `Stage Monitoring`
+*   VLAN 31: `Studio Wired (1Gb)`
+*   VLAN 32: `Studio Wired (10Gb)`
+*   VLAN 33: `Studio Wired (100Gb)`
+*   VLAN 34: `Studio Wifi`
+*   VLAN 35: `Studio Monitoring`
+*   VLAN 41: `Workshop Wired (1Gb)`
+*   VLAN 42: `Workshop Reserved`
+*   VLAN 43: `Workshop Reserved`
+*   VLAN 44: `Workshop Wifi`
+*   VLAN 45: `Workshop Monitoring`
+*   VLAN 51: `Management Wired (1Gb)`
+*   VLAN 52: `Management Reserved`
+*   VLAN 53: `Management Reserved`
+*   VLAN 54: `Management Wifi`
+*   VLAN 55: `Management Monitoring`
+*   VLAN 61: `Guest Wired (1Gb)`
+*   VLAN 62: `Guest Reserved`
+*   VLAN 63: `Guest Reserved`
+*   VLAN 64: `Guest Wifi`
+*   VLAN 65: `Guest Monitoring`
 
 ### Step 5.2: Configure Port VLAN Membership
 
-This is the most critical step. You will define which VLANs each port belongs to and whether traffic is tagged or untagged.
+This is the most critical step. The following is a recommended default configuration.
 
-| Port | Role | VLANs (Tagged/Untagged) | PVID | Notes |
-|:-----|:-----|:------------------------|:-----|:------|
-| **TE1** | **Uplink to Firewall** | All VLANs (Tagged) | 1 (Default) | Main trunk from OPNsense. Requires SFP+ to RJ45 transceiver. |
-| **TE2** | **Uplink to BitEngine** | All VLANs (Tagged) | 1 (Default) | Trunk to BitEngine. Requires SFP+ to RJ45 transceiver. |
-| **TE3** | **Uplink to Cisco Nexus** | All VLANs (Tagged) | 1 (Default) | Trunk to Cisco Nexus. |
-| **TE4** | **Uplink to Netgear GS108Ev4** | All VLANs (Tagged) | 1 (Default) | Trunk to Netgear GS108Ev4. Requires SFP+ to RJ45 transceiver. |
-| **Port 5** | **Access Port (Example: Studio Perf)** | VLAN 32 (Untagged) | 32 | For high-performance Studio workstations. |
-| **Port 6** | **Access Port (Example: Management)** | VLAN 51 (Untagged) | 51 | For connecting management devices directly. |
-| **Port 7** | **Access Port (Example: Guest WiFi)** | VLAN 61 (Untagged) | 61 | For connecting Guest WiFi Access Points. |
-| **Port 8** | **Access Port (Example: Production General)** | VLAN 11 (Untagged) | 11 | For general Production workstations. |
+| Port | Role | VLAN Membership (Tagged/Untagged) | PVID | Notes |
+|:-----|:-----|:----------------------------------|:-----|:------|
+| **TE1** | **Uplink to Firewall** | All VLANs (Tagged) | 1 | Main "Router-on-a-Stick" trunk to OPNsense. |
+| **TE2** | **Uplink to Core Switch** | All VLANs (Tagged) | 1 | Optional trunk to another switch (e.g., Cisco Nexus). |
+| **TE3** | **Uplink (Spare)** | All VLANs (Tagged) | 1 | Spare trunk port. |
+| **TE4** | **Uplink (Spare)** | All VLANs (Tagged) | 1 | Spare trunk port. |
+| **Port 5** | Access: Production | VLAN 11 (Untagged) | 11 | For general Production workstations. |
+| **Port 6** | Access: Stage | VLAN 21 (Untagged) | 21 | For tethered capture or Stage workstations. |
+| **Port 7** | Access: Studio | VLAN 31 (Untagged) | 31 | For general Studio workstations. |
+| **Port 8** | Access: Management | VLAN 51 (Untagged) | 51 | Dedicated port for switch management. |
 
-### Understanding the VLAN Membership Table (Sodola Specific)
+**Configuration Steps in Web GUI:**
 
-When configuring VLAN membership on the Sodola switch, you'll encounter specific terminology and port names:
-
-*   **`1UP`:** This indicates that VLAN 1 is configured as the **Untagged** VLAN (also known as the Native VLAN) for that port, and it's also the **PVID** (Port VLAN ID). This is a common and often recommended configuration for trunk ports.
-*   **`XXT` (e.g., `11T`, `51T`):** This signifies that the specified VLAN (e.g., VLAN 11, VLAN 51) is configured as a **Tagged** member on that port. This is essential for trunk ports carrying multiple VLANs.
-*   **`TE1`, `TE2`, `TE3`, `TE4`:** These are specific names for the 10 Gigabit Ethernet (SFP+) ports on the Sodola switch. In your configuration, `TE1` is the uplink to OPNsense, `TE2` is the uplink to BitEngine, `TE3` is the uplink to Cisco Nexus, and `TE4` is the uplink to the Netgear GS108Ev4. All are correctly configured as trunk ports carrying all necessary VLANs.
-*   **`LAG1`:** This refers to a **Link Aggregation Group**. Unless you have intentionally configured multiple physical ports to act as a single logical link (for increased bandwidth or redundancy), you should generally leave `LAG1` untagged or excluded. It's not typically used for standard single-cable connections.
-
-Your configuration for `TE1`, `TE2`, `TE3`, and `TE4` (all relevant VLANs as `XXT` and `1UP`) is correct for their role as trunk ports. While you've included all defined VLANs, a small optimization for future configurations is to only tag VLANs that are actively in use on a given trunk, which can simplify troubleshooting.
-
-**Configuration Steps in Web GUI (General):**
-1.  Go to "VLAN" -> "802.1Q VLAN" -> "VLAN Membership" (or similar).
-2.  For each VLAN, select it and then configure each port:
-    *   **Tagged (T):** For trunk ports (Port 1, 2, 3, 4).
-    *   **Untagged (U):** For access ports (Port 5, 6, 7, 8).
-    *   **Not Member (N):** For ports that should not carry that VLAN.
-3.  Go to "VLAN" -> "802.1Q VLAN" -> "PVID" (or "Port VLAN ID").
-4.  For each port, set its PVID. For access ports, this should be the VLAN ID it's untagged for. For trunk ports, it's typically 1 (default) or the ID of the native VLAN if you're using one.
+1.  **Configure Trunk Ports (TE1-TE4):**
+    *   Go to **VLAN Configuration Membership**.
+    *   For **each VLAN ID** you created, set ports **TE1, TE2, TE3, and TE4** to **Tagged**.
+2.  **Configure Access Ports (5-8):**
+    *   Go to **VLAN Configuration Membership**.
+    *   For **VLAN 11**, set **Port 5** to **Untagged**.
+    *   For **VLAN 21**, set **Port 6** to **Untagged**.
+    *   For **VLAN 31**, set **Port 7** to **Untagged**.
+    *   For **VLAN 51**, set **Port 8** to **Untagged**.
+    *   Ensure these ports are **not members** of any other VLAN.
+3.  **Set PVID for Access Ports:**
+    *   Go to the **Port Setting** submenu.
+    *   Set **PVID** for **Port 5** to **11**.
+    *   Set **PVID** for **Port 6** to **21**.
+    *   Set **PVID** for **Port 7** to **31**.
+    *   Set **PVID** for **Port 8** to **51**.
+    *   Leave the PVID for Trunk ports as 1 (default).
 
 ## 6. Save Configuration
 

@@ -10,22 +10,36 @@ This table serves as the single source of truth for VLANs, subnets, and IP addre
 
 | VLAN ID | Zone         | Purpose                          | Bandwidth | Devices / Use Cases              | Subnet          | Gateway IP     | DHCP Range                  |
 |:--------|:-------------|:---------------------------------|:----------|:---------------------------------|:----------------|:---------------|:----------------------------|
-| **11**  | Production   | General wired traffic            | 1 Gb      | Office workstations, admin       | `10.20.11.0/24` | `10.20.11.1`   | `10.20.11.100 – 200`        |
-| **12**  | Production   | High-performance traffic         | 10 Gb     | Render nodes, file servers       | `10.20.12.0/24` | `10.20.12.1`   | `10.20.12.100 – 200`        |
-| **14**  | Production   | Wireless access                  | WiFi      | Staff laptops, mobile devices    | `10.20.14.0/24` | `10.20.14.1`   | `10.20.14.100 – 200`        |
-| **21**  | Stage        | Tethered capture & control       | 1 Gb      | Cameras, lighting controllers    | `10.20.21.0/24` | `10.20.21.1`   | `10.20.21.100 – 200`        |
-| **22**  | Stage        | High-speed image transfer        | 10 Gb     | Image servers, preview stations  | `10.20.22.0/24` | `10.20.22.1`   | `10.20.22.100 – 200`        |
-| **24**  | Stage        | Wireless access                  | WiFi      | Tablets, mobile control apps     | `10.20.24.0/24` | `10.20.24.1`   | `10.20.24.100 – 200`        |
-| **31**  | Studio       | General creative workstations    | 1 Gb      | Editing bays, sound design       | `10.20.31.0/24` | `10.20.31.1`   | `10.20.31.100 – 200`        |
-| **32**  | Studio       | High-performance media editing   | 10 Gb     | Color grading, VFX workstations  | `10.20.32.0/24` | `10.20.32.1`   | `10.20.32.100 – 200`        |
-| **33**  | Studio       | Ultra-high bandwidth media flow  | 100 Gb    | SAN/NAS systems, media servers   | `10.20.33.0/24` | `10.20.33.1`   | Static only                 |
-| **34**  | Studio       | Wireless access                  | WiFi      | Creative team mobile devices     | `10.20.34.0/24` | `10.20.34.1`   | `10.20.34.100 – 200`        |
-| **41**  | Workshop     | Engineering & prototyping        | 1 Gb      | CAD stations, programming setups | `10.20.41.0/24` | `10.20.41.1`   | `10.20.41.100 – 200`        |
-| **44**  | Workshop     | Wireless access                  | WiFi      | Tool-connected devices           | `10.20.44.0/24` | `10.20.44.1`   | `10.20.44.100 – 200`        |
-| **51**  | Management   | Network device control           | 1 Gb      | Switches, APs, firewalls         | `10.20.51.0/24` | `10.20.51.1`   | Static only                 |
-| **52**  | Management   | Reserved                         | 1 Gb      | Future management needs          | `10.20.52.0/24` | `10.20.52.1`   | Static only                 |
-| **53**  | Management   | Monitoring & Telemetry           | 1 Gb      | Syslog, SNMP, NetFlow            | `10.20.53.0/24` | `10.20.53.1`   | `10.20.53.100 – 200`        |
-| **61**  | Guest WiFi   | Internet-only wireless access    | WiFi      | Visitor laptops, phones          | `10.20.61.0/24` | `10.20.61.1`   | `10.20.61.100 – 200`        |
+| **11**  | Production   | Production Wired (1Gb)           | 1 Gb      | Office workstations, admin       | `10.20.11.0/24` | `10.20.11.1`   | `10.20.11.100 – 200`        |
+| **12**  | Production   | Production Wired (10Gb)          | 10 Gb     | Render nodes, file servers       | `10.20.12.0/24` | `10.20.12.1`   | `10.20.12.100 – 200`        |
+| **13**  | Production   | Production Reserved              | 1 Gb      | Future production needs          | `10.20.13.0/24` | `10.20.13.1`   | Static only                 |
+| **14**  | Production   | Production Wifi                  | WiFi      | Staff laptops, mobile devices    | `10.20.14.0/24` | `10.20.14.1`   | `10.20.14.100 – 200`        |
+| **15**  | Production   | Production Monitoring            | 1 Gb      | Syslog, SNMP, NetFlow            | `10.20.15.0/24` | `10.20.15.1`   | `10.20.15.100 – 200`        |
+| **21**  | Stage        | Stage Wired (1Gb)                | 1 Gb      | Cameras, lighting controllers    | `10.20.21.0/24` | `10.20.21.1`   | `10.20.21.100 – 200`        |
+| **22**  | Stage        | Stage Wired (10Gb)               | 10 Gb     | Image servers, preview stations  | `10.20.22.0/24` | `10.20.22.1`   | `10.20.22.100 – 200`        |
+| **23**  | Stage        | Stage Reserved                   | 1 Gb      | Future stage needs               | `10.20.23.0/24` | `10.20.23.1`   | Static only                 |
+| **24**  | Stage        | Stage Wifi                       | WiFi      | Tablets, mobile control apps     | `10.20.24.0/24` | `10.20.24.1`   | `10.20.24.100 – 200`        |
+| **25**  | Stage        | Stage Monitoring                 | 1 Gb      | Syslog, SNMP, NetFlow            | `10.20.25.0/24` | `10.20.25.1`   | `10.20.25.100 – 200`        |
+| **31**  | Studio       | Studio Wired (1Gb)               | 1 Gb      | Editing bays, sound design       | `10.20.31.0/24` | `10.20.31.1`   | `10.20.31.100 – 200`        |
+| **32**  | Studio       | Studio Wired (10Gb)              | 10 Gb     | Color grading, VFX workstations  | `10.20.32.0/24` | `10.20.32.1`   | `10.20.32.100 – 200`        |
+| **33**  | Studio       | Studio Wired (100Gb)             | 100 Gb    | SAN/NAS systems, media servers   | `10.20.33.0/24` | `10.20.33.1`   | Static only                 |
+| **34**  | Studio       | Studio Wifi                      | WiFi      | Creative team mobile devices     | `10.20.34.0/24` | `10.20.34.1`   | `10.20.34.100 – 200`        |
+| **35**  | Studio       | Studio Monitoring                | 1 Gb      | Syslog, SNMP, NetFlow            | `10.20.35.0/24` | `10.20.35.1`   | `10.20.35.100 – 200`        |
+| **41**  | Workshop     | Workshop Wired (1Gb)             | 1 Gb      | CAD stations, programming setups | `10.20.41.0/24` | `10.20.41.1`   | `10.20.41.100 – 200`        |
+| **42**  | Workshop     | Workshop Reserved                | 1 Gb      | Future workshop needs            | `10.20.42.0/24` | `10.20.42.1`   | Static only                 |
+| **43**  | Workshop     | Workshop Reserved                | 1 Gb      | Future workshop needs            | `10.20.43.0/24` | `10.20.43.1`   | Static only                 |
+| **44**  | Workshop     | Workshop Wifi                    | WiFi      | Tool-connected devices           | `10.20.44.0/24` | `10.20.44.1`   | `10.20.44.100 – 200`        |
+| **45**  | Workshop     | Workshop Monitoring              | 1 Gb      | Syslog, SNMP, NetFlow            | `10.20.45.0/24` | `10.20.45.1`   | `10.20.45.100 – 200`        |
+| **51**  | Management   | Management Wired (1Gb)           | 1 Gb      | Switches, APs, firewalls         | `10.20.51.0/24` | `10.20.51.1`   | Static only                 |
+| **52**  | Management   | Management Reserved              | 1 Gb      | Future management needs          | `10.20.52.0/24` | `10.20.52.1`   | Static only                 |
+| **53**  | Management   | Management Reserved              | 1 Gb      | Future management needs          | `10.20.53.0/24` | `10.20.53.1`   | Static only                 |
+| **54**  | Management   | Management Wifi                  | WiFi      | Admin mobile devices             | `10.20.54.0/24` | `10.20.54.1`   | `10.20.54.100 – 200`        |
+| **55**  | Management   | Management Monitoring            | 1 Gb      | Syslog, SNMP, NetFlow            | `10.20.55.0/24` | `10.20.55.1`   | `10.20.55.100 – 200`        |
+| **61**  | Guest        | Guest Wired (1Gb)                | 1 Gb      | Visitor laptops, phones          | `10.20.61.0/24` | `10.20.61.1`   | `10.20.61.100 – 200`        |
+| **62**  | Guest        | Guest Reserved                   | 1 Gb      | Future guest needs               | `10.20.62.0/24` | `10.20.62.1`   | Static only                 |
+| **63**  | Guest        | Guest Reserved                   | 1 Gb      | Future guest needs               | `10.20.63.0/24` | `10.20.63.1`   | Static only                 |
+| **64**  | Guest        | Guest Wifi                       | WiFi      | Visitor laptops, phones          | `10.20.64.0/24` | `10.20.64.1`   | `10.20.64.100 – 200`        |
+| **65**  | Guest        | Guest Monitoring                 | 1 Gb      | Syslog, SNMP, NetFlow            | `10.20.65.0/24` | `10.20.65.1`   | `10.20.65.100 – 200`        |
 
 ---
 
@@ -139,7 +153,7 @@ For each VLAN:
    - Description: e.g., `Production 1Gb`
 4. Save
 
-Repeat for all VLANs (11–34, 41, 44, 51, 61).
+Repeat for all VLANs defined in the 'Definitive VLAN and IP Plan' table at the beginning of this document.
 
 #### 🔗 Assign VLAN Interfaces
 1. Go to `Interfaces > Assignments`

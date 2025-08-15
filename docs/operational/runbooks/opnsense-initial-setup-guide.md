@@ -2,17 +2,29 @@
 
 This guide provides the definitive, step-by-step procedure for installing OPNsense and correctly configuring the physical LAN port as a VLAN trunk without losing access.
 
-## 1. Installation
+## 1. Purpose of this Guide
+
+The goal of this procedure is to configure your OPNsense firewall in a "Router-on-a-Stick" model. This means a single physical LAN port will act as a "trunk," carrying all tagged VLAN traffic to and from your managed switch. This is a powerful, standard practice for building secure and scalable networks. This guide walks you through the critical switchover process of moving from a default "flat" LAN to a secure, VLAN-based management interface.
+
+## 2. Prerequisites
+
+Before you begin, it is critical that you have:
+1.  Read and understood the master `bjoin-studio-network-design.md` document.
+2.  Pre-configured an access port for **VLAN 51** on your managed switch, as described in the `sodola-switch-vlan-configuration.md` runbook. You will need this to regain access to the firewall.
+
+---
+
+## 3. Installation
 
 Follow the installation steps from the previous guide to install OPNsense on the Protectli Vault. After the installation and reboot, OPNsense will boot from the internal storage.
 
-## 2. Initial Console Configuration
+## 4. Initial Console Configuration
 
 1.  On the first boot, the OPNsense console will ask to assign interfaces. 
 2.  Assign your physical **WAN** and **LAN** ports. Do **not** set up any VLANs from the console menu.
 3.  OPNsense will assign the default IP `192.168.1.1` to your physical LAN port. This is a **temporary** address that we will use for initial setup only.
 
-## 3. First Web GUI Login & Creating the Management VLAN
+## 5. First Web GUI Login & Creating the Management VLAN
 
 The goal of this step is to create our new Management VLAN interface *before* we change the physical LAN port's configuration.
 
@@ -21,8 +33,6 @@ The goal of this step is to create our new Management VLAN interface *before* we
 3.  Open a browser and navigate to `https://192.168.1.1`.
 4.  Log in with the default credentials (`root` / `opnsense`).
 5.  **Skip the setup wizard for now.** We will run it later.
-    
-    **Troubleshooting Note:** If you cannot access the Web GUI at this stage, ensure the `lighttpd` service is running. From the console, you may need to enable it by running `echo 'lighttpd_enable="yes"' >> /etc/rc.conf` and then `service lighttpd start`.
 6.  Navigate to **Interfaces > Other Types > VLAN**.
 7.  Click **+ Add** and create your Management VLAN:
     -   **Parent interface:** Select your physical LAN interface (e.g., `igb1`).
@@ -37,9 +47,7 @@ The goal of this step is to create our new Management VLAN interface *before* we
     -   In the "Static IPv4 configuration" section, set the IP address: `10.20.51.1` / `24`.
     -   Click **Save** and then **Apply Changes**.
 
-At this point, you have two active interfaces: the physical `LAN` at `192.168.1.1` and the new virtual `MGMT_DEVICES` at `10.20.51.1`.
-
-## 4. The Critical Switchover: Reconfiguring the LAN Port
+## 6. The Critical Switchover: Reconfiguring the LAN Port
 
 This is the most important step. We will now remove the IP address from the physical LAN port, turning it into a pure VLAN trunk. 
 
@@ -50,7 +58,7 @@ This is the most important step. We will now remove the IP address from the phys
 3.  Delete any IP addresses listed in the configuration.
 4.  Click **Save** and **Apply Changes**.
 
-## 5. Reconnecting and Final Verification
+## 7. Reconnecting and Final Verification
 
 The firewall is now only accessible via the VLAN 51 interface.
 
@@ -59,4 +67,13 @@ The firewall is now only accessible via the VLAN 51 interface.
 3.  Open your browser and navigate to the new management address: **`https://10.20.51.1`**.
 4.  Log in. You can now run the initial setup wizard if you wish.
 
-Success! Your physical LAN port is now a proper trunk, and your management interface is correctly and securely isolated on VLAN 51. You can now proceed to create all your other VLAN interfaces.
+## 8. Next Steps
+
+Success! Your physical LAN port is now a proper trunk, and your management interface is correctly and securely isolated on VLAN 51.
+
+You are now ready to implement the full network design.
+
+Refer to the **🛠️ OPNsense Setup Guide** section within the main **`bjoin-studio-network-design.md`** document for detailed, step-by-step instructions on:
+*   Creating all other VLAN interfaces
+*   Configuring DHCP servers for each VLAN
+*   Implementing the firewall rules from the Routing & Visibility Matrix
