@@ -102,38 +102,45 @@ You must create all VLANs from the master design plan. Navigate to the **Create 
 
 ### Step 5.2: Configure Port VLAN Membership
 
-This is the most critical step. The following is a recommended default configuration.
+This is the most critical step. The following is the new recommended configuration based on your requirements.
 
 | Port | Role | VLAN Membership (Tagged/Untagged) | PVID | Notes |
 |:-----|:-----|:----------------------------------|:-----|:------|
-| **TE1** | **Uplink to Firewall** | All VLANs (Tagged) | 1 | Main "Router-on-a-Stick" trunk to OPNsense. |
-| **TE2** | **Uplink to Core Switch** | All VLANs (Tagged) | 1 | Optional trunk to another switch (e.g., Cisco Nexus). |
-| **TE3** | **Uplink (Spare)** | All VLANs (Tagged) | 1 | Spare trunk port. |
-| **TE4** | **Uplink (Spare)** | All VLANs (Tagged) | 1 | Spare trunk port. |
-| **Port 5** | Access: Production | VLAN 11 (Untagged) | 11 | For general Production workstations. |
-| **Port 6** | Access: Stage | VLAN 21 (Untagged) | 21 | For tethered capture or Stage workstations. |
-| **Port 7** | Access: Studio | VLAN 31 (Untagged) | 31 | For general Studio workstations. |
-| **Port 8** | Access: Management | VLAN 51 (Untagged) | 51 | Dedicated port for switch management. |
+| **TE1** | Access: Production (10Gb) | VLAN 11 (Untagged) | 11 | For high-speed Production workstations or servers. |
+| **TE2** | Access: Stage (10Gb) | VLAN 21 (Untagged) | 21 | For high-speed Stage workstations or servers. |
+| **TE3** | Access: Studio (10Gb) | VLAN 31 (Untagged) | 31 | For high-speed Studio workstations or servers. |
+| **TE4** | Access: Workshop (10Gb) | VLAN 41 (Untagged) | 41 | For high-speed Workshop devices. |
+| **TE5** | Access: Management (10Gb) | VLAN 51 (Untagged) | 51 | For high-speed Management devices (e.g., Proxmox host). |
+| **TE6** | Access: Guest (10Gb) | VLAN 61 (Untagged) | 61 | For high-speed Guest devices. |
+| **TE7** | **Uplink to Switches** | All VLANs (Tagged) | 1 | Trunk to other switches (e.g., Netgear GS108Ev4). |
+| **TE8** | **Uplink to Firewall** | All VLANs (Tagged) | 1 | Main "Router-on-a-Stick" trunk to OPNsense. |
 
 **Configuration Steps in Web GUI:**
 
-1.  **Configure Trunk Ports (TE1-TE4):**
+1.  **Configure Trunk Ports (TE7, TE8):**
     *   Go to **VLAN Configuration Membership**.
-    *   For **each VLAN ID** you created, set ports **TE1, TE2, TE3, and TE4** to **Tagged**.
-2.  **Configure Access Ports (5-8):**
-    *   Go to **VLAN Configuration Membership**.
-    *   For **VLAN 11**, set **Port 5** to **Untagged**.
-    *   For **VLAN 21**, set **Port 6** to **Untagged**.
-    *   For **VLAN 31**, set **Port 7** to **Untagged**.
-    *   For **VLAN 51**, set **Port 8** to **Untagged**.
-    *   Ensure these ports are **not members** of any other VLAN.
-3.  **Set PVID for Access Ports:**
+    *   For **each VLAN ID** you created, set ports **TE7 and TE8** to **Tagged**.
     *   Go to the **Port Setting** submenu.
-    *   Set **PVID** for **Port 5** to **11**.
-    *   Set **PVID** for **Port 6** to **21**.
-    *   Set **PVID** for **Port 7** to **31**.
-    *   Set **PVID** for **Port 8** to **51**.
-    *   Leave the PVID for Trunk ports as 1 (default).
+    *   Ensure the **PVID** for **TE7 and TE8** is set to **1** (default).
+
+2.  **Configure Access Ports (TE1-TE6):**
+    *   Go to **VLAN Configuration Membership**.
+    *   For **VLAN 11**, set **TE1** to **Untagged**.
+    *   For **VLAN 21**, set **TE2** to **Untagged**.
+    *   For **VLAN 31**, set **TE3** to **Untagged**.
+    *   For **VLAN 41**, set **TE4** to **Untagged**.
+    *   For **VLAN 51**, set **TE5** to **Untagged**.
+    *   For **VLAN 61**, set **TE6** to **Untagged**.
+    *   For each of these ports, ensure they are **not members** of any other VLAN.
+
+3.  **Set PVID for Access Ports (TE1-TE6):**
+    *   Go to the **Port Setting** submenu.
+    *   Set **PVID** for **TE1** to **11**.
+    *   Set **PVID** for **TE2** to **21**.
+    *   Set **PVID** for **TE3** to **31**.
+    *   Set **PVID** for **TE4** to **41**.
+    *   Set **PVID** for **TE5** to **51**.
+    *   Set **PVID** for **TE6** to **61**.
 
 ## 6. Save Configuration
 

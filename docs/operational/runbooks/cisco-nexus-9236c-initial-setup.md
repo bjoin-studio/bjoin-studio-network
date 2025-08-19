@@ -97,3 +97,31 @@ You can now manage the Cisco switch remotely by connecting to its management IP 
 ```
 ssh admin@10.20.51.2
 ```
+
+
+You're seeing the **Power-On Auto Provisioning (POAP)** prompt, which is expected behavior when a Cisco Nexus switch boots up without a configuration. POAP is designed to automate provisioning via DHCP and a config script, but since DHCP failed, the switch is asking what you'd like to do next.
+
+### 🚦 Your Options at the Prompt
+```
+Abort Power On Auto Provisioning [yes - continue with normal setup, skip - bypass password and basic configuration, no - continue with Power On Auto Provisioning] (yes/skip/no)[no]:
+```
+
+Here’s what each option means:
+
+| Option | Action |
+|--------|--------|
+| `yes`  | Proceed with normal setup (you’ll be prompted to configure password, hostname, etc.) |
+| `skip` | Bypass initial setup and go straight to CLI without password or config |
+| `no`   | Retry POAP (not useful here since DHCP failed) |
+
+### ✅ Recommended: Type `yes`
+This will start the **initial setup dialog**, allowing you to configure:
+- Admin password
+- Hostname
+- Management interface
+- Default gateway
+- SNMP (optional)
+
+If you want to manually configure everything later, you can type `skip` instead.
+
+Would you like help walking through the setup dialog or configuring the switch manually after skipping?
