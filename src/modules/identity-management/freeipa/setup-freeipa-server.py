@@ -333,7 +333,9 @@ def install_freeipa_server(prefs, hostname_short, ip_address, domain):
         "--setup-dns",
         "--no-forwarders",
         "--auto-reverse",
-        "--idstart=100000"
+        "--idstart=100000",
+        "--ds-password=YOUR_DS_PASSWORD_HERE",  # Placeholder: REPLACE THIS with your Directory Manager password
+        "--admin-password=YOUR_ADMIN_PASSWORD_HERE" # Placeholder: REPLACE THIS with your FreeIPA admin password
     ]
     run_command(ipa_install_cmd)
     logger.info("FreeIPA server installed and configured.")
