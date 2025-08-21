@@ -16,11 +16,19 @@ This guide provides step-by-step instructions for installing Proxmox VE on the M
 
 Proxmox uses a `interfaces` file located at `/etc/network/interfaces` to manage its networking. This setup separates the hypervisor's management network from the guest VM networks.
 
+> **Important:** The physical network interface names (`enp11s0`, `enp12s0`) in this guide are examples. Run `ip a` on your Proxmox host to find the correct names for your hardware and substitute them in the configuration below.
+
+**Create a timestamped backup of /etc/network/interfaces:**
+```
+cp /etc/network/interfaces /etc/network/interfaces.bak.$(date +%F-%H-%M-%S)
+```
+
 **Connect the Mac Pro's physical Ethernet ports as follows:**
-*   **First Ethernet Port:** Connect to a switch port configured for ACCESS on VLAN 51 (Management).
-*   **Second Ethernet Port:** Connect to a switch port configured as a TRUNK that carries all the VLANs you want your VMs to be able to access.
+*   **First Ethernet Port (`enp11s0`):** Connect to a switch port configured for ACCESS on VLAN 51 (Management).
+*   **Second Ethernet Port (`enp12s0`):** Connect to a switch port configured as a TRUNK that carries all the VLANs you want your VMs to be able to access.
 
 Here is the recommended content for your `/etc/network/interfaces` file. You can edit this from the Proxmox host's shell.
+
 
 ```
 # /etc/network/interfaces
@@ -30,45 +38,65 @@ iface lo inet loopback
 
 # Management Interface on VLAN 51
 # The first physical ethernet port on the Mac Pro
-iface eno1 inet manual
+iface enp11s0 inet manual
 
 auto vmbr0
 iface vmbr0 inet static
     address 10.20.51.20/24
     gateway 10.20.51.1
-    bridge-ports eno1
+    bridge-ports enp11s0
     bridge-stp off
     bridge-fd 0
 # This is the Proxmox Management Bridge. The host is accessible at https://10.20.51.20:8006
 
 # Trunk Interface for Guest VMs
 # The second physical ethernet port on the Mac Pro
-iface eno2 inet manual
+iface enp12s0 inet manual
 
 # --- Guest VLAN Bridges --- #
-# Below are examples of bridges for your VMs. 
-# The format 'eno2.XX' creates a VLAN-aware sub-interface.
+# The format 'enp12s0.XX' creates a VLAN-aware sub-interface.
 
-auto vmbr12
-iface vmbr12 inet manual
-    bridge-ports eno2.12
+auto vmbr11
+iface vmbr11 inet manual
+    bridge-ports enp12s0.11
     bridge-stp off
     bridge-fd 0
-# Bridge for VMs in VLAN 12 (PROD_PERF)
+# Bridge for VMs in VLAN 11 (PROD_SERVERS)
+
+auto vmbr21
+iface vmbr21 inet manual
+    bridge-ports enp12s0.21
+    bridge-stp off
+    bridge-fd 0
+# Bridge for VMs in VLAN 21 (STAGE_SERVERS)
 
 auto vmbr31
 iface vmbr31 inet manual
-    bridge-ports eno2.31
+    bridge-ports enp12s0.31
     bridge-stp off
     bridge-fd 0
 # Bridge for VMs in VLAN 31 (STUDIO_GENERAL)
+
+auto vmbr41
+iface vmbr41 inet manual
+    bridge-ports enp12s0.41
+    bridge-stp off
+    bridge-fd 0
+# Bridge for VMs in VLAN 41 (WORKSHOP_GENERAL)
+
+auto vmbr51
+iface vmbr51 inet manual
+    bridge-ports enp12s0.51
+    bridge-stp off
+    bridge-fd 0
+# Bridge for VMs in VLAN 51 (MGMT)
 ```
 
 ### Explanation:
 
-*   `vmbr0` is the main management bridge. It is physically connected to `eno1` (the first ethernet port) and has the static IP of the Proxmox host itself. You connect this port to a switch port that is an access port for VLAN 51.
-*   `vmbr12`, `vmbr31`, etc., are bridges for your guest VMs. They are attached to VLAN sub-interfaces on `eno2` (the second ethernet port). You connect this port to a trunk port on your switch.
-*   When you create a VM (like a render node), you will attach its virtual network card to the corresponding bridge (e.g., `vmbr12`) to place it in that VLAN.
+*   `vmbr0` is the main management bridge. It is physically connected to `enp11s0` (the first ethernet port) and has the static IP of the Proxmox host itself. You connect this port to a switch port that is an access port for VLAN 51.
+*   `vmbr11`, `vmbr21`, etc., are bridges for your guest VMs. They are attached to VLAN sub-interfaces on `enp12s0` (the second ethernet port). You connect this port to a trunk port on your switch.
+*   When you create a VM (like a render node), you will attach its virtual network card to the corresponding bridge (e.g., `vmbr11`) to place it in that VLAN.
 
 ---
 

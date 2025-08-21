@@ -6,6 +6,13 @@ This repository serves as a centralized location for all documentation related t
 
 The goal of this repository is to maintain a living record of our network infrastructure. This includes high-level designs, standards, operational procedures, security policies, and more. The network is designed with granular VLAN segmentation, including dedicated monitoring VLANs for each zone.
 
+## Repository Structure
+
+*   `ansible/`: Contains Ansible playbooks, roles, and inventory for network automation and configuration management.
+*   `cfg/`: Contains raw configuration backups and exports from network hardware. It serves as an archive, while the `ansible/` directory contains the automation to manage the live configuration.
+*   `docs/`: Contains all human-readable documentation, including design, standards, runbooks, and policies.
+*   `src/`: Contains standalone utility scripts, such as the IOMMU configuration script for the Proxmox host.
+
 ## Key Architectural Decision: "Router-on-a-Stick"
 
 A core principle of this network design is the use of a "Router-on-a-Stick" configuration. You might notice that even though the Protectli firewall has four ports, we are only using two: one for `WAN` (internet) and one for `LAN` (internal network). This is intentional and is a standard practice for building secure, scalable networks.
@@ -66,6 +73,16 @@ The firewall rules are simple and strict:
 *   The **DMZ** can **NOT** talk to your **Internal LAN**. This is the most important rule. If a server in your DMZ is compromised, the attacker is still trapped in the lobby and can't access your secure internal network.
 
 One of the spare ports on the Protectli firewall is the perfect tool to create a dedicated, physical DMZ if you ever decide to host a public-facing service.
+
+## Enabling Seamless Cross-VLAN Access with FreeIPA
+
+Your network design is indeed on target for building a FreeIPA environment that allows users to seamlessly cross VLANs and access resources in a controlled and secure manner. This is achieved through the powerful combination of:
+
+*   **VLANs for Isolation:** Your VLAN segmentation provides a fundamental layer of security by isolating different network segments. This is a strength, not a limitation.
+*   **FreeIPA for Centralized Control:** FreeIPA acts as the central authority for authentication and authorization across all these isolated VLANs. It provides a single identity for users and machines.
+*   **The Firewall for Mediation:** Your OPNsense firewall is the critical component that mediates controlled communication between VLANs. It enforces the rules that allow specific traffic (e.g., FreeIPA authentication requests) to pass between segments.
+
+This architecture ensures that users can access resources across VLANs using their single FreeIPA identity, while maintaining granular control over what they can access and from where. For example, a lead flame artist who is also a system administrator can be granted broad access through FreeIPA group memberships and `sudo` rules, allowing them to manage storage, networks, servers, and production systems from any authorized workstation, regardless of its VLAN.
 
 ## Table of Contents
 
