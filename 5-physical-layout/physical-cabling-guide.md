@@ -56,9 +56,9 @@ These connections distribute the VLANs from your main distribution switch (Sodol
 
 ---
 
-### 5. Connecting the Proxmox Host
+### 5. Connecting the Proxmox Host (and Critical Services like FreeIPA)
 
-This connection provides management access to the Proxmox host.
+For critical services like FreeIPA, it is highly recommended to connect the host directly to a managed switch. This avoids single points of failure introduced by unmanaged switches.
 
 | Source Device     | Source Port     | Destination Device | Destination Port(s) | Cable Type | Purpose            |
 |:------------------|:----------------|:-------------------|:--------------------|:-----------|:-------------------|
@@ -71,18 +71,14 @@ This connection provides management access to the Proxmox host.
 This is a high-speed LAG connection for the QNAP NAS.
 
 | Source Device     | Source Port(s) | Destination Device | Destination Port(s) | Cable Type | Purpose         |
-|:------------------|:---------------|:-------------------|:--------------------|:-----------|:----------------|
+|:------------------|:----------------|:-------------------|:--------------------|:-----------|:----------------|
 | Cisco Nexus 9236C | Ports 3-4 (LAG)| QNAP TS-h1290FX    | Ports 1-2 (LAG)     | Ethernet   | High-Speed Access |
 
 ---
 
 ### 7. Connecting Unmanaged Switches
 
-Your unmanaged switches (like the **Netgear ProSafe GS105**) cannot understand VLAN tags. Therefore, they must be connected to **ACCESS ports** on a managed switch, not trunk ports.
-
-| Source Device    | Source Port     | Destination Device | Destination Port | Cable Type | Purpose            |
-|:-----------------|:----------------|:-------------------|:-----------------|:-----------|:-------------------|
-| Netgear GS108Ev4 | Port 5 (Access) | Netgear GS105      | Port 5           | Ethernet   | VLAN 51 Extension  |
+Your unmanaged switches (like the **Netgear ProSafe GS105**) cannot understand VLAN tags. Therefore, they must be connected to **ACCESS ports** on a managed switch, not trunk ports. Use unmanaged switches only for non-critical devices within a single VLAN.
 
 ---
 

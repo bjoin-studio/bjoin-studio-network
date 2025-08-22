@@ -417,3 +417,61 @@ echo ""
 echo "--- HOSTNAME DETAILS ---"
 hostnamectl
 
+**Network Equipment List**
+- ISP Modem (unknown brand)
+- protectli FW4B 0-8-120 (opnsense-fw.bjoin.studio) - 4 x1Gb Ethernet ports
+- Sodola KT-NOS SL-SWTGW2C8F 8 port 10Gb EthernetManaged Switch
+- Cisco NEXUS 9236c 36 port 100Gb Ethernet Managed Switch
+- Bitengine SW08XM 8 port 1Gb Ethernet Managed Switch
+- Netgear GS108Ev4 8 port 1Gb Ethernet Managed Switch
+- Netgear GS105 5 port 1Gb Ethernet UnManaged Switch
+
+
+**Storage Equipment List**
+- QNAP TS-h1290FX NVMe NAS (qnap.bjoin.studio) - Connect X6 - 2x 100Gb Ethernet Ports
+
+**Partial Workstation Equipment List**
+- SuperMicro Workstation (jupiter.bjoin.studio) - Connect X6 - 2x 100Gb Ethernet Ports
+- Mac Studio M3 Ultra (mercury.bjoin.studio) - Thunderbolt to Intel dual 25Gb Ethernet Ports
+
+**Partial General Equipment List**
+- iMac 27" (venus.bjoin.studio) - 2x 1Gb Ethernet Ports
+- iMac Pro (mars.bjoin.studio) - 10Gb Ethernet Port
+- Mac Pro 6,1 (pmx-01.bjoin.studio) (Proxmox 9 / FreeIPA VM)
+
+**Physical connections**
+- The ISP router is connected to the protectli WAN port by a 33M CAT6e RJ45 cable.
+
+- The protectli connects from port LAN using an RJ45 cable into an RJ45 to SFP+ transceiver on port 8 on the sodola KT-NOS SL-SWTGW2C8F. Port 8 is configured as a trunk carrying VLANS 1,11-15,21-25,31-35,41-45,51-55,61-65.
+
+- Ports 1 to 4 on the sodola KT-NOS SL-SWTGW2C8F form a LAG trunk carrying VLANS 1,11-15,21-25,31-35,41-45,51-55,61-65 to port 1 on the Cisco NEXUS 9236c (I want to say this is a 40Gb to 100Gb trunk)
+
+- Port 5 on the sodola KT-NOS SL-SWTGW2C8F is an access port carrying vlan51 traffic to one of the 1Gb ethernet ports on the Mac Pro 6,1 so that I can hopefully configure Freeipa Virtual Machine for the entire network.
+
+- Port 7 on the sodola KT-NOS SL-SWTGW2C8F is configured as a trunk carrying VLANS 1,11-15,21-25,31-35,41-45,51-55,61-65, and is connected from an SFP+ transceiver to RJ45 cable and connected to port 8 on Netgear GS108Ev4 (which is configured as a trunk for VLANS 1,11-15,21-25,31-35,41-45,51-55,61-65)
+
+- Port 5 on the Netgear GS108Ev4 is configured to carry vlan51 as an access port to port 5 on the Netgear GS105.
+
+- Port 3 & 4 on the Cisco 9236 form a LAG to connect to a LAG on the QNAP NAS.
+
+
+
+
+I think we've done great work so far but i want you to consider how a non-technical person might pick up this repository and recreate our work.
+
+could we simplify the folder structure? 
+
+# Bjoin Studio Network
+
+1. Overview
+2. Equipment List
+3. Learning
+4. Insights
+5. Physical Layout
+6. Configuration
+7. Testing
+8. Deployment
+9. Maintenance
+10. Future Plans
+11. References
+12. Appendix

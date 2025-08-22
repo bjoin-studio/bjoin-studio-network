@@ -72,3 +72,15 @@ Your network design is indeed on target for building a FreeIPA environment that 
 *   **The Firewall for Mediation:** Your OPNsense firewall is the critical component that mediates controlled communication between VLANs. It enforces the rules that allow specific traffic (e.g., FreeIPA authentication requests) to pass between segments.
 
 This architecture ensures that users can access resources across VLANs using their single FreeIPA identity, while maintaining granular control over what they can access and from where. For example, a lead flame artist who is also a system administrator can be granted broad access through FreeIPA group memberships and `sudo` rules, allowing them to manage storage, networks, servers, and production systems from any authorized workstation, regardless of its VLAN.
+
+## A Note on FreeIPA Network Traffic
+
+FreeIPA traffic is generally not heavy. A 1Gbps connection is more than sufficient for the FreeIPA server. Here's a breakdown of why:
+
+*   **Lightweight Traffic:** FreeIPA traffic mostly consists of small, quick transactions like DNS lookups, Kerberos authentication tickets, and LDAP queries. These are very small packets and don't consume much bandwidth.
+*   **Not a File Server:** You won't be transferring large files to or from the FreeIPA server. It's purely for authentication and identity management.
+*   **The Real Bottleneck:** If you were to experience performance issues with FreeIPA, the bottleneck would almost certainly be the CPU or the disk I/O on the Proxmox host, not the network connection.
+
+### When Could it Spike?
+
+The only time you might see a spike in FreeIPA traffic is during a "login storm" – for example, if everyone in the studio logs in at exactly the same time on a Monday morning. Even in this worst-case scenario, the traffic is highly unlikely to saturate a 1Gbps link.

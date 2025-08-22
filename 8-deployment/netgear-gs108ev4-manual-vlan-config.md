@@ -21,28 +21,21 @@ The Netgear GS108Ev4 supports "Advanced 802.1Q VLAN" mode, which is necessary fo
 4.  A pop-up warning window will open, informing you that current VLAN settings will be lost. Click **CONTINUE**.
 5.  Your settings are saved, and VLAN 1 is added by default, with all ports as untagged members.
 
-## 3. Creating VLANs (1, 11, 21, 31, 41, 51, 61)
+## 3. Creating VLANs (1, 11-15, 21-25, 31-35, 41-45, 51-55, 61-65)
 
-You will create each required VLAN and assign it a name.
+You will create each required VLAN and assign it a name. For a full list of VLANs and their purposes, refer to the `bjoin-studio-network-design.md` document.
 
 1.  In the "Advanced 802.1Q VLAN" pane, click the **ADD VLAN** button.
 2.  Specify the settings for the new VLAN:
-    *   **VLAN Name:** Enter a descriptive name (e.g., `Default`, `PRODUCTION`).
-    *   **VLAN ID:** Enter the corresponding VLAN ID (e.g., `1`, `11`, `21`, `31`, `41`, `51`, `61`).
+    *   **VLAN Name:** Enter a descriptive name (e.g., `Default`, `PRODUCTION_1Gb`).
+    *   **VLAN ID:** Enter the corresponding VLAN ID (e.g., `1`, `11`).
     *   **Ports:** For now, you can leave all ports as "Exclude" (E). We will configure port membership in the next step.
 3.  Click the **APPLY** button.
-4.  Repeat steps 1-3 for each VLAN you need to create:
-    *   **VLAN 1:** Default
-    *   **VLAN 11:** PRODUCTION
-    *   **VLAN 21:** STAGE
-    *   **VLAN 31:** STUDIO
-    *   **VLAN 41:** WORKSHOP
-    *   **VLAN 51:** MANAGEMENT
-    *   **VLAN 61:** GUEST
+4.  Repeat steps 1-3 for all VLANs defined in your network design.
 
 ## 4. Configuring Port Membership and PVIDs
 
-This step involves setting each port's VLAN membership (Tagged/Untagged/Excluded) and its PVID (Port VLAN ID) according to the switch's current configuration.
+This step involves setting each port's VLAN membership (Tagged/Untagged/Excluded) and its PVID (Port VLAN ID) according to your desired configuration.
 
 1.  In the "Advanced 802.1Q VLAN" pane, you will see a table listing your created VLANs.
 2.  For each VLAN, click the **EDIT** button in its row.
@@ -51,60 +44,40 @@ This step involves setting each port's VLAN membership (Tagged/Untagged/Excluded
     *   **U (Untagged):** For Access ports, traffic for this VLAN will be untagged. A port can only be an untagged member of one VLAN.
     *   **E (Excluded):** The port is not a member of this VLAN.
 
-4.  **Configure each port's VLAN membership and PVIDs as follows:**
+### Configuring Port 7 as a Trunk Port (All VLANs)
 
-    *   **VLAN 1 (Default):**
-        *   Port 1: **U** (Untagged)
-        *   Port 2: **U** (Untagged)
-        *   Port 3: **U** (Untagged)
-        *   Port 4: **U** (Untagged)
-        *   Port 5: **E** (Excluded)
-        *   Port 6: **U** (Untagged)
-        *   Port 7: **U** (Untagged)
-        *   Port 8: **U** (Untagged) - This is the native VLAN for the trunk port.
+To configure Port 7 as a trunk port that carries all VLANs (1, 11-15, 21-25, 31-35, 41-45, 51-55, 61-65):
 
-    *   **VLAN 11 (PRODUCTION):**
-        *   Port 1: **U** (Untagged)
-        *   Port 8: **T** (Tagged)
-        *   Others: **E** (Excluded)
+1.  For **VLAN 1 (Default)**:
+    *   Set Port 7 to **U (Untagged)**. This makes VLAN 1 the Native VLAN for the trunk.
+    *   Set all other VLANs (11-15, 21-25, etc.) to **T (Tagged)** for Port 7.
+2.  For all other VLANs (11-15, 21-25, 31-35, 41-45, 51-55, 61-65):
+    *   Set Port 7 to **T (Tagged)**.
+    *   Set all other ports to **E (Excluded)** or **U (Untagged)** as per their specific access VLAN configuration.
 
-    *   **VLAN 21 (STAGE):**
-        *   Port 2: **U** (Untagged)
-        *   Port 8: **T** (Tagged)
-        *   Others: **E** (Excluded)
+### Configuring Other Access Ports (Example: Port 5 for VLAN 51)
 
-    *   **VLAN 31 (STUDIO):**
-        *   Port 3: **U** (Untagged)
-        *   Port 8: **T** (Tagged)
-        *   Others: **E** (Excluded)
+To configure an access port (e.g., Port 5 for VLAN 51):
 
-    *   **VLAN 41 (WORKSHOP):**
-        *   Port 4: **U** (Untagged)
-        *   Port 8: **T** (Tagged)
-        *   Others: **E** (Excluded)
+1.  For **VLAN 51 (MANAGEMENT)**:
+    *   Set Port 5 to **U (Untagged)**.
+    *   Set all other VLANs to **E (Excluded)** for Port 5.
+2.  For **VLAN 1 (Default)**:
+    *   Set Port 5 to **E (Excluded)**.
 
-    *   **VLAN 51 (MANAGEMENT):**
-        *   Port 5: **U** (Untagged)
-        *   Port 8: **T** (Tagged)
-        *   Others: **E** (Excluded)
+### Setting Port VLAN IDs (PVIDs)
 
-    *   **VLAN 61 (GUEST):**
-        *   Port 6: **U** (Untagged)
-        *   Port 8: **T** (Tagged)
-        *   Others: **E** (Excluded)
+Navigate to the **PVID Table** section (usually under the VLAN menu) to explicitly set the PVID for each port. Ensure the PVID matches the untagged VLAN for access ports.
 
-5.  After configuring each VLAN's port membership, click **APPLY**.
+*   **For Port 7 (Trunk):** Set PVID to `1` (the Native VLAN).
+*   **For Access Ports (e.g., Port 5):** Set PVID to the VLAN ID of the untagged VLAN (e.g., `51` for Port 5).
 
-6.  **Set Port VLAN IDs (PVIDs):**
-    Navigate to the **PVID Table** section (usually under the VLAN menu) to explicitly set the PVID for each port. Ensure the PVID matches the untagged VLAN for access ports.
+After configuring each VLAN's port membership and PVIDs, click **APPLY**.
 
-    *   **Port 1 PVID:** `11`
-    *   **Port 2 PVID:** `21`
-    *   **Port 3 PVID:** `31`
-    *   **Port 4 PVID:** `41`
-    *   **Port 5 PVID:** `51`
-    *   **Port 6 PVID:** `61`
-    *   **Port 7 PVID:** `1`
-    *   **Port 8 PVID:** `1` (This is the native VLAN for the trunk port)
+## 5. Saving Configuration
 
-7.  Click **APPLY** after setting PVIDs.
+After making all changes, ensure you save the configuration to the switch's startup configuration to prevent losing your settings after a reboot.
+
+1.  From the menu at the top of the page, select **MAINTENANCE**.
+2.  From the menu on the left, select **SAVE CONFIGURATION**.
+3.  Click the **SAVE** button.
