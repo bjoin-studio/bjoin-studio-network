@@ -1,164 +1,111 @@
-# Network Architecture Documentation
+# Bjoin Studio Network
 
-This repository serves as a centralized location for all documentation related to the network architecture, design, and operation of bjoin.studio.
+This repository contains the documentation, configuration, and automation for the bjoin.studio network.
 
-## Overview
+## How to Use This Repository
 
-The goal of this repository is to maintain a living record of our network infrastructure. This includes high-level designs, standards, operational procedures, security policies, and more. The network is designed with granular VLAN segmentation, including dedicated monitoring VLANs for each zone.
+This repository is designed to be a living document that can be used by both technical and non-technical people to understand and recreate the bjoin.studio network.
 
-## Repository Structure
+The repository is organized into the following sections:
 
-*   `ansible/`: Contains Ansible playbooks, roles, and inventory for network automation and configuration management.
-*   `cfg/`: Contains raw configuration backups and exports from network hardware. It serves as an archive, while the `ansible/` directory contains the automation to manage the live configuration.
-*   `docs/`: Contains all human-readable documentation, including design, standards, runbooks, and policies.
-*   `src/`: Contains standalone utility scripts, such as the IOMMU configuration script for the Proxmox host.
+**1. Overview:** Start here for a high-level overview of the project.
 
-## Key Architectural Decision: "Router-on-a-Stick"
+**2. Equipment List:** A list of all the hardware used in the network.
 
-A core principle of this network design is the use of a "Router-on-a-Stick" configuration. You might notice that even though the Protectli firewall has four ports, we are only using two: one for `WAN` (internet) and one for `LAN` (internal network). This is intentional and is a standard practice for building secure, scalable networks.
+**3. Learning:** Explanations of the key concepts and architectural decisions behind the network design.
 
-Here’s why we do it this way:
+**4. Insights:** Interesting findings and ideas related to the network.
 
-*   **Centralized Control:** By forcing all traffic between VLANs to go up the "stick" to the OPNsense firewall through a single port, we guarantee that every packet is inspected. This gives us a single, powerful point of control for all security policies.
-*   **Specialized Roles:** It lets the switches do what they do best (handle high-speed VLAN traffic) and lets the firewall do what it does best (deep packet inspection, routing, and security).
-*   **Flexibility:** We can add dozens of new VLANs in the future without ever needing to change the physical cabling on the firewall.
+**5. Physical Layout:** Diagrams and guides for the physical setup of the network.
 
-The spare ports on the firewall give us great options for the future, like a dedicated high-security DMZ or a redundant link to the core switch.
+**6. Configuration:** The nitty-gritty details of the network configuration, including VLANs, IP addresses, and device settings.
 
-## A Note on Performance and Bottlenecks
+**7. Testing:** How to test the network to make sure it's working correctly.
 
-It's fair to ask: "If we have a 100Gb/s switch, won't the 1Gb/s firewall be a bottleneck?" The answer is **no** for the most important traffic, and it highlights the power of this design. The key is understanding the two types of traffic on our network.
+**8. Deployment:** Step-by-step guides for setting up and configuring the network devices.
 
-### 1. Traffic *Inside* a VLAN (East-West)
-This is your high-speed lane. When a 100Gb/s editing workstation needs to pull a huge file from a 100Gb/s media server in the same VLAN, that traffic goes directly to the Cisco 100G switch and is handled there. It **never touches the firewall**. This is where the heavy lifting is done, at full speed.
+**9. Maintenance:** How to keep the network running smoothly, including backup and disaster recovery plans.
 
-### 2. Traffic *Between* VLANs (North-South)
-When a device from one VLAN needs to talk to another (e.g., a 1G office workstation accessing a server), that traffic *must* go through the firewall to be inspected and routed. This traffic **is limited to the 1Gb/s speed of the firewall's port**.
+**10. Future Plans:** The roadmap for the future of the network.
 
-This is an intentional trade-off. We are using the expensive, high-speed switch for the bulk data transfers *within* our performance-critical zones, while using the firewall to apply security and control to the lower-speed traffic that needs to cross between those zones.
+**11. References:** Links to external resources.
 
-### Upgrading Firewall Performance
-If, in the future, the 1Gb/s speed for traffic *between* VLANs becomes a limitation, the solution is to upgrade the firewall hardware. To achieve true 10Gb/s firewalling, you would need a new machine with:
-
-*   **10Gb Ports:** This raises the maximum physical speed of the connection to the network.
-*   **A Powerful CPU:** This is the "engine" of the firewall. A faster CPU is critical for processing packets, inspecting traffic, and handling routing at high speeds.
-*   **Sufficient RAM:** More memory is needed to handle the state table for a larger number of connections.
-*   **Awareness of Services:** Performance-intensive services like Intrusion Detection (IDS/IPS) and VPNs will always require a more powerful CPU to maintain high throughput.
-
-## VLAN Tagging Standard: 802.1Q
-
-When configuring VLANs, you will see references to different tagging standards. For this entire network, we will be using the **802.1Q** standard.
-
-*   **802.1Q** is the universal standard for creating VLANs on an internal network. It's like putting colored labels on your internal office mail to send it to the right department. All of your equipment (OPNsense, switches) uses this standard.
-
-*   You may also see an option for **802.1ad (QinQ)**. This is a specialized standard for service providers to "stack" customer VLANs inside their own. It's like FedEx putting your entire box of labeled mail inside a larger FedEx box. We are the office, not FedEx, so we will not use this.
-
-**In short: For all VLAN configuration, 802.1Q is the correct and only standard you need to use.**
-
-## What is a DMZ (Demilitarized Zone)?
-
-The concept of a DMZ can seem a bit confusing, but it's a simple and very powerful security tool. Think of your network like a secure office building.
-
-*   Your **Internal LAN** (e.g., Production Wired VLAN 11, Studio Wired VLAN 32) is the secure main office where all your trusted employees and sensitive documents are. You don't want random people from the street wandering in.
-*   The **Internet** is the public street outside.
-*   A **DMZ** is like the **lobby** of your building.
-
-Visitors from the street (the internet) are allowed into the lobby (the DMZ) to talk to a receptionist or drop off a package (e.g., access your public web server). However, the lobby is separated from the main office by locked, secure doors (the firewall). A visitor in the lobby can't get into the main office.
-
-In network terms, a DMZ is a small, isolated network that sits between the internet and your trusted internal LAN. It's where you place any services that need to be accessible from the internet.
-
-The firewall rules are simple and strict:
-*   The **Internet** can talk to servers in the **DMZ**.
-*   The **Internet** can **NOT** talk to your **Internal LAN**.
-*   The **DMZ** can **NOT** talk to your **Internal LAN**. This is the most important rule. If a server in your DMZ is compromised, the attacker is still trapped in the lobby and can't access your secure internal network.
-
-One of the spare ports on the Protectli firewall is the perfect tool to create a dedicated, physical DMZ if you ever decide to host a public-facing service.
-
-## Enabling Seamless Cross-VLAN Access with FreeIPA
-
-Your network design is indeed on target for building a FreeIPA environment that allows users to seamlessly cross VLANs and access resources in a controlled and secure manner. This is achieved through the powerful combination of:
-
-*   **VLANs for Isolation:** Your VLAN segmentation provides a fundamental layer of security by isolating different network segments. This is a strength, not a limitation.
-*   **FreeIPA for Centralized Control:** FreeIPA acts as the central authority for authentication and authorization across all these isolated VLANs. It provides a single identity for users and machines.
-*   **The Firewall for Mediation:** Your OPNsense firewall is the critical component that mediates controlled communication between VLANs. It enforces the rules that allow specific traffic (e.g., FreeIPA authentication requests) to pass between segments.
-
-This architecture ensures that users can access resources across VLANs using their single FreeIPA identity, while maintaining granular control over what they can access and from where. For example, a lead flame artist who is also a system administrator can be granted broad access through FreeIPA group memberships and `sudo` rules, allowing them to manage storage, networks, servers, and production systems from any authorized workstation, regardless of its VLAN.
+**12. Appendix:** Additional information, such as naming conventions and security policies.
 
 ## Table of Contents
 
-### Project Files
-*   [README.md](README.md)
-*   [GEMINI.md](GEMINI.md)
+### 1. Overview
+*   [README.md](1-overview/README.md)
 
-### Scripts
-*   [mac_pro_6_1_IOMMU_config.sh](src/mac_pro_6_1_IOMMU_config.sh) - A utility script to enable IOMMU on the Proxmox host, which is necessary for PCI(e) passthrough (e.g., giving a VM direct access to a GPU).
+### 2. Equipment List
+*   [Equipment List](2-equipment-list/equipment-list.md)
 
-### Design
-*   [bjoin-studio-network-design.md](docs/design/bjoin-studio-network-design.md)
-*   [netgear-gs108ev4-port-config.md](docs/design/netgear-gs108ev4-port-config.md)
-*   [network-device-role-optimization.md](docs/design/network-device-role-optimization.md)
+### 3. Learning
+*   [Key Concepts](3-learning/key-concepts.md)
+*   [Network Device Role Optimization](3-learning/network-device-role-optimization.md)
 
-### Standards
-*   [host-naming-conventions.md](docs/standards/host-naming-conventions.md)
+### 4. Insights
+*   [FreeIPA and ZFS Insights](4-insights/freeipa-and-zfs-insights.md)
+*   [FreeIPA Groups Ideas](4-insights/freeipa-groups-ideas.md)
+*   [Network Design Considerations](4-insights/network-design-considerations.md)
+*   [Repository Insights](4-insights/repository-insights.md)
 
-### Operational
-*   **command-sets/**
-    *   [pmx-01-network-config-commands.md](docs/operational/command-sets/pmx-01-network-config-commands.md)
-*   **diagrams/**
-    *   [data-flow-diagrams.md](docs/operational/diagrams/data-flow-diagrams.md)
-    *   [logical-diagram.md](docs/operational/diagrams/logical-diagram.md)
-    *   [physical-cabling-guide.md](docs/operational/diagrams/physical-cabling-guide.md)
-    *   [physical-diagram.md](docs/operational/diagrams/physical-diagram.md)
-*   **ipam/**
-    *   [ip-address-management.md](docs/operational/ipam/ip-address-management.md)
-*   **runbooks/**
-    *   [bootstrapping-managed-switch-guide.md](docs/operational/runbooks/bootstrapping-managed-switch-guide.md)
-    *   [cisco-nexus-9236c-initial-setup.md](docs/operational/runbooks/cisco-nexus-9236c-initial-setup.md)
-    *   [firewall-firmware-updates.md](docs/operational/runbooks/firewall-firmware-updates.md)
-    *   [freeipa-server-setup-guide.md](docs/operational/runbooks/freeipa-server-setup-guide.md)
-    *   [freeipa-user-group-management.md](docs/operational/runbooks/freeipa-user-group-management.md)
-    *   [monitoring-vm-setup-proxmox.md](docs/operational/runbooks/monitoring-vm-setup-proxmox.md)
-    *   [netgear-gs108ev4-manual-vlan-config.md](docs/operational/runbooks/netgear-gs108ev4-manual-vlan-config.md)
-    *   [netgear-gs108ev4-switch-vlan-configuration.md](docs/operational/runbooks/netgear-gs108ev4-switch-vlan-configuration.md)
-    *   [network-monitoring-setup.md](docs/operational/runbooks/network-monitoring-setup.md)
-    *   [network-physical-logical-connections.md](docs/operational/runbooks/network-physical-logical-connections.md)
-    *   [opnsense-initial-setup-guide.md](docs/operational/runbooks/opnsense-initial-setup-guide.md)
-    *   [opnsense-vlan-config-1x-production.md](docs/operational/runbooks/opnsense-vlan-config-1x-production.md)
-    *   [opnsense-vlan-config-2x-stage.md](docs/operational/runbooks/opnsense-vlan-config-2x-stage.md)
-    *   [opnsense-vlan-config-3x-studio.md](docs/operational/runbooks/opnsense-vlan-config-3x-studio.md)
-    *   [opnsense-vlan-config-4x-workshop.md](docs/operational/runbooks/opnsense-vlan-config-4x-workshop.md)
-    *   [opnsense-vlan-config-5x-management.md](docs/operational/runbooks/opnsense-vlan-config-5x-management.md)
-    *   [opnsense-vlan-config-6x-guest.md](docs/operational/runbooks/opnsense-vlan-config-6x-guest.md)
-    *   [proxmox-host-backup.md](docs/operational/runbooks/proxmox-host-backup.md)
-    *   [proxmox-host-setup-guide.md](docs/operational/runbooks/proxmox-host-setup-guide.md)
-    *   [server-onboarding.md](docs/operational/runbooks/server-onboarding.md)
-    *   [sodola-switch-vlan-configuration.md](docs/operational/runbooks/sodola-switch-vlan-configuration.md)
-    *   [vlan-testing-procedure.md](docs/operational/runbooks/vlan-testing-procedure.md)
+### 5. Physical Layout
+*   [Data Flow Diagrams](5-physical-layout/data-flow-diagrams.md)
+*   [Logical Diagram](5-physical-layout/logical-diagram.md)
+*   [Physical Cabling Guide](5-physical-layout/physical-c cabling-guide.md)
+*   [Physical Diagram](5-physical-layout/physical-diagram.md)
 
-### Security
-*   **plans/**
-    *   [incident-response-plan.md](docs/security/plans/incident-response-plan.md)
-    *   [vulnerability-management-plan.md](docs/security/plans/vulnerability-management-plan.md)
-*   **policies/**
-    *   [acceptable-use-policy.md](docs/security/policies/acceptable-use-policy.md)
-    *   [firewall-rule-policy.md](docs/security/policies/firewall-rule-policy.md)
-    *   [vpn-access-policy.md](docs/security/policies/vpn-access-policy.md)
+### 6. Configuration
+*   [Network Design](6-configuration/bjoin-studio-network-design.md)
+*   [Netgear GS108Ev4 Port Config](6-configuration/netgear-gs108ev4-port-config.md)
+*   [IP Address Management](6-configuration/ip-address-management.md)
+*   [Ansible](6-configuration/ansible)
+*   [Device Configurations](6-configuration/cfg)
 
-### Lifecycle
-*   [asset-management.md](docs/lifecycle/asset-management.md)
-*   [change-management-log.md](docs/lifecycle/change-management-log.md)
-*   [roadmap.md](docs/lifecycle/roadmap.md)
+### 7. Testing
+*   [VLAN Testing Procedure](7-testing/vlan-testing-procedure.md)
 
-### Disaster Recovery
-*   [backup-and-recovery-plan.md](docs/disaster-recovery/backup-and-recovery-plan.md)
-*   [disaster-recovery-plan.md](docs/disaster-recovery/disaster-recovery-plan.md)
+### 8. Deployment
+*   [Bootstrapping Managed Switch Guide](8-deployment/bootstrapping-managed-switch-guide.md)
+*   [Cisco Nexus 9236c Initial Setup](8-deployment/cisco-nexus-9236c-initial-setup.md)
+*   [Firewall Firmware Updates](8-deployment/firewall-firmware-updates.md)
+*   [FreeIPA Server Setup Guide](8-deployment/freeipa-server-setup-guide.md)
+*   [FreeIPA User Group Management](8-deployment/freeipa-user-group-management.md)
+*   [Monitoring VM Setup Proxmox](8-deployment/monitoring-vm-setup-proxmox.md)
+*   [Netgear GS108Ev4 Manual VLAN Config](8-deployment/netgear-gs108ev4-manual-vlan-config.md)
+*   [Netgear GS108Ev4 Switch VLAN Configuration](8-deployment/netgear-gs108ev4-switch-vlan-configuration.md)
+*   [Network Monitoring Setup](8-deployment/network-monitoring-setup.md)
+*   [Network Physical Logical Connections](8-deployment/network-physical-logical-connections.md)
+*   [OPNsense Initial Setup Guide](8-deployment/opnsense-initial-setup-guide.md)
+*   [OPNsense VLAN Config 1x Production](8-deployment/opnsense-vlan-config-1x-production.md)
+*   [OPNsense VLAN Config 2x Stage](8-deployment/opnsense-vlan-config-2x-stage.md)
+*   [OPNsense VLAN Config 3x Studio](8-deployment/opnsense-vlan-config-3x-studio.md)
+*   [OPNsense VLAN Config 4x Workshop](8-deployment/opnsense-vlan-config-4x-workshop.md)
+*   [OPNsense VLAN Config 5x Management](8-deployment/opnsense-vlan-config-5x-management.md)
+*   [OPNsense VLAN Config 6x Guest](8-deployment/opnsense-vlan-config-6x-guest.md)
+*   [Proxmox Host Backup](8-deployment/proxmox-host-backup.md)
+*   [Proxmox Host Setup Guide](8-deployment/proxmox-host-setup-guide.md)
+*   [Server Onboarding](8-deployment/server-onboarding.md)
+*   [Sodola Switch VLAN Configuration](8-deployment/sodola-switch-vlan-configuration.md)
 
-### Insights
-*   [freeipa-and-zfs-insights.md](docs/insights/freeipa-and-zfs-insights.md)
-*   [freeipa-groups-ideas.md](docs/insights/freeipa-groups-ideas.md)
-*   [network-design-considerations.md](docs/insights/network-design-considerations.md)
-*   [repository-insights.md](docs/insights/repository-insights.md)
+### 9. Maintenance
+*   [Backup and Recovery Plan](9-maintenance/backup-and-recovery-plan.md)
+*   [Disaster Recovery Plan](9-maintenance/disaster-recovery-plan.md)
+*   [Change Management Log](9-maintenance/change-management-log.md)
+*   [Incident Response Plan](9-maintenance/incident-response-plan.md)
+*   [Vulnerability Management Plan](9-maintenance/vulnerability-management-plan.md)
 
-## Contributing
+### 10. Future Plans
+*   [Roadmap](10-future-plans/roadmap.md)
 
-Contributions to this documentation are welcome and encouraged. Please place new documents in the appropriate directory and follow the existing naming conventions.
+### 11. References
+*   [References](11-references/references.md)
+
+### 12. Appendix
+*   [GEMINI.md](12-appendix/GEMINI.md)
+*   [Asset Management](12-appendix/asset-management.md)
+*   [Host Naming Conventions](12-appendix/host-naming-conventions.md)
+*   [Acceptable Use Policy](12-appendix/acceptable-use-policy.md)
+*   [Firewall Rule Policy](12-appendix/firewall-rule-policy.md)
+*   [VPN Access Policy](12-appendix/vpn-access-policy.md)
