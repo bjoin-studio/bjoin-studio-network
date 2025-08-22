@@ -35,6 +35,15 @@ In the Proxmox web UI, create a new VM with the following specifications.
 - **VLAN Tag:** (Leave blank, as the bridge handles it)
 - **Model:** `VirtIO (paravirtualized)`
 
+So the hex representation of 10.20.51.10 is: 0A:14:33:0A
+
+🧪 Creating a Synthetic MAC Address
+Synthetic MACs often start with a locally administered prefix. A common choice is 02:00 (where 02 indicates it's locally administered and unicast). You can then append the hex IP:
+
+Example MAC: 02:00:0A:14:33:0A
+
+This format is safe for virtual machines and won’t conflict with vendor-assigned MACs.
+
 ## 2. Operating System Installation (Rocky Linux 9)
 
 1.  Start the VM and open the console.
