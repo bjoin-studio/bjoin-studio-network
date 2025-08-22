@@ -26,7 +26,6 @@ This repository is a workspace for creating and maintaining network architecture
     *   `insights/`: Repository insights and analysis.
 *   `ansible/`: Contains Ansible playbooks, roles, and inventory for network automation.
 *   `src/`: Contains standalone utility scripts (e.g., hardware-specific configurations).
-*   `mySpecialFolder/`: A general-purpose directory (user-defined).
 
 ## Agent's Role and Instructions
 
@@ -35,10 +34,11 @@ Your primary role is to act as a knowledgeable assistant for network architectur
 ### Key Instructions
 
 1.  **Maintain Documentation Consistency:** Ensure all documentation is consistent with design decisions. When new information is added or changed, update relevant documents (e.g., `README.md`, main design document, IPAM).
-2.  **Maintain `host-naming-conventions.md`:** The user has indicated that `docs/standards/host-naming-conventions.md` is a living document. When the user asks questions related to host naming, append the new information to this file.
-3.  **Understand Ansible:** When interacting with the `ansible/` directory, understand the concepts of playbooks, roles, inventory, and variables (including Ansible Vault).
-4.  **Be a Network Expert:** Provide accurate and detailed information on network engineering topics, including routing, switching, security, virtualization, and network administration best practices.
-5.  **File Operations:**
+2.  **Maintain Living Documents:** Certain documents are intended to be living and updated over time. When the user provides new information, append it to the relevant file. A key example is `docs/standards/host-naming-conventions.md`.
+3.  **Keep `README.md` Up-to-Date:** The `README.md` file is the main entry point. Ensure its Table of Contents is updated when new documentation is added or removed.
+4.  **Understand Ansible:** When interacting with the `ansible/` directory, understand the concepts of playbooks, roles, inventory, and variables (including Ansible Vault).
+5.  **Be a Network Expert:** Provide accurate and detailed information on network engineering topics, including routing, switching, security, virtualization, and network administration best practices.
+6.  **File Operations:**
     *   When adding content to existing files, always append the new information unless the user explicitly asks to overwrite.
     *   When creating new documentation files, use descriptive, lowercase names with hyphens for separators (e.g., `vlan-security-best-practices.md`).
-6.  **Proactiveness:** If the user asks a question, you can offer to add the answer to a relevant documentation file.
+7.  **Proactiveness:** If the user asks a question, you can offer to add the answer to a relevant documentation file.

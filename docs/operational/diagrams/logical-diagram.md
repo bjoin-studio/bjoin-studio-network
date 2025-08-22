@@ -4,25 +4,25 @@ This document describes the logical topology of the bjoin.studio network, includ
 
 ## High-Level Topology
 
-The network is segmented into multiple VLANs, all of which are routed through the central OPNsense firewall. The firewall acts as the gateway for all internal subnets and enforces all inter-VLAN traffic policies.
+The network is segmented into multiple VLANs, all of which are routed through the central OPNsense firewall and the Cisco Nexus core switch in a hybrid routing model.
 
 ```
-                               +--------------------+
-                               |      Internet      |
-                               +---------+----------+
-                                         |
-                                         | WAN (DHCP from ISP)
-                               +---------+----------+
-                               |  OPNsense Firewall |
-                               | (Protectli FW4B)   |
-                               | Gateway: 10.20.x.1 |
+                               +--------------------+ +--------------------+
+                               |      Internet      | |   Proxmox Host     |
+                               +---------+----------+ | (pmx-01.bjoin.studio)|
+                                         |            +---------+----------+
+                                         | WAN                  | Management (VLAN 51)
+                               +---------+----------+            |
+                               |  OPNsense Firewall |            |
+                               | (Protectli FW4B)   |            |
+                               | Gateway: 10.20.x.1 +------------+
                                +---------+----------+
                                          | LAN (VLAN Trunk)
                                          |
 +----------------------------------------+---------------------------------------+
 |                                                                               |
 |                                  Core Switching                               |
-|                               (Sodola, BitEngine)                             |
+|                      (Sodola, Cisco - L2/L3, BitEngine)                         |
 |                                                                               |
 +--+-------------+--------------+----------------+---------------+-------------+--+
    |             |              |                |               |             |
@@ -36,7 +36,7 @@ The network is segmented into multiple VLANs, all of which are routed through th
 
 ## VLAN Routing and Purpose
 
-By default, all inter-VLAN traffic is **blocked** by the firewall. Rules must be explicitly created to allow traffic to flow between VLANs.
+By default, all inter-VLAN traffic is **blocked** by the firewall. Rules must be explicitly created to allow traffic to flow between VLANs. The Cisco Nexus switch handles high-speed routing between trusted VLANs.
 
 ### Production VLANs (11, 12, 14)
 *   **Purpose:** For general office work, administrative tasks, and high-performance rendering.

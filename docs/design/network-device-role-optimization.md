@@ -10,6 +10,8 @@ The bjoin.studio network design prioritizes both high-performance data transfer 
 
 The OPNsense firewall, running on the Protectli Vault, serves as the primary security enforcement point and the gateway to the Internet. It operates primarily in a "Router-on-a-Stick" configuration for most inter-VLAN traffic.
 
+*   **What is "Router-on-a-Stick"?** This is a method of routing traffic between VLANs by sending it up a single physical link (the "stick") to a router or firewall. The firewall then inspects the traffic and routes it back down the same link to the destination VLAN. This centralizes security and control.
+
 *   **Primary Functions:**
     *   **Internet Gateway:** All traffic to and from the Internet passes through OPNsense for NAT, firewalling, and security inspection.
     *   **Centralized Security Policy:** OPNsense is the single point of control for all firewall rules, Intrusion Detection/Prevention (IDS/IPS), and traffic shaping.
@@ -30,7 +32,7 @@ The Cisco Nexus 9236C is a powerful Layer 3 switch designed for high-performance
 
 ## 4. The Hybrid Routing Approach
 
-The bjoin.studio network employs a hybrid routing strategy to balance security and performance:
+The bjoin.studio network employs a hybrid routing strategy to balance security and performance. For a detailed breakdown of the routing rules, see the **Routing & Visibility Matrix** in the `bjoin-studio-network-design.md` document.
 
 *   **OPNsense as the "Security Router":**
     *   All traffic destined for the **Internet** is routed via OPNsense.
@@ -40,6 +42,33 @@ The bjoin.studio network employs a hybrid routing strategy to balance security a
 *   **Cisco Nexus 9236C as the "Performance Router":**
     *   **High-bandwidth, trusted inter-VLAN traffic** (e.g., between Studio Wired 10Gb/100Gb VLANs, or Production 10Gb VLANs) is routed directly by the Nexus switch. This traffic bypasses the OPNsense firewall's 1Gb LAN port, allowing it to flow at the Nexus's much higher speeds.
     *   The Nexus switch maintains a default route pointing to OPNsense for all traffic not explicitly routed by the switch.
+
+### Hybrid Routing Data Flow Diagram
+
+```
++---------------------------+
+|   Internet                |
++-------------+-------------+
+              |
++-------------+-------------+
+| OPNsense Firewall (Router-on-a-Stick) |
++-------------+-------------+
+              | (Trunk Link)
++-------------+-------------+
+| Cisco Nexus 9236C (L3 Switch) |
++--+----------+----------+--+
+   |          |          |
+   | (VLAN 32)|          | (VLAN 61)
+   |          |          |
++--+-----+  +--+-----+  +--+-----+
+| VFX WS |  | SAN    |  | Guest  |
++--------+  +--------+  +--------+
+ (VLAN 32)  (VLAN 33)  (VLAN 61)
+
+```
+
+*   **Scenario 1 (Performance Routing):** `VFX WS` in VLAN 32 sends a large file to the `SAN` in VLAN 33. The traffic is routed directly by the **Cisco Nexus 9236C** at high speed.
+*   **Scenario 2 (Security Routing):** `Guest` device in VLAN 61 tries to access the internet. The traffic goes up the trunk to the **Cisco Nexus 9236C**, which then forwards it to the **OPNsense Firewall**. The firewall inspects the traffic and sends it to the internet.
 
 ### Security Considerations of the Hybrid Approach
 
@@ -51,9 +80,12 @@ It is critical to understand the security implications of Layer 3 switching on t
 
 ## 5. Other Devices in the Optimized Design
 
+*   **Sodola KT-NOS SL-SWTGW2C8F:** Acts as a high-speed distribution switch, aggregating uplinks from access switches and connecting to the core switch and firewall.
+*   **BitEngine SW08XM:** Functions as an access layer switch, providing 1GbE access for end devices.
 *   **Netgear GS108Ev4:** Functions as an access layer switch, providing port-level VLAN assignment for end devices. Its configuration is manual via web GUI.
-*   **QNAP NAS:** Connects to multiple VLANs (e.g., 31, 32, 33) via a single trunk port on an upstream switch, allowing high-speed access from various studio zones. FreeIPA provides centralized authentication for NAS shares.
-*   **Proxmox VE Host (`pmx-01`):** Connects to the network via a trunk port, allowing VMs to be placed in various VLANs.
+*   **Netgear GS105:** An unmanaged access switch for simple, single-VLAN device connections.
+*   **QNAP TS-h1290FX:** A high-performance NAS connected to the core switch via a 100GbE LAG, providing high-speed storage access to multiple VLANs.
+*   **Proxmox VE Host (`pmx-01`):** Hosts critical VMs like FreeIPA. It is connected to the network via a dedicated access port on the distribution switch for management, and can have other network interfaces for VM traffic.
 
 ## 6. Long-Term Improvements
 

@@ -95,11 +95,15 @@ This architecture ensures that users can access resources across VLANs using the
 
 ### Design
 *   [bjoin-studio-network-design.md](docs/design/bjoin-studio-network-design.md)
+*   [netgear-gs108ev4-port-config.md](docs/design/netgear-gs108ev4-port-config.md)
+*   [network-device-role-optimization.md](docs/design/network-device-role-optimization.md)
 
 ### Standards
 *   [host-naming-conventions.md](docs/standards/host-naming-conventions.md)
 
 ### Operational
+*   **command-sets/**
+    *   [pmx-01-network-config-commands.md](docs/operational/command-sets/pmx-01-network-config-commands.md)
 *   **diagrams/**
     *   [data-flow-diagrams.md](docs/operational/diagrams/data-flow-diagrams.md)
     *   [logical-diagram.md](docs/operational/diagrams/logical-diagram.md)
@@ -109,17 +113,26 @@ This architecture ensures that users can access resources across VLANs using the
     *   [ip-address-management.md](docs/operational/ipam/ip-address-management.md)
 *   **runbooks/**
     *   [bootstrapping-managed-switch-guide.md](docs/operational/runbooks/bootstrapping-managed-switch-guide.md)
+    *   [cisco-nexus-9236c-initial-setup.md](docs/operational/runbooks/cisco-nexus-9236c-initial-setup.md)
     *   [firewall-firmware-updates.md](docs/operational/runbooks/firewall-firmware-updates.md)
+    *   [freeipa-server-setup-guide.md](docs/operational/runbooks/freeipa-server-setup-guide.md)
+    *   [freeipa-user-group-management.md](docs/operational/runbooks/freeipa-user-group-management.md)
+    *   [monitoring-vm-setup-proxmox.md](docs/operational/runbooks/monitoring-vm-setup-proxmox.md)
+    *   [netgear-gs108ev4-manual-vlan-config.md](docs/operational/runbooks/netgear-gs108ev4-manual-vlan-config.md)
+    *   [netgear-gs108ev4-switch-vlan-configuration.md](docs/operational/runbooks/netgear-gs108ev4-switch-vlan-configuration.md)
+    *   [network-monitoring-setup.md](docs/operational/runbooks/network-monitoring-setup.md)
+    *   [network-physical-logical-connections.md](docs/operational/runbooks/network-physical-logical-connections.md)
     *   [opnsense-initial-setup-guide.md](docs/operational/runbooks/opnsense-initial-setup-guide.md)
     *   [opnsense-vlan-config-1x-production.md](docs/operational/runbooks/opnsense-vlan-config-1x-production.md)
     *   [opnsense-vlan-config-2x-stage.md](docs/operational/runbooks/opnsense-vlan-config-2x-stage.md)
     *   [opnsense-vlan-config-3x-studio.md](docs/operational/runbooks/opnsense-vlan-config-3x-studio.md)
     *   [opnsense-vlan-config-4x-workshop.md](docs/operational/runbooks/opnsense-vlan-config-4x-workshop.md)
+    *   [opnsense-vlan-config-5x-management.md](docs/operational/runbooks/opnsense-vlan-config-5x-management.md)
     *   [opnsense-vlan-config-6x-guest.md](docs/operational/runbooks/opnsense-vlan-config-6x-guest.md)
+    *   [proxmox-host-backup.md](docs/operational/runbooks/proxmox-host-backup.md)
     *   [proxmox-host-setup-guide.md](docs/operational/runbooks/proxmox-host-setup-guide.md)
     *   [server-onboarding.md](docs/operational/runbooks/server-onboarding.md)
     *   [sodola-switch-vlan-configuration.md](docs/operational/runbooks/sodola-switch-vlan-configuration.md)
-    *   [cisco-nexus-9236c-initial-setup.md](docs/operational/runbooks/cisco-nexus-9236c-initial-setup.md)
     *   [vlan-testing-procedure.md](docs/operational/runbooks/vlan-testing-procedure.md)
 
 ### Security
@@ -141,6 +154,9 @@ This architecture ensures that users can access resources across VLANs using the
 *   [disaster-recovery-plan.md](docs/disaster-recovery/disaster-recovery-plan.md)
 
 ### Insights
+*   [freeipa-and-zfs-insights.md](docs/insights/freeipa-and-zfs-insights.md)
+*   [freeipa-groups-ideas.md](docs/insights/freeipa-groups-ideas.md)
+*   [network-design-considerations.md](docs/insights/network-design-considerations.md)
 *   [repository-insights.md](docs/insights/repository-insights.md)
 
 ## Contributing

@@ -402,3 +402,18 @@ Using: 1 open file (ctrl+g to view) | 1 GEMINI.md file
 copy running-config scp://venus-admin@10.20.51.99/Users/venus-admin/Documents/workspace/GitHub/bjoin-studio/bjoin-studio-network/cfg/cisco_NEXUS9236c/n9k-01_running-config.cfg
 
 
+echo "--- IP ADDRESSES AND INTERFACES ---"
+ip a
+echo ""
+echo "--- ROUTING TABLE ---"
+ip r
+echo ""
+echo "--- DNS RESOLVER CONFIGURATION ---"
+cat /etc/resolv.conf
+echo ""
+echo "--- NETWORK INTERFACES FILE ---"
+cat /etc/network/interfaces
+echo ""
+echo "--- HOSTNAME DETAILS ---"
+hostnamectl
+

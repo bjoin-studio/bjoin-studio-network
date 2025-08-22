@@ -65,8 +65,11 @@ This table serves as the single source of truth for VLANs, subnets, and IP addre
 
 ---
 
-## 🧱 Hardware Roles
+## 🧱 Hardware Roles & Physical Connectivity
 
+This section outlines the roles of key hardware and how they are physically connected.
+
+### Hardware Roles
 | Device                  | Role                                | Notes                                                              |
 |:------------------------|:------------------------------------|:-------------------------------------------------------------------|
 | Protectli Vault         | OPNsense Firewall/Router            | The single point of control for all inter-VLAN routing and security. |
@@ -77,6 +80,17 @@ This table serves as the single source of truth for VLANs, subnets, and IP addre
 | Netgear GS105           | Unmanaged Access Switch             | For simple, single-VLAN device connections.                        |
 | **Mac Pro 6,1**         | **Proxmox VE Hypervisor**           | Hosts critical VMs like FreeIPA. Management in VLAN 51.            |
 | Wireless APs/Controller | WiFi Access Points                  | Provides wireless access for various VLANs.                        |
+
+### Physical Connectivity
+*   **Protectli Vault (OPNsense)**:
+    *   `WAN` port connects to a `LAN` port on the **Netgear R6220 (ISP Router)**.
+    *   `LAN` port connects to port `1` on the **Sodola 10G Switch (Distribution Switch)**. This is the main trunk link carrying all VLANs.
+*   **Sodola 10G Switch (Distribution Switch)**:
+    *   Port `1` connects to the `LAN` port of the **Protectli Vault**.
+    *   Port `2` connects to the **Cisco Nexus 9236C (100G Core Switch)**.
+    *   Port `3` connects to the **BitEngine SW08XM (Access/Aggregation Switch)**.
+*   **Proxmox VE Host (Mac Pro 6,1)**:
+    *   Connects to the **Sodola 10G Switch** for management access (VLAN 51) and to provide network access for its VMs.
 
 ---
 
@@ -175,7 +189,23 @@ For each VLAN:
 
 Repeat for all VLANs that require DHCP.
 
-### 🔹 6.5 Firewall Rules
+### 🔹 6.5 DNS Configuration for FreeIPA Integration
+
+For clients to resolve internal hostnames, OPNsense must use your FreeIPA servers for DNS.
+
+1.  **Set Global DNS Servers:**
+    *   Navigate to `System > Settings > General`.
+    *   Under **DNS Servers**, add your FreeIPA server IPs: `10.20.51.10` and `10.20.51.11`.
+    *   Ensure **Allow DNS server list to be overridden by DHCP/PPP on WAN** is **unchecked**. This forces clients to use your internal DNS.
+
+2.  **Set up Domain Override for `bjoin.studio`:**
+    *   Navigate to `Services > Unbound DNS > Overrides`.
+    *   Click `+ Add` under **Domain Overrides**.
+    *   **Domain:** `bjoin.studio`
+    *   **IP Address:** `10.20.51.10` (your primary FreeIPA server)
+    *   Save and apply changes. This tells OPNsense to forward all queries for the `bjoin.studio` domain to your FreeIPA server.
+
+### 🔹 6.6 Firewall Rules
 
 #### 🔥 Default Policy
 OPNsense blocks all inter-VLAN traffic by default. You must explicitly allow or deny traffic.
@@ -195,7 +225,7 @@ OPNsense blocks all inter-VLAN traffic by default. You must explicitly allow or 
 - Destination: `Studio VLANs (10.20.31.0/24, 10.20.32.0/24, 10.20.33.0/24)`
 - Protocol: `Any`
 
-### 🔐 6.6 VPN Configuration
+### 🔐 6.7 VPN Configuration
 
 #### 🧳 Remote Access VPN (WireGuard or OpenVPN)
 1. Install plugin: `System > Firmware > Plugins`
@@ -210,9 +240,11 @@ OPNsense blocks all inter-VLAN traffic by default. You must explicitly allow or 
 3. Configure peer tunnel
 4. Add firewall rules to bridge VLANs selectively
 
-### 🧠 6.7 Best Practices
+### 🧠 6.8 Best Practices
 
-- **Static IPs**: Reserve `.2 – .50` for switches, servers, APs
-- **DNS**: Use internal DNS (e.g., `dnsmasq`) for `bjoin.studio` resolution
-- **Monitoring**: Enable NetFlow or Insight for traffic analytics
-- **Backups**: Export config regularly via `System > Configuration > Backups`
+- **Static IPs**: Reserve `.2 – .50` for switches, servers, APs.
+- **Firewall Rule Documentation**: Add clear and concise descriptions to every firewall rule to explain its purpose.
+- **Use Aliases**: Use aliases for IP addresses, ports, and networks in firewall rules. This makes rules easier to read and manage. For example, create an alias for all "Studio_VLANs".
+- **Regular Backups**: Export the OPNsense configuration regularly, especially after making significant changes. Store backups in a safe, external location. You can do this from `System > Configuration > Backups`.
+- **System Updates**: Keep OPNsense and all network devices updated with the latest firmware and security patches.
+- **Monitoring**: Enable NetFlow or Insight for traffic analytics to monitor network health and identify potential issues.
