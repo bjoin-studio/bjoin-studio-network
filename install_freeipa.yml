@@ -1,0 +1,48 @@
+---
+- name: Install and Configure FreeIPA Server
+  hosts: your_ipa_server_hostname # Replace with the actual hostname of your FreeIPA server (e.g., ipa-01.bjoin.studio)
+  become: yes # This allows Ansible to run commands with sudo privileges
+
+  vars_files:
+    - freeipa_secrets.yml # This tells Ansible to load variables from your vault file
+
+  tasks:
+    - name: Ensure Python script is present and executable
+      ansible.builtin.copy:
+        src: /Users/venus-admin/Documents/workspace/GitHub/bjoin-studio/bjoin-studio-network/src/modules/identity-management/freeipa/setup-freeipa-server.py # Path to the script on your local machine
+        dest: /tmp/setup-freeipa-server.py # Destination path on the remote FreeIPA server
+        mode: '0755' # Make it executable
+
+    - name: Replace DS password placeholder in FreeIPA setup script
+      ansible.builtin.replace:
+        path: /tmp/setup-freeipa-server.py
+        regexp: 'YOUR_DS_PASSWORD_HERE'
+        replace: '{{ freeipa_ds_password }}'
+        backup: yes # Creates a .bak file before modifying
+
+    - name: Replace Admin password placeholder in FreeIPA setup script
+      ansible.builtin.replace:
+        path: /tmp/setup-freeipa-server.py
+        regexp: 'YOUR_ADMIN_PASSWORD_HERE'
+        replace: '{{ freeipa_admin_password }}'
+        backup: yes
+
+    - name: Execute FreeIPA setup script
+      ansible.builtin.command: python3 /tmp/setup-freeipa-server.py
+      args:
+        chdir: /tmp # Run the script from /tmp
+      # IMPORTANT: The Python script has 'input()' calls. For a fully automated Ansible run,
+      # these 'input()' calls in the Python script would ideally be removed and replaced
+      # with command-line arguments or environment variables passed by Ansible.
+      # For now, you would need to manually confirm these prompts if you run this playbook.
+      # Alternatively, you could comment out the input() calls in the Python script if you've
+      # pre-configured the network_hosts_preferences.json file.
+
+    - name: Clean up modified script (optional)
+      ansible.builtin.file:
+        path: /tmp/setup-ipa-server.py
+        state: absent
+    - name: Clean up backup script (optional)
+      ansible.builtin.file:
+        path: /tmp/setup-ipa-server.py.bak
+        state: absent

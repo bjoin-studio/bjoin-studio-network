@@ -7,12 +7,24 @@
       "fqdn": "opnsense-fw.bjoin.studio"
     },
     {
+      "ipv4_address": "10.20.51.2",
+      "fqdn": "cisco-switch.bjoin.studio"
+    },
+    {
       "ipv4_address": "10.20.51.3",
       "fqdn": "sodola-switch.bjoin.studio"
     },
     {
+      "ipv4_address": "10.20.51.4",
+      "fqdn": "bitengine-switch.bjoin.studio"
+    },
+    {
       "ipv4_address": "10.20.51.5",
       "fqdn": "netgear-switch.bjoin.studio"
+    },
+    {
+      "ipv4_address": "10.20.51.6",
+      "fqdn": "tplink-switch.bjoin.studio"
     }
   ]
 }

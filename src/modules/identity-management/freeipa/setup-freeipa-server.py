@@ -334,8 +334,8 @@ def install_freeipa_server(prefs, hostname_short, ip_address, domain):
         "--no-forwarders",
         "--auto-reverse",
         "--idstart=100000",
-        "--ds-password=YOUR_DS_PASSWORD_HERE",  # Placeholder: REPLACE THIS with your Directory Manager password
-        "--admin-password=YOUR_ADMIN_PASSWORD_HERE" # Placeholder: REPLACE THIS with your FreeIPA admin password
+        "# --ds-password=YOUR_DS_PASSWORD_HERE",  # Placeholder: REPLACE THIS with your Directory Manager password
+        "# --admin-password=YOUR_ADMIN_PASSWORD_HERE" # Placeholder: REPLACE THIS with your FreeIPA admin password
     ]
     run_command(ipa_install_cmd)
     logger.info("FreeIPA server installed and configured.")
@@ -406,7 +406,7 @@ def main():
     current_script_dir = os.path.dirname(os.path.abspath(__file__))
     # Navigate up to WORKSTATION_CONFIGURATION root
     program_root_dir = os.path.abspath(os.path.join(current_script_dir, "..", "..", "..", ".."))
-    network_prefs_path = os.path.join(program_root_dir, "pref", "network_preferences", "network_hosts_preferences.json")
+    network_prefs_path = os.path.join(program_root_dir, "inventory", "network_data", "network_inventory.json")
 
     prefs = load_network_preferences(network_prefs_path)
     confirm_network_prefs_modified()
