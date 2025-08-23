@@ -139,11 +139,22 @@ Create `/etc/auto_nfs`:
 sudo nano /etc/auto_nfs
 ```
 
-Paste the following content. Replace `storage-server-01.bjoin.studio` and `/export/data` with your NFS server and export path.
+Paste the following content, adapted from your example. Remember to replace the placeholder IPs with your actual server IPs.
 
 ```
 # FreeIPA Generic NFS Map
-data -fstype=nfs,rw,hard,intr,resvport,nfsvers=3,proto=tcp storage-server-01.bjoin.studio:/export/data
+
+# Synology: Jacksonville
+/mnt/ADSK_BACKUP                -fstype=nfs,rw,resvport,nfsvers=4       10.20.51.X:/volume1/ADSK_BACKUP
+/mnt/ARCHIVE                    -fstype=nfs,rw,resvport,nfsvers=4       10.20.51.X:/volume1/ARCHIVE
+/mnt/PROJEKTS                   -fstype=nfs,rw,resvport,nfsvers=4       10.20.51.X:/volume1/PROJEKTS
+/mnt/RESOURCES                  -fstype=nfs,rw,resvport,nfsvers=4       10.20.51.X:/volume1/RESOURCES
+
+# MyCloudPR4100: Kampala
+/mnt/COMPLETED_PROJEKTS         -fstype=nfs,rw,resvport,nfsvers=3       10.20.51.Y:/mnt/HD/HD_a2/COMPLETED_PROJEKTS
+
+# TrueNAS: Kowloon
+/mnt/COMMON                     -fstype=nfs,rw,resvport,nfsvers=4       truenas-01.bjoin.studio:/mnt/home-pool/common
 ```
 
 ### 3.4. Reload Automount Service
@@ -156,7 +167,7 @@ sudo automount -vc
 
 ### 3.5. Test Automount
 
-- **Test `auto_home`:** (Replace `phil.man` with an actual FreeIPA user)
+- **Test `auto.home`:** (Replace `phil.man` with an actual FreeIPA user)
 
 ```bash
 ls /home/phil.man
