@@ -4,7 +4,7 @@ This document outlines the standards and procedures for managing users and group
 
 ## 1. Naming Conventions
 
-- **Usernames:** `firstname.lastname` (e.g., `john.doe`). All lowercase.
+- **Usernames:** `firstname.lastname` (e.g., `john.doe`). All lowercase. **Note:** While periods are allowed, for Kerberos compatibility and to avoid potential issues with some applications, it is recommended to use hyphens (e.g., `john-doe`) or no separators (e.g., `johndoe`) instead of periods.
 - **Groups:** `grp-<domain>` for primary groups (e.g., `grp-studio`). All lowercase.
 
 ## 2. Group ID (GID) Strategy
