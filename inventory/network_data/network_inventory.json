@@ -25,6 +25,14 @@
     {
       "ipv4_address": "10.20.51.6",
       "fqdn": "tplink-switch.bjoin.studio"
+    },
+    {
+      "ipv4_address": "10.20.51.81",
+      "fqdn": "truenas-01.bjoin.studio"
+    },
+    {
+      "ipv4_address": "10.20.51.10",
+      "fqdn": "ipa-01.bjoin.studio"
     }
   ]
 }

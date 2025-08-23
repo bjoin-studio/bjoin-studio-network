@@ -6,7 +6,7 @@ This guide provides step-by-step instructions for configuring the Management VLA
 
 | VLAN ID | Name | Purpose | Subnet | Gateway IP | DHCP Range |
 |:---|:---|:---|:---|:---|:---|
-| **51** | `MGMT_WIRED_1G` | Management Wired (1Gb) | `10.20.51.0/24` | `10.20.51.1` | Static only |
+| **51** | `MGMT_WIRED_1G` | Management Wired (1Gb) | `10.20.51.0/24` | `10.20.51.1` | `10.20.51.100 – 200` |
 | **52** | `MGMT_RESERVED_1` | Management Reserved | `10.20.52.0/24` | `10.20.52.1` | Static only |
 | **53** | `MGMT_RESERVED_2` | Management Reserved | `10.20.53.0/24` | `10.20.53.1` | Static only |
 | **54** | `MGMT_WIFI` | Management Wifi | `10.20.54.0/24` | `10.20.54.1` | `10.20.54.100 – 200` |
