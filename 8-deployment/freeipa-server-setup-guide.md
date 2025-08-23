@@ -35,15 +35,6 @@ In the Proxmox web UI, create a new VM with the following specifications.
 - **VLAN Tag:** (Leave blank, as the bridge handles it)
 - **Model:** `VirtIO (paravirtualized)`
 
-So the hex representation of 10.20.51.10 is: 0A:14:33:0A
-
-🧪 Creating a Synthetic MAC Address
-Synthetic MACs often start with a locally administered prefix. A common choice is 02:00 (where 02 indicates it's locally administered and unicast). You can then append the hex IP:
-
-Example MAC: 02:00:0A:14:33:0A
-
-This format is safe for virtual machines and won’t conflict with vendor-assigned MACs.
-
 ## 2. Operating System Installation (Rocky Linux 9)
 
 1.  Start the VM and open the console.
@@ -66,79 +57,90 @@ This format is safe for virtual machines and won’t conflict with vendor-assign
 
 After the VM is running, connect to it via SSH or the Proxmox console.
 
-### 1. Update System and Set Hostname
+This process is automated by the `setup-freeipa-server.py` script in this repository. It is recommended to use the script to ensure a consistent and correct installation.
+
+### 1. Prepare the Environment
+
+Before running the script, you must set two environment variables for the Directory Manager and Admin passwords.
 
 ```bash
-sudo dnf update -y
-sudo hostnamectl set-hostname ipa-01.bjoin.studio
+export IPA_DS_PASSWORD='YourSecurePassword123!'
+export IPA_ADMIN_PASSWORD='YourSecurePassword123!'
 ```
 
-### 2. Install FreeIPA Server Packages
+### 2. Run the Installation Script
+
+Execute the script with `sudo`. It will handle system updates, package installation, and the FreeIPA server setup.
 
 ```bash
-sudo dnf module enable idm:DL1 -y
-sudo dnf install ipa-server ipa-server-dns -y
+sudo python3 /path/to/repo/src/modules/identity-management/freeipa/setup-freeipa-server.py
 ```
 
-### 3. Run the Installation Script
+The script will provide live output of the installation process.
 
-This interactive script will prompt you for configuration details. Use the values below.
+## 4. Configure Server Firewall (`firewalld`)
 
-```bash
-sudo ipa-server-install
-```
+The setup script installs and enables the firewall, but the rules must be applied. The `firewall_rules-freeipa.sh` script in this repository contains the complete set of rules for a functioning FreeIPA server.
 
-**Key Prompts:**
-- **Server host name:** `ipa-01.bjoin.studio`
-- **Domain name:** `bjoin.studio`
-- **Realm name:** `BJOIN.STUDIO` (by default, this is the uppercase of your domain)
-- **Directory Manager password:** (Enter a strong password)
-- **IPA master password:** (Enter a strong password)
-- **Configure integrated DNS:** `yes`
-- **Configure chrony as NTP client:** `yes`
-
-Review the configuration and, if correct, type `yes` to continue.
-
-### 4. Configure Firewall
-
-The `ipa-server-install` script configures the firewall on the FreeIPA host itself. The rules below are for your main network firewall (e.g., OPNsense).
+Run the script on the newly installed `ipa-01` server:
 
 ```bash
-sudo firewall-cmd --add-service=freeipa-ldap --add-service=freeipa-ldaps --permanent
+# Navigate to the script location
+cd /path/to/repo/src/modules/firewall/
+
+# Make the script executable
+chmod +x firewall_rules-freeipa.sh
+
+# Run the script with sudo
+sudo ./firewall_rules-freeipa.sh
+
+# Reload the firewall to apply the new rules
 sudo firewall-cmd --reload
 ```
 
-### 5. Verify Installation
+## 5. Configure Network DNS (OPNsense)
 
-Authenticate as the FreeIPA admin user:
+This is a critical step to allow all devices on your network to find and use the new FreeIPA server.
+You must configure your main DHCP server on OPNsense to assign the FreeIPA server as the primary DNS server for all your networks.
 
-```bash
-kinit admin
-```
+1.  **Log into the OPNsense Web UI.**
+2.  Navigate to **Services > DHCPv4**.
+3.  For **each** VLAN interface (e.g., `LAN`, `MGMT_51`, `STUDIO_31`, etc.), do the following:
+    -   Click on the interface to open its DHCP settings.
+    -   Find the **DNS servers** field.
+    -   Delete any existing entries and add the IP of your FreeIPA server: `10.20.51.10`.
+    -   Click **Save** at the bottom of the page.
+4.  After saving for all interfaces, client devices will need to renew their DHCP lease (e.g., by reconnecting to the network or rebooting) to receive the new DNS settings.
 
-Check that your user is found:
+## 6. Verify Installation
 
-```bash
-ipa user-find admin
-```
+From a client machine on the network that has received the new DNS settings, you should now be able to perform these actions successfully:
 
-Your FreeIPA server is now ready. You can access its web UI at `https://ipa-01.bjoin.studio/`.
+1.  **Resolve the hostname:**
+    ```bash
+    ping ipa-01.bjoin.studio
+    ```
+2.  **Access the Web UI:**
+    Open a browser and navigate to `https://ipa-01.bjoin.studio/`
 
----
+3.  **Authenticate with Kerberos:**
+    ```bash
+    kinit admin
+    ```
 
-## 4. VLAN Integration and Firewall Rules
+## 7. Post-Installation: Client Enrollment & Access Control
 
-### Network Location
+Your FreeIPA server is now the central identity and DNS provider for your network. The next steps involve enrolling your client machines and configuring access control rules.
 
-The FreeIPA server is placed in the **`MGMT` VLAN (VLAN 51)**. This is a security best practice, as it isolates the network's most critical identity service from general user traffic.
+### Client Enrollment
 
-### Firewall Configuration
+For devices to use FreeIPA for authentication, they must be enrolled as clients. See the `macos-freeipa-client-troubleshooting.md` guide for details on manual configuration and troubleshooting for macOS.
 
-For devices in other VLANs (e.g., `PROD_PERF`, `STUDIO_GENERAL`) to authenticate and get DNS from FreeIPA, you must configure rules on your main network firewall (OPNsense).
+### OPNsense Firewall Rules for Inter-VLAN Traffic
 
-The basic principle is to create rules that allow traffic **FROM** a client VLAN (e.g., `VLAN 31 - STUDIO_GENERAL`) **TO** the FreeIPA server's IP address (`10.20.51.10`).
+For devices in other VLANs to communicate with the FreeIPA server, you must create firewall rules on OPNsense. The basic principle is to allow traffic **FROM** a client VLAN **TO** the FreeIPA server's IP (`10.20.51.10`) for the necessary ports.
 
-Here are the essential ports to open:
+Here are the essential ports to open on your OPNsense firewall:
 
 | Port      | Protocol | Service        | Purpose                               |
 | :-------- | :------- | :------------- | :------------------------------------ |
@@ -149,89 +151,3 @@ Here are the essential ports to open:
 | `443`     | TCP      | **HTTPS**      | Accessing the FreeIPA Web UI          |
 | `464`     | TCP/UDP  | **Kerberos Pwd** | Password changes                    |
 | `636`     | TCP      | **LDAPS**      | Secure Directory Lookups              |
-
----
-
-## 5. FreeIPA Integration and Advanced Access Control
-
-FreeIPA provides powerful features to manage access to your network resources centrally. This section covers how to integrate clients and manage advanced access controls.
-
-### 5.1 Client Enrollment
-
-To leverage FreeIPA's centralized authentication and management, client machines (Linux servers, macOS workstations) need to be enrolled into the FreeIPA domain. This typically involves installing the `ipa-client` package and running `ipa-client-install`.
-
-**Linux Client (e.g., Rocky Linux 9):
-**
-```bash
-sudo dnf install ipa-client -y
-sudo ipa-client-install --mkhomedir --enable-dns-autodiscovery
-```
-
-**macOS Client:
-**
-macOS can be joined to the FreeIPA domain using the Directory Utility or the `dsconfigad` command-line tool. This allows users to log in with their FreeIPA credentials.
-
-```bash
-sudo dsconfigad -add ipa-01.bjoin.studio -domain bjoin.studio -username admin -password <admin_password> -force -mobile enable -localhome enable -useuncpath enable -alldomains enable
-```
-
-### 5.2 Sudo Rules Management
-
-FreeIPA allows you to define and manage `sudo` rules centrally, eliminating the need to manage `/etc/sudoers` files on individual machines. This ensures consistent and auditable administrative access.
-
-**Example: Granting `sysadmins` full `sudo` access on all hosts:
-**
-```bash
-# Create a Sudo Command Group (optional, for specific commands)
-# ipa sudocmd-add /usr/bin/systemctl --desc='Systemctl command'
-
-# Create a Sudo Rule
-ipa sudorule-add sysadmin_full_access --desc='Full sudo access for sysadmins'
-
-# Add the 'sysadmins' group to the rule
-ipa sudorule-add-group sysadmin_full_access --groups=sysadmins
-
-# Apply the rule to all hosts (or specific host groups)
-ipa sudorule-add-host sysadmin_full_access --hosts=all
-
-# Grant ALL commands (or specific command groups)
-ipa sudorule-add-allow_command sysadmin_full_access --sudocmds=ALL
-
-# Enable the rule
-ipa sudorule-enable sysadmin_full_access
-```
-
-### 5.3 Host-Based Access Control (HBAC)
-
-HBAC rules control which users or groups are allowed to log into specific hosts or host groups. This is crucial for securing your servers.
-
-**Example: Allow `sysadmins` to log into `servers` host group:
-**
-```bash
-# Create a Host Group (if not already defined)
-# ipa hostgroup-add servers --desc='All Linux servers'
-# ipa hostgroup-add-member servers --hosts=server01.bjoin.studio,server02.bjoin.studio
-
-# Create an HBAC Rule
-ipa hbacrule-add sysadmin_server_access --desc='Allow sysadmins to log into servers'
-
-# Add the 'sysadmins' group to the rule
-ipa hbacrule-add-user sysadmin_server_access --groups=sysadmins
-
-# Add the 'servers' host group to the rule
-ipa hbacrule-add-host sysadmin_server_access --hostgroups=servers
-
-# Allow access to all services (or specific services like sshd)
-ipa hbacrule-add-service sysadmin_server_access --services=all
-
-# Enable the rule
-ipa hbacrule-enable sysadmin_server_access
-```
-
-### 5.4 Integration with Network Services
-
-FreeIPA can integrate with various network services to provide centralized authentication and authorization.
-
-*   **NFS (Network File System):** FreeIPA provides Kerberos authentication for NFS shares, ensuring secure access to shared storage. Clients will use their FreeIPA credentials to mount NFS shares.
-*   **SMB/CIFS (Samba):** Samba can be configured to authenticate against FreeIPA, allowing Windows clients and macOS clients to access SMB shares using their FreeIPA credentials.
-*   **SSH (Secure Shell):** FreeIPA manages SSH public keys and can enforce HBAC rules for SSH access, providing a secure and centralized way to manage remote access to your servers.
