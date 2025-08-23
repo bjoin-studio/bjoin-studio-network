@@ -5,11 +5,11 @@ This document outlines the standards and procedures for managing users and group
 ## 1. Naming Conventions
 
 - **Usernames:** `firstname.lastname` (e.g., `john.doe`). All lowercase.
-- **Groups:** All lowercase, using hyphens for separators if needed (e.g., `web-admins`).
+- **Groups:** `grp-<domain>` for primary groups (e.g., `grp-studio`). All lowercase.
 
 ## 2. Core Access Groups
 
-These groups represent the primary access tiers that correspond to your network VLANs and resource categories. A user's membership in these groups will be used to control access to servers and file shares.
+These groups represent the primary access tiers that correspond to your network VLANs and resource categories, as defined in the main network design document. A user's membership in these groups will be used to control access to servers and file shares.
 
 ### Create the Groups
 
@@ -17,22 +17,22 @@ Run these commands on the FreeIPA server (`ipa-01.bjoin.studio`) to create the c
 
 ```bash
 # Production Environment Group
-ipa group-add production --desc='Access group for the Production environment'
+ipa group-add grp-production --desc='Access group for the Production environment'
 
 # Stage Environment Group
-ipa group-add stage --desc='Access group for the Stage environment'
+ipa group-add grp-stage --desc='Access group for the Stage environment'
 
 # Studio Environment Group
-ipa group-add studio --desc='Access group for the Studio environment'
+ipa group-add grp-studio --desc='Access group for the Studio environment'
 
 # Workshop Environment Group
-ipa group-add workshop --desc='Access group for the Workshop environment'
+ipa group-add grp-workshop --desc='Access group for the Workshop environment'
 
 # Management Environment Group
-ipa group-add management --desc='Access group for the Management environment'
+ipa group-add grp-management --desc='Access group for the Management environment'
 
 # Guest Access Group
-ipa group-add guest --desc='Limited access for guest users'
+ipa group-add grp-guest --desc='Limited access for guest users'
 ```
 
 ## 3. User Management
@@ -51,16 +51,16 @@ ipa user-add jane.smith --first=Jane --last=Smith --email=jane.smith@bjoin.studi
 This is how you grant a user access to a specific environment.
 
 ```bash
-# Example: Add Jane Smith to the 'studio' and 'management' groups
-ipa group-add-member studio --users=jane.smith
-ipa group-add-member management --users=jane.smith
+# Example: Add Jane Smith to the 'grp-studio' and 'grp-management' groups
+ipa group-add-member grp-studio --users=jane.smith
+ipa group-add-member grp-management --users=jane.smith
 ```
 
 ### Remove a User from a Group
 
 ```bash
-# Example: Remove Jane Smith from the 'management' group
-ipa group-remove-member management --users=jane.smith
+# Example: Remove Jane Smith from the 'grp-management' group
+ipa group-remove-member grp-management --users=jane.smith
 ```
 
 ## 4. Verification
@@ -79,6 +79,6 @@ ipa user-show jane.smith
 You can see the members of a specific group.
 
 ```bash
-# See all members of the 'studio' group
-ipa group-show studio
+# See all members of the 'grp-studio' group
+ipa group-show grp-studio
 ```
