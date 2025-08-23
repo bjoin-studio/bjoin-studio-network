@@ -1,73 +1,226 @@
 # Network Monitoring Setup Guide
 
-This guide describes how to configure your network infrastructure to enable effective monitoring, leveraging dedicated monitoring VLANs (15, 25, 35, 45, 55, 65).
+This guide provides a comprehensive walkthrough for setting up a modern, open-source monitoring stack for your network using Prometheus, Grafana, and Docker.
 
-## 1. Purpose of Dedicated Monitoring VLANs
+## 1. Architecture Overview
 
-Dedicated monitoring VLANs provide a secure and isolated segment for your monitoring infrastructure. This separation offers several benefits:
+We will deploy a monitoring stack on a dedicated virtual machine. The components are:
 
-*   **Security:** Monitoring traffic and tools are isolated from production networks, reducing the attack surface.
-*   **Performance:** Monitoring traffic (especially mirrored traffic) does not contend with production data on core network segments.
-*   **Isolation:** Monitoring tools can operate without impacting critical services.
+- **Prometheus:** The core time-series database that collects and stores metrics.
+- **Grafana:** The visualization layer for creating dashboards.
+- **Node Exporter:** An agent to expose system-level metrics from your Linux VMs (Proxmox, FreeIPA, etc.).
+- **SNMP Exporter:** A tool to query your network switches (Cisco, Sodola, Netgear) via the SNMP protocol and translate the data for Prometheus.
+- **Docker & Docker Compose:** To containerize these services for easy management and deployment.
 
-## 2. VLAN Configuration on Network Devices
+## 2. Step 1: Create the Monitoring VM
 
-Ensure that VLANs 15, 25, 35, 45, 55, and 65 are configured on your core switches and firewall (OPNsense). These VLANs should be treated as highly restricted segments.
+In the Proxmox web UI, create a new VM with the following specifications.
 
-*   **VLAN 15:** Production Monitoring (e.g., `PROD_MON`)
-*   **VLAN 25:** Stage Monitoring (e.g., `STAGE_MON`)
-*   **VLAN 35:** Studio Monitoring (e.g., `STUDIO_MON`)
-*   **VLAN 45:** Workshop Monitoring (e.g., `WORKSHOP_MON`)
-*   **VLAN 55:** Management Monitoring (e.g., `MGMT_MON`)
-*   **VLAN 65:** Guest Monitoring (e.g., `GUEST_MON`)
+- **Name:** `mon-01.bjoin.studio`
+- **OS:** Ubuntu Server 22.04 LTS (or Debian 12).
+- **Disk size:** At least `40 GB`.
+- **CPU:** `2` cores.
+- **Memory:** `4096 MB` (4 GB).
+- **Network:** Assign it to the **Management VLAN (51)** with a static IP address, for example:
+    - **IP Address:** `10.20.51.30/24`
+    - **Gateway:** `10.20.51.1`
+    - **DNS Server:** `10.20.51.10` (your FreeIPA server)
 
-Your monitoring servers (e.g., Prometheus, Grafana, ELK stack components) should reside in one or more of these monitoring VLANs, typically `VLAN 55` (Management Monitoring) if you have a centralized monitoring solution.
+## 3. Step 2: Install Docker and Docker Compose
 
-## 3. Traffic Mirroring (SPAN/Port Mirroring)
+SSH into your new `mon-01` VM and run the following commands to install Docker.
 
-To capture traffic for analysis, you will configure your managed switches to mirror traffic from production VLANs or specific ports to a port connected to your monitoring infrastructure.
+```bash
+# Update package lists
+sudo apt-get update
 
-*   **Concept:** A SPAN (Switched Port Analyzer) or Port Mirroring feature duplicates network packets from source ports/VLANs and sends them to a destination (monitor) port.
-*   **Configuration:** On your Cisco Nexus or Netgear switches, you will define a monitoring session:
-    *   **Source:** Specify the VLANs (e.g., VLAN 11, 21, 31, etc.) or specific ports you want to monitor.
-    *   **Destination:** A dedicated port on the switch connected to a network interface on your monitoring server. This port should be configured as an **access port** for the relevant monitoring VLAN (e.g., VLAN 15 for production traffic, or VLAN 55 for centralized monitoring).
+# Install prerequisites
+sudo apt-get install -y ca-certificates curl gnupg
 
-**Example (Conceptual Cisco Nexus CLI):
-**
-```cli
-monitor session 1 type ethernet
-  source interface ethernet 1/1 - 1/8
-  source vlan 11,21,31 rx
-  destination interface ethernet 1/24
-  no shut
+# Add Docker's official GPG key
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+# Set up the Docker repository
+echo \
+  "deb [arch=\"$(dpkg --print-architecture)\" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  \"$(. /etc/os-release && echo \"$VERSION_CODENAME\")\" stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+# Install Docker Engine
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+# Add your user to the docker group to run docker without sudo
+sudo usermod -aG docker $USER
+
+# Log out and log back in for the group change to take effect
+exit
 ```
 
-## 4. Flow-Based Monitoring (NetFlow/sFlow)
+After logging back in, you can proceed.
 
-For high-level traffic analysis and identifying top talkers or unusual patterns, configure your switches to export flow data.
+## 4. Step 3: Prepare the Monitoring Stack Configuration
 
-*   **NetFlow (Cisco) / sFlow (Multi-vendor):** These protocols collect metadata about network conversations (who talked to whom, when, how much data) and send it to a flow collector (e.g., Elastic Flow, ntopng).
-*   **Configuration:** Enable NetFlow/sFlow on your switch interfaces and direct the exports to the IP address of your flow collector, which should be located in a monitoring VLAN.
+We will create a directory to hold all of our configuration files.
 
-## 5. Device Health and Performance (SNMP)
+```bash
+# Create a directory for your monitoring stack
+mkdir ~/monitoring
+cd ~/monitoring
 
-Enable SNMP (Simple Network Management Protocol) on all your network devices (switches, firewall, servers, NAS) to collect health metrics, interface statistics, and device status.
+# Create a directory for Prometheus configuration
+mkdir -p prometheus/rules
 
-*   **SNMP Version:** Prefer SNMPv3 for security, or SNMPv2c with strong community strings.
-*   **Configuration:** Configure SNMP agents on devices to send traps/data to your Network Management System (NMS) or monitoring server, typically located in a monitoring VLAN.
-*   **Firewall Rules:** Ensure your firewall allows SNMP traffic (UDP 161/162) from your devices to your monitoring server.
+# Create a directory for Grafana data
+mkdir -p grafana/data
 
-## 6. Centralized Monitoring Tools
+# Create a directory for SNMP Exporter configuration
+mkdir snmp_exporter
+```
 
-Your monitoring servers will collect and visualize data from the various sources:
+Now, create the following three configuration files inside the `~/monitoring` directory.
 
-*   **Packet Capture/Analysis:** Tools like Wireshark (for ad-hoc analysis) or dedicated network performance monitoring (NPM) solutions (for continuous capture on SPAN ports).
-*   **Metrics Collection:** Prometheus, Telegraf, Zabbix, Nagios for collecting SNMP data, system metrics, and application performance.
-*   **Log Management:** ELK Stack (Elasticsearch, Logstash, Kibana) or Graylog for centralizing and analyzing logs from all network devices and servers.
-*   **Visualization:** Grafana for creating dashboards to visualize network health, traffic patterns, and device performance.
+### 1. `docker-compose.yml`
 
-## 7. Security Considerations for Monitoring VLANs
+Create a file named `docker-compose.yml`:
+```bash
+nano docker-compose.yml
+```
+Paste the following content:
+```yaml
+version: '3.8'
 
-*   **Strict Firewall Rules:** Implement very strict firewall rules on OPNsense to control access to and from monitoring VLANs. Only allow necessary traffic (e.g., SNMP from devices to collector, SSH to monitoring servers).
-*   **No Internet Access:** Monitoring VLANs should generally not have direct internet access.
-*   **Dedicated Devices:** Use dedicated monitoring servers and network interfaces for capturing mirrored traffic to prevent interference with production services.
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus/
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    restart: unless-stopped
+    volumes:
+      - ./grafana/data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+
+  node_exporter:
+    image: prom/node-exporter:latest
+    container_name: node_exporter
+    restart: unless-stopped
+    pid: host
+    volumes:
+      - /:/host:ro,rslave
+    command:
+      - '--path.rootfs=/host'
+
+  snmp_exporter:
+    image: prom/snmp-exporter:latest
+    container_name: snmp_exporter
+    restart: unless-stopped
+    volumes:
+      - ./snmp_exporter:/etc/snmp_exporter
+    ports:
+      - "9116:9116"
+```
+
+### 2. `prometheus/prometheus.yml`
+
+Create a file named `prometheus.yml` inside the `prometheus` directory:
+```bash
+nano prometheus/prometheus.yml
+```
+Paste the following content. This is a starting point; you will add your devices here.
+```yaml
+global:
+  scrape_interval: 30s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node_exporter:9100'] # The monitoring VM itself
+      # Add other Linux/Proxmox/TrueNAS hosts here
+      # - targets: ['10.20.51.10:9100'] # ipa-01
+      # - targets: ['10.20.51.20:9100'] # pmx-01
+
+  - job_name: 'opnsense'
+    static_configs:
+      - targets: ['10.20.51.1:9100'] # OPNsense firewall
+
+  - job_name: 'snmp'
+    static_configs:
+      - targets:
+        # Add your switch IPs here
+        # - 10.20.51.2  # Example: Sodola Switch
+        # - 10.20.51.5  # Example: Netgear Switch
+    metrics_path: /snmp
+    params:
+      module: [if_mib]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: snmp_exporter:9116
+```
+
+### 3. `snmp_exporter/snmp.yml`
+
+Create a file named `snmp.yml` inside the `snmp_exporter` directory:
+```bash
+nano snmp_exporter/snmp.yml
+```
+Paste the following content. This is a generic configuration that works for most switches.
+```yaml
+if_mib:
+  walk: [ifDescr, ifType, ifMtu, ifSpeed, ifPhysAddress, ifAdminStatus, ifOperStatus, ifLastChange, ifInOctets, ifInUcastPkts, ifInNUcastPkts, ifInDiscards, ifInErrors, ifInUnknownProtos, ifOutOctets, ifOutUcastPkts, ifOutNUcastPkts, ifOutDiscards, ifOutErrors, ifOutQLen, ifSpecific]
+  lookups:
+    - old_names: [ifAdminStatus, ifOperStatus]
+      new_name: ifStatus
+      enum_map:
+        1: "up"
+        2: "down"
+        3: "testing"
+```
+
+## 5. Step 4: Launch the Monitoring Stack
+
+Now that all the configuration files are in place, you can start all the services.
+
+From the `~/monitoring` directory, run:
+```bash
+docker compose up -d
+```
+This will download the container images and start them in the background.
+
+## 6. Step 5: Configure Grafana
+
+1.  Open your web browser and navigate to your monitoring server's IP at port 3000: `http://10.20.51.30:3000`
+2.  Log in with the default credentials: `admin` / `admin`. You will be prompted to change the password.
+3.  From the main menu, go to **Connections > Data sources**.
+4.  Click **Add new data source**.
+5.  Select **Prometheus**.
+6.  For the **Prometheus server URL**, enter: `http://prometheus:9090`
+7.  Click **Save & Test**. You should see a message saying "Data source is working".
+
+## 7. Next Steps
+
+Your monitoring stack is now running!
+
+- **Add Targets:** Edit the `prometheus/prometheus.yml` file to add the IP addresses of your other servers and switches.
+- **Install Exporters:** For other Linux hosts (like `ipa-01` and `pmx-01`), you will need to install the `node_exporter` service on them.
+- **Find Dashboards:** Explore the official [Grafana Dashboards](https://grafana.com/grafana/dashboards/) website. You can find pre-built dashboards for thousands of applications and devices (e.g., search for "OPNsense" or "Node Exporter Full") and import them into your Grafana instance.
