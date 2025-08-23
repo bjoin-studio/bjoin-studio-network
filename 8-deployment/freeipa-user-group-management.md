@@ -7,35 +7,52 @@ This document outlines the standards and procedures for managing users and group
 - **Usernames:** `firstname.lastname` (e.g., `john.doe`). All lowercase.
 - **Groups:** `grp-<domain>` for primary groups (e.g., `grp-studio`). All lowercase.
 
-## 2. Core Access Groups
+## 2. Group ID (GID) Strategy
 
-These groups represent the primary access tiers that correspond to your network VLANs and resource categories, as defined in the main network design document. A user's membership in these groups will be used to control access to servers and file shares.
+To create a clear and scalable identity management system, the Group IDs (GIDs) for the core access groups are aligned with the network's VLAN schema. This provides a predictable link between a user's group and their network zone.
+
+The convention is `XZ0000`, where `X` is the VLAN zone prefix (e.g., `3` for the 3x Studio VLANs) and `Z` is a sub-identifier (e.g., `1` for the primary group in that zone).
+
+This GID scheme also allows for a logical UID (User ID) numbering system. For example, users in a group with GID `310000` can be assigned UIDs in the range `310001` to `319999`.
+
+| Group | VLAN Zone | Proposed GID | Example User IDs |
+| :--- | :--- | :--- | :--- |
+| `grp-production` | 1x | **110000** | `110001`, `110002`, ... |
+| `grp-stage` | 2x | **210000** | `210001`, `210002`, ... |
+| `grp-studio` | 3x | **310000** | `310001`, `310002`, ... |
+| `grp-workshop` | 4x | **410000** | `410001`, `410002`, ... |
+| `grp-management` | 5x | **510000** | `510001`, `510002`, ... |
+| `grp-guest` | 6x | **610000** | `610001`, `610002`, ... |
+
+## 3. Core Access Groups
+
+These groups represent the primary access tiers that correspond to your network VLANs and resource categories.
 
 ### Create the Groups
 
-Run these commands on the FreeIPA server (`ipa-01.bjoin.studio`) to create the core groups.
+Run these commands on the FreeIPA server (`ipa-01.bjoin.studio`) to create the core groups with their designated GIDs.
 
 ```bash
 # Production Environment Group
-ipa group-add grp-production --desc='Access group for the Production environment'
+ipa group-add grp-production --desc='Access group for the Production environment' --gid=110000
 
 # Stage Environment Group
-ipa group-add grp-stage --desc='Access group for the Stage environment'
+ipa group-add grp-stage --desc='Access group for the Stage environment' --gid=210000
 
 # Studio Environment Group
-ipa group-add grp-studio --desc='Access group for the Studio environment'
+ipa group-add grp-studio --desc='Access group for the Studio environment' --gid=310000
 
 # Workshop Environment Group
-ipa group-add grp-workshop --desc='Access group for the Workshop environment'
+ipa group-add grp-workshop --desc='Access group for the Workshop environment' --gid=410000
 
 # Management Environment Group
-ipa group-add grp-management --desc='Access group for the Management environment'
+ipa group-add grp-management --desc='Access group for the Management environment' --gid=510000
 
 # Guest Access Group
-ipa group-add grp-guest --desc='Limited access for guest users'
+ipa group-add grp-guest --desc='Limited access for guest users' --gid=610000
 ```
 
-## 3. User Management
+## 4. User Management
 
 ### Create a New User
 
@@ -63,7 +80,7 @@ ipa group-add-member grp-management --users=jane.smith
 ipa group-remove-member grp-management --users=jane.smith
 ```
 
-## 4. Verification
+## 5. Verification
 
 ### Show User Information
 
