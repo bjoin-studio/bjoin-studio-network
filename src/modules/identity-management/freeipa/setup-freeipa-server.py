@@ -605,43 +605,65 @@ def configure_autofs_in_ipa(nfs_server_ip, nfs_export_path, domain):
     logger.info(generate_banner("AUTOFSD CONFIGURATION IN FREEIPA STARTED"))
     print_separator()
 
-    logger.info(f"Configuring automount map for /home from NFS server {nfs_server_ip}:{nfs_export_path}...")
+    logger.info(f"Configuring automount for /home from NFS server {nfs_server_ip}:{nfs_export_path}...")
 
-    # 1. Add automount map
-    try:
-        run_command(["ipa", "automountmap-add", "default"])
-        logger.info("Automount map 'default' added.")
-    except subprocess.CalledProcessError as e:
-        if "already exists" in str(e):
-            logger.warning("Automount map 'default' already exists. Skipping creation.")
-        else:
-            logger.error(f"Failed to add automount map 'default'")
-            sys.exit(1)
-
-    # 2. Add automount location
+    # 1. Create the automount location if it doesn't exist
     try:
         run_command(["ipa", "automountlocation-add", "default"])
-        logger.info("Automount location 'default' added.")
+        logger.info("Automount location 'default' created.")
     except subprocess.CalledProcessError as e:
-        if "already exists" in str(e):
+        if "already exists" in str(e.stderr):
             logger.warning("Automount location 'default' already exists. Skipping creation.")
         else:
-            logger.error(f"Failed to add automount location 'default'")
-            sys.exit(1)
+            logger.error(f"Failed to add automount location 'default': {e.stderr}")
+            # This is a critical error, so we might want to exit
+            # For now, we continue to allow verification steps to run
 
-    # 3. Add automount key for /home
+    # 2. Create the auto.home map within the default location
+    try:
+        run_command(["ipa", "automountmap-add", "default", "auto.home"])
+        logger.info("Automount map 'auto.home' created in location 'default'.")
+    except subprocess.CalledProcessError as e:
+        if "already exists" in str(e.stderr):
+            logger.warning("Automount map 'auto.home' already exists. Skipping creation.")
+        else:
+            logger.error(f"Failed to add automount map 'auto.home': {e.stderr}")
+
+    # 3. Link /home to the auto.home map in auto.master
     try:
         run_command([
-            "ipa", "automountkey-add", "default", "/home",
-            f"--posix={nfs_server_ip}:{nfs_export_path}"
+            "ipa", "automountkey-add", "default", "auto.master", 
+            "--key=/home", "--info=auto.home"
         ])
-        logger.info(f"Automount key for /home added: {nfs_server_ip}:{nfs_export_path}")
+        logger.info("Linked /home to auto.home map in auto.master.")
     except subprocess.CalledProcessError as e:
-        if "already exists" in str(e):
-            logger.warning("Automount key for /home already exists. Skipping creation.")
+        if "already exists" in str(e.stderr):
+            logger.warning("Automount key for /home in auto.master already exists. Skipping creation.")
         else:
-            logger.error(f"Failed to add automount key for /home")
-            sys.exit(1)
+            logger.error(f"Failed to link /home to auto.home map: {e.stderr}")
+
+    # 4. Add the wildcard key for user home directories to the auto.home map
+    nfs_options = f"-fstype=nfs,rw,hard,intr"
+    nfs_full_path = f"{nfs_options} {nfs_server_ip}:{nfs_export_path}/&"
+    try:
+        run_command([
+            "ipa", "automountkey-add", "default", "auto.home", 
+            "--key=*", f"--info={nfs_full_path}"
+        ])
+        logger.info(f"Added wildcard automount key to auto.home: {nfs_full_path}")
+    except subprocess.CalledProcessError as e:
+        if "already exists" in str(e.stderr):
+            logger.warning("Wildcard automount key in auto.home already exists. Skipping creation.")
+        else:
+            logger.error(f"Failed to add wildcard key to auto.home: {e.stderr}")
+
+    # 5. Verification steps
+    logger.info("Verifying automount configuration...")
+    run_command(["ipa", "automountlocation-show", "default"], check=False)
+    run_command(["ipa", "automountmap-show", "default", "auto.master"], check=False)
+    run_command(["ipa", "automountkey-find", "default", "auto.master"], check=False)
+    run_command(["ipa", "automountmap-show", "default", "auto.home"], check=False)
+    run_command(["ipa", "automountkey-find", "default", "auto.home"], check=False)
 
     logger.info("Automount configuration in FreeIPA complete.")
     logger.info(generate_banner("AUTOFSD CONFIGURATION IN FREEIPA COMPLETED"))
