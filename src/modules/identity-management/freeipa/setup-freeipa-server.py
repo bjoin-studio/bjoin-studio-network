@@ -31,9 +31,9 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # --- Helper Functions --- #
-def run_command(command, check=True, capture_output=True, log_output=True, interactive=False):
+def run_command(command, check=True, capture_output=True, log_output=True, interactive=False, timeout=600, show_live_output=False):
     """
-    Enhanced command runner with support for interactive commands
+    Enhanced command runner with support for interactive commands and live output display
     """
     cmd_str = ' '.join(command)
     if log_output:
@@ -42,7 +42,9 @@ def run_command(command, check=True, capture_output=True, log_output=True, inter
     try:
         if interactive:
             # For interactive commands, don't capture output and allow direct terminal interaction
-            result = subprocess.run(command, check=check, text=True)
+            print(f"\n>>> Running interactive command: {cmd_str}")
+            result = subprocess.run(command, check=check, text=True, timeout=timeout)
+            print(f">>> Interactive command completed with return code: {result.returncode}")
             # Create a dummy result object for consistency
             class DummyResult:
                 def __init__(self):
@@ -51,14 +53,26 @@ def run_command(command, check=True, capture_output=True, log_output=True, inter
                     self.stderr = ""
             return DummyResult()
         else:
-            # For non-interactive commands, use the original behavior
-            result = subprocess.run(command, check=check, capture_output=capture_output, text=True)
+            # For package management commands, use special handling
+            if command[0] in ['dnf', 'yum', 'apt', 'apt-get']:
+                return run_package_command(command, check, log_output, timeout)
+            
+            # For other commands that need live output
+            if show_live_output:
+                return run_command_with_live_output(command, check, log_output, timeout)
+            
+            # For other non-interactive commands, use the original behavior
+            result = subprocess.run(command, check=check, capture_output=capture_output, text=True, timeout=timeout)
             if log_output:
                 if result.stdout:
                     logger.info(f"Stdout:\n{result.stdout.strip()}")
                 if result.stderr:
                     logger.error(f"Stderr:\n{result.stderr.strip()}")
             return result
+    except subprocess.TimeoutExpired:
+        logger.error(f"Command timed out after {timeout} seconds: {cmd_str}")
+        print(f">>> TIMEOUT: {cmd_str}")
+        raise
     except subprocess.CalledProcessError as e:
         logger.error(f"Command failed: {cmd_str}")
         logger.error(f"Return Code: {e.returncode}")
@@ -69,6 +83,194 @@ def run_command(command, check=True, capture_output=True, log_output=True, inter
         raise
     except FileNotFoundError:
         logger.error(f"Command not found: {command[0]}")
+        raise
+
+def run_command_with_live_output(command, check=True, log_output=True, timeout=600):
+    """
+    Run command with live output display for long-running operations
+    """
+    cmd_str = ' '.join(command)
+    print(f"\n>>> Executing: {cmd_str}")
+    print(">>> Live output:")
+    
+    try:
+        process = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=0,  # Unbuffered
+            universal_newlines=True
+        )
+        
+        output_lines = []
+        start_time = time.time()
+        
+        while True:
+            if process.poll() is not None:
+                # Read any remaining output
+                remaining = process.stdout.read()
+                if remaining:
+                    for line in remaining.splitlines():
+                        if line.strip():
+                            print(f"    {line}")
+                            output_lines.append(line)
+                            if log_output:
+                                logger.info(line)
+                break
+                
+            line = process.stdout.readline()
+            if line:
+                line = line.rstrip('\n\r')
+                if line.strip():
+                    print(f"    {line}")
+                    output_lines.append(line)
+                    if log_output:
+                        logger.info(line)
+            
+            # Check timeout
+            if time.time() - start_time > timeout:
+                process.kill()
+                raise subprocess.TimeoutExpired(command, timeout)
+        
+        return_code = process.wait()
+        print(f">>> Command completed with return code: {return_code}")
+        
+        class LiveResult:
+            def __init__(self, returncode, stdout):
+                self.returncode = returncode
+                self.stdout = stdout
+                self.stderr = ""
+        
+        result = LiveResult(return_code, '\n'.join(output_lines))
+        
+        if check and return_code != 0:
+            raise subprocess.CalledProcessError(return_code, command, output=result.stdout)
+        
+        return result
+        
+    except Exception as e:
+        print(f">>> ERROR: {e}")
+        raise
+
+def run_package_command(command, check=True, log_output=True, timeout=600):
+    """
+    Special handling for package management commands with real-time output
+    """
+    cmd_str = ' '.join(command)
+    logger.info(f"Running package command: {cmd_str}")
+    print(f"\n>>> Executing: {cmd_str}")
+    print(">>> Live output:")
+    
+    # Set up environment to prevent hanging
+    env = os.environ.copy()
+    env.update({
+        'DEBIAN_FRONTEND': 'noninteractive',
+        'NEEDRESTART_MODE': 'a',  # Automatic restart services
+        'NEEDRESTART_SUSPEND': '1',  # Suspend needrestart
+        'UCF_FORCE_CONFFNEW': '1',  # Use new config files
+        'LANG': 'C',  # Use C locale to avoid encoding issues
+        'LC_ALL': 'C'
+    })
+    
+    try:
+        # Use Popen for better control over the process
+        process = subprocess.Popen(
+            command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,  # Combine stderr with stdout
+            text=True,
+            env=env,
+            bufsize=0,  # Unbuffered for immediate output
+            universal_newlines=True
+        )
+        
+        # Read output in real-time and display immediately
+        output_lines = []
+        start_time = time.time()
+        last_output_time = start_time
+        
+        while True:
+            # Check if process has finished
+            if process.poll() is not None:
+                # Read any remaining output
+                remaining_output = process.stdout.read()
+                if remaining_output:
+                    for line in remaining_output.splitlines():
+                        if line.strip():
+                            print(f"    {line}")
+                            output_lines.append(line)
+                            if log_output:
+                                logger.info(f"PKG: {line}")
+                break
+            
+            # Read line with timeout
+            try:
+                line = process.stdout.readline()
+                if line:
+                    line = line.rstrip('\n\r')
+                    if line.strip():  # Only show non-empty lines
+                        print(f"    {line}")
+                        output_lines.append(line)
+                        if log_output:
+                            logger.info(f"PKG: {line}")
+                        last_output_time = time.time()
+                else:
+                    # No output, but process still running - show progress indicator
+                    current_time = time.time()
+                    if current_time - last_output_time > 10:  # 10 seconds without output
+                        elapsed = current_time - start_time
+                        print(f"    ... still running ({elapsed:.0f}s elapsed) ...")
+                        last_output_time = current_time
+                    time.sleep(0.1)  # Small delay to prevent busy waiting
+                    
+                # Check timeout
+                if time.time() - start_time > timeout:
+                    raise subprocess.TimeoutExpired(command, timeout)
+                    
+            except UnicodeDecodeError:
+                # Handle encoding issues
+                print("    [binary output - skipping line]")
+                continue
+        
+        # Wait for process to complete and get return code
+        return_code = process.wait()
+        
+        print(f">>> Command completed with return code: {return_code}")
+        if return_code == 0:
+            print(">>> SUCCESS")
+        else:
+            print(">>> FAILED")
+        print()  # Add blank line after command
+        
+        # Create result object
+        class PackageResult:
+            def __init__(self, returncode, stdout):
+                self.returncode = returncode
+                self.stdout = stdout
+                self.stderr = ""
+        
+        result = PackageResult(return_code, '\n'.join(output_lines))
+        
+        if check and return_code != 0:
+            raise subprocess.CalledProcessError(return_code, command, output=result.stdout)
+            
+        return result
+        
+    except subprocess.TimeoutExpired:
+        logger.error(f"Package command timed out after {timeout} seconds: {cmd_str}")
+        print(f">>> TIMEOUT after {timeout} seconds")
+        process.kill()
+        process.wait()  # Clean up zombie process
+        raise
+    except KeyboardInterrupt:
+        print(f">>> INTERRUPTED by user")
+        process.terminate()
+        process.wait()
+        raise
+    except Exception as e:
+        logger.error(f"Error running package command: {e}")
+        print(f">>> ERROR: {e}")
         raise
 
 def run_command_with_input(command, input_text=None, check=True):
@@ -311,35 +513,74 @@ def update_system():
 
     logger.info("Updating packages...")
     print_separator()
-    # Use DEBIAN_FRONTEND=noninteractive equivalent and ensure non-interactive
-    env = os.environ.copy()
-    env['DEBIAN_FRONTEND'] = 'noninteractive'
-    run_command(["dnf", "update", "-y", "--assumeyes"], interactive=False)
+    # Clean DNF cache first to avoid potential issues
+    try:
+        run_command(["dnf", "clean", "all"])
+        logger.info("DNF cache cleaned successfully.")
+    except subprocess.CalledProcessError:
+        logger.warning("Failed to clean DNF cache, continuing...")
+    
+    # Update with explicit timeout and better options
+    run_command([
+        "dnf", "update", "-y", "--assumeyes", "--nogpgcheck", 
+        "--skip-broken", "--setopt=timeout=300"
+    ], timeout=900)
     print_separator()
 
     logger.info("Installing Extra Packages for Enterprise Linux...")
     print_separator()
-    run_command(["dnf", "install", "-y", "--assumeyes", "epel-release"], interactive=False)
-    run_command(["/usr/bin/crb", "enable"], interactive=False)
+    run_command([
+        "dnf", "install", "-y", "--assumeyes", "--nogpgcheck", 
+        "--setopt=timeout=300", "epel-release"
+    ], timeout=600)
+    
+    # Enable CRB (CodeReady Builder) repository
+    try:
+        run_command(["/usr/bin/crb", "enable"], timeout=120)
+        logger.info("CRB repository enabled.")
+    except subprocess.CalledProcessError:
+        logger.warning("Failed to enable CRB repository, continuing...")
     print_separator()
 
     logger.info("Upgrading packages (if available)...")
     print_separator()
-    run_command(["dnf", "upgrade", "-y", "--assumeyes"], interactive=False)
+    run_command([
+        "dnf", "upgrade", "-y", "--assumeyes", "--nogpgcheck", 
+        "--skip-broken", "--setopt=timeout=300"
+    ], timeout=900)
     print_separator()
 
     logger.info("Installing Extra Applications...")
     print_separator()
+    packages = [
+        "ansible", "autofs", "cockpit", "firewalld", "ipcalc", 
+        "mlocate", "nano", "net-tools", "nfs-utils", "oddjob", "sssd"
+    ]
+    
     try:
         run_command([
-            "dnf", "install", "-y", "--assumeyes",
-            "ansible", "autofs", "cockpit", "firewalld", "ipcalc", "mlocate", "nano",
-            "net-tools", "nfs-utils", "oddjob", "sssd"
-        ], interactive=False)
+            "dnf", "install", "-y", "--assumeyes", "--nogpgcheck",
+            "--skip-broken", "--setopt=timeout=300"
+        ] + packages, timeout=900)
         logger.info("Package installation successful.")
     except subprocess.CalledProcessError:
         logger.error("Package installation failed.")
-        sys.exit(1)
+        # Try installing packages individually as fallback
+        logger.info("Attempting individual package installation...")
+        failed_packages = []
+        for package in packages:
+            try:
+                run_command([
+                    "dnf", "install", "-y", "--assumeyes", "--nogpgcheck", 
+                    "--setopt=timeout=300", package
+                ], timeout=300)
+                logger.info(f"Successfully installed {package}")
+            except subprocess.CalledProcessError:
+                logger.error(f"Failed to install {package}")
+                failed_packages.append(package)
+        
+        if failed_packages:
+            logger.warning(f"Failed to install: {', '.join(failed_packages)}")
     print_separator()
 
     logger.info("Enabling new services...")
@@ -353,7 +594,7 @@ def update_system():
     ]
     for service in services_to_enable:
         try:
-            run_command(["systemctl", "enable", "--now", service])
+            run_command(["systemctl", "enable", "--now", service], timeout=60)
             logger.info(f"Successfully enabled {service}")
         except subprocess.CalledProcessError:
             logger.error(f"Failed to enable {service}")
@@ -413,7 +654,10 @@ def install_freeipa_server(prefs, hostname_short, ip_address, domain):
     logger.info("Downloading the FreeIPA software...")
     print_separator()
     try:
-        run_command(["dnf", "install", "-y", "--assumeyes", "freeipa-server", "freeipa-server-dns"], interactive=False)
+        run_command([
+            "dnf", "install", "-y", "--assumeyes", "--nogpgcheck", 
+            "--setopt=timeout=300", "freeipa-server", "freeipa-server-dns"
+        ], timeout=900)
         logger.info("FreeIPA server software downloaded successfully.")
     except subprocess.CalledProcessError:
         logger.error("FreeIPA server software download failed.")
@@ -456,12 +700,28 @@ def install_freeipa_server(prefs, hostname_short, ip_address, domain):
     ]
     
     logger.info("Starting FreeIPA installation (this may take several minutes)...")
+    print("\n" + "="*60)
+    print("STARTING FREEIPA INSTALLATION - THIS WILL TAKE 10-30 MINUTES")
+    print("You will see live output below...")
+    print("="*60)
+    
     try:
-        # Run the installation command with interactive=True to allow it to work properly
-        run_command(ipa_install_cmd, interactive=True)
+        # Run the installation command with live output display
+        run_command(ipa_install_cmd, interactive=False, show_live_output=True, timeout=1800)  # 30 minutes timeout
         logger.info("FreeIPA server installed and configured.")
-    except subprocess.CalledProcessError:
+        print("\n" + "="*60)
+        print("FREEIPA INSTALLATION COMPLETED SUCCESSFULLY!")
+        print("="*60)
+    except subprocess.CalledProcessError as e:
         logger.error("FreeIPA installation failed. Check the logs for details.")
+        print(f"\n>>> FREEIPA INSTALLATION FAILED with return code: {e.returncode}")
+        print(">>> Check /var/log/ipaserver-install.log for detailed error information")
+        sys.exit(1)
+    except subprocess.TimeoutExpired:
+        logger.error("FreeIPA installation timed out. This may indicate network issues or insufficient resources.")
+        print("\n>>> FREEIPA INSTALLATION TIMED OUT")
+        print(">>> This may be due to network issues or insufficient system resources")
+        print(">>> You can try running the installation manually with the same parameters")
         sys.exit(1)
     print_separator()
 
