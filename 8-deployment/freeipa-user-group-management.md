@@ -54,30 +54,42 @@ ipa group-add grp-guest --desc='Limited access for guest users' --gid=610000
 
 ## 4. User Management
 
-### Create a New User
+### Example: Creating a Standard User
 
-Here is an example of how to create a new user. The command will prompt for a password.
+This creates a new user and adds them to a single group. The command will prompt for a password.
 
 ```bash
-# Example for creating a user named Jane Smith
+# Create a user named Jane Smith
 ipa user-add jane.smith --first=Jane --last=Smith --email=jane.smith@bjoin.studio --shell=/bin/bash
+
+# Add Jane to the 'grp-studio' group
+ipa group-add-member grp-studio --users=jane.smith
 ```
 
-### Add a User to a Group
+### Example: Creating an Administrator User
 
-This is how you grant a user access to a specific environment.
+This is a real-world example for creating an administrator who needs broad access across multiple environments. It sets a specific UID and GID based on our numbering strategy.
 
 ```bash
-# Example: Add Jane Smith to the 'grp-studio' and 'grp-management' groups
-ipa group-add-member grp-studio --users=jane.smith
-ipa group-add-member grp-management --users=jane.smith
+# Step 1: Create the user with a specific UID and set their primary group to grp-management
+echo "Creating user nick.bjoin..."
+ipa user-add nick.bjoin --first=Nick --last=Bjoin --email=nick.bjoin@bjoin.studio --shell=/bin/bash --uid=510001 --gidnumber=510000
+
+# Step 2: Add the user to their additional access groups
+echo "Adding nick.bjoin to supplemental groups..."
+ipa group-add-member grp-production --users=nick.bjoin
+ipa group-add-member grp-stage --users=nick.bjoin
+ipa group-add-member grp-studio --users=nick.bjoin
+ipa group-add-member grp-workshop --users=nick.bjoin
+
+echo "User setup complete."
 ```
 
 ### Remove a User from a Group
 
 ```bash
-# Example: Remove Jane Smith from the 'grp-management' group
-ipa group-remove-member grp-management --users=jane.smith
+# Example: Remove nick.bjoin from the 'grp-workshop' group
+ipa group-remove-member grp-workshop --users=nick.bjoin
 ```
 
 ## 5. Verification
@@ -87,8 +99,8 @@ ipa group-remove-member grp-management --users=jane.smith
 You can verify a user's details and group memberships.
 
 ```bash
-# See details for jane.smith, including group membership
-ipa user-show jane.smith
+# See details for nick.bjoin, including group membership
+ipa user-show nick.bjoin
 ```
 
 ### Show Group Information
