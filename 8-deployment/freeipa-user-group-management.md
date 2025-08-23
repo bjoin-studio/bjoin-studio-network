@@ -54,28 +54,51 @@ ipa group-add grp-guest --desc='Limited access for guest users' --gid=610000
 
 ## 4. User Management
 
-### Example: Creating a Standard User
+### Create a New User
 
-This creates a new user and adds them to a single group. The command will prompt for a password.
+The `ipa user-add` command creates the account but does not set a password. This must be done in a separate step.
 
 ```bash
-# Create a user named Jane Smith
+# Example for creating a user named Jane Smith
 ipa user-add jane.smith --first=Jane --last=Smith --email=jane.smith@bjoin.studio --shell=/bin/bash
+```
 
-# Add Jane to the 'grp-studio' group
+### Set Initial Password
+
+As an administrator, you must set an initial password for the new user. FreeIPA will require the user to change this password upon their first login.
+
+```bash
+# First, ensure you are authenticated as an IPA admin
+kinit admin
+
+# Now, set the initial password for the new user
+ipa passwd jane.smith
+```
+The system will then prompt you to enter and confirm the new temporary password for the user.
+
+### Add a User to a Group
+
+This is how you grant a user access to a specific environment.
+
+```bash
+# Example: Add Jane Smith to the 'grp-studio' group
 ipa group-add-member grp-studio --users=jane.smith
 ```
 
 ### Example: Creating an Administrator User
 
-This is a real-world example for creating an administrator who needs broad access across multiple environments. It sets a specific UID and GID based on our numbering strategy.
+This is a real-world example for creating an administrator who needs broad access. It combines all the steps: creating the user with a specific UID/GID, setting their password, and adding them to supplemental groups.
 
 ```bash
 # Step 1: Create the user with a specific UID and set their primary group to grp-management
 echo "Creating user nick.bjoin..."
 ipa user-add nick.bjoin --first=Nick --last=Bjoin --email=nick.bjoin@bjoin.studio --shell=/bin/bash --uid=510001 --gidnumber=510000
 
-# Step 2: Add the user to their additional access groups
+# Step 2: Set the initial password for the new user
+# Ensure you have an active admin ticket (kinit admin)
+ipa passwd nick.bjoin
+
+# Step 3: Add the user to their additional access groups
 echo "Adding nick.bjoin to supplemental groups..."
 ipa group-add-member grp-production --users=nick.bjoin
 ipa group-add-member grp-stage --users=nick.bjoin
