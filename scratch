@@ -475,3 +475,26 @@ could we simplify the folder structure?
 10. Future Plans
 11. References
 12. Appendix
+
+  After this, try accessing https://ipa-01.bjoin.studio/ in your browser again. It should now work.
+
+  2. Fix Kerberos (to solve the kinit issue)
+
+  This will tell your Mac what the FreeIPA Kerberos realm is.
+
+   1. Open a terminal on your Mac and run:
+   1     sudo nano /etc/krb5.conf
+   2. Paste the following text into the file:
+
+[libdefaults]
+  default_realm = BJOIN.STUDIO
+  dns_lookup_realm = true
+  dns_lookup_kdc = true
+[realms]
+  BJOIN.STUDIO = {
+    kdc = ipa-01.bjoin.studio
+    admin_server = ipa-01.bjoin.studio
+  }
+[domain_realm]
+  .bjoin.studio = BJOIN.STUDIO
+  bjoin.studio = BJOIN.STUDIO
