@@ -22,11 +22,11 @@ This GID scheme also allows for a logical UID (User ID) numbering system. For ex
 | Group | VLAN Zone | Proposed GID | Example User IDs |
 | :--- | :--- | :--- | :--- |
 | `grp-production` | 1x | **110000** | `110001`, `110002`, ... |
-| `grp-stage` | 2x | **210000** | `210001`, `210002`, ... |
-| `grp-studio` | 3x | **310000** | `310001`, `310002`, ... |
-| `grp-workshop` | 4x | **410000** | `410001`, `410002`, ... |
-| `grp-management` | 5x | **510000** | `510001`, `510002`, ... |
-| `grp-guest` | 6x | **610000** | `610001`, `610002`, ... |
+| `grp-stage` | 2x | **120000** | `120001`, `120002`, ... |
+| `grp-studio` | 3x | **130000** | `130001`, `130002`, ... |
+| `grp-workshop` | 4x | **140000** | `140001`, `140002`, ... |
+| `grp-management` | 5x | **150000** | `150001`, `150002`, ... |
+| `grp-guest` | 6x | **160000** | `160001`, `160002`, ... |
 
 ## 3. Core Access Groups
 
@@ -41,19 +41,19 @@ Run these commands on the FreeIPA server (`ipa-01.bjoin.studio`) to create the c
 ipa group-add grp-production --desc='Access group for the Production environment' --gid=110000
 
 # Stage Environment Group
-ipa group-add grp-stage --desc='Access group for the Stage environment' --gid=210000
+ipa group-add grp-stage --desc='Access group for the Stage environment' --gid=120000
 
 # Studio Environment Group
-ipa group-add grp-studio --desc='Access group for the Studio environment' --gid=310000
+ipa group-add grp-studio --desc='Access group for the Studio environment' --gid=130000
 
 # Workshop Environment Group
-ipa group-add grp-workshop --desc='Access group for the Workshop environment' --gid=410000
+ipa group-add grp-workshop --desc='Access group for the Workshop environment' --gid=140000
 
 # Management Environment Group
-ipa group-add grp-management --desc='Access group for the Management environment' --gid=510000
+ipa group-add grp-management --desc='Access group for the Management environment' --gid=150000
 
 # Guest Access Group
-ipa group-add grp-guest --desc='Limited access for guest users' --gid=610000
+ipa group-add grp-guest --desc='Limited access for guest users' --gid=160000
 ```
 
 ## 4. User Management
@@ -95,8 +95,11 @@ This is a real-world example for creating an administrator who needs broad acces
 
 ```bash
 # Step 1: Create the user with a specific UID and set their primary group to grp-management
+# NOTE: If you experience login issues, omit --uid and --gidnumber and let FreeIPA assign them automatically.
+#       Then, update the documentation with the automatically assigned IDs if you wish to track them.
+
 echo "Creating user nick_bjoin..."
-ipa user-add nick_bjoin --first=Nick --last=Bjoin --email=nick_bjoin@bjoin.studio --shell=/bin/bash --uid=510001 --gidnumber=510000
+ipa user-add nick_bjoin --first=Nick --last=Bjoin --email=nick_bjoin@bjoin.studio --shell=/bin/bash --uid=150001 --gidnumber=150000
 
 # Step 2: Set the initial password for the new user
 # Ensure you have an active admin ticket (kinit admin)
