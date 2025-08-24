@@ -9,7 +9,11 @@ This document outlines the standards and procedures for managing users and group
 
 ## 2. Group ID (GID) Strategy
 
-To create a clear and scalable identity management system, the Group IDs (GIDs) for the core access groups are aligned with the network's VLAN schema. This provides a predictable link between a user's group and their network zone.
+**⚠️ IMPORTANT WARNING: Potential Login Issues with Custom UIDs/GIDs ⚠️**
+
+While this GID strategy is logically sound, it has been observed to cause login failures on certain Linux client configurations (e.g., Fedora Workstation/Server) when users are created with explicitly assigned UIDs and GIDs (e.g., using `--uid` and `--gidnumber` with `ipa user-add`). The exact cause is under investigation, but it appears to be related to how Kerberos or PAM interacts with non-default ID ranges.
+
+**Recommendation:** Unless you have thoroughly tested and confirmed compatibility with your specific client operating systems, it is strongly recommended to **omit the `--uid` and `--gidnumber` flags** when creating users. Allow FreeIPA to assign UIDs and GIDs automatically from its default `idstart` range (typically 100000 and above).
 
 The convention is `XZ0000`, where `X` is the VLAN zone prefix (e.g., `3` for the 3x Studio VLANs) and `Z` is a sub-identifier (e.g., `1` for the primary group in that zone).
 
@@ -91,19 +95,19 @@ This is a real-world example for creating an administrator who needs broad acces
 
 ```bash
 # Step 1: Create the user with a specific UID and set their primary group to grp-management
-echo "Creating user nick.bjoin..."
-ipa user-add nick.bjoin --first=Nick --last=Bjoin --email=nick.bjoin@bjoin.studio --shell=/bin/bash --uid=510001 --gidnumber=510000
+echo "Creating user nick_bjoin..."
+ipa user-add nick_bjoin --first=Nick --last=Bjoin --email=nick_bjoin@bjoin.studio --shell=/bin/bash --uid=510001 --gidnumber=510000
 
 # Step 2: Set the initial password for the new user
 # Ensure you have an active admin ticket (kinit admin)
-ipa passwd nick.bjoin
+ipa passwd nick_bjoin
 
 # Step 3: Add the user to their additional access groups
-echo "Adding nick.bjoin to supplemental groups..."
-ipa group-add-member grp-production --users=nick.bjoin
-ipa group-add-member grp-stage --users=nick.bjoin
-ipa group-add-member grp-studio --users=nick.bjoin
-ipa group-add-member grp-workshop --users=nick.bjoin
+echo "Adding nick_bjoin to supplemental groups..."
+ipa group-add-member grp-production --users=nick_bjoin
+ipa group-add-member grp-stage --users=nick_bjoin
+ipa group-add-member grp-studio --users=nick_bjoin
+ipa group-add-member grp-workshop --users=nick_bjoin
 
 echo "User setup complete."
 ```
@@ -111,8 +115,8 @@ echo "User setup complete."
 ### Remove a User from a Group
 
 ```bash
-# Example: Remove nick.bjoin from the 'grp-workshop' group
-ipa group-remove-member grp-workshop --users=nick.bjoin
+# Example: Remove nick_bjoin from the 'grp-workshop' group
+ipa group-remove-member grp-workshop --users=nick_bjoin
 ```
 
 ## 5. Verification
@@ -122,8 +126,8 @@ ipa group-remove-member grp-workshop --users=nick.bjoin
 You can verify a user's details and group memberships.
 
 ```bash
-# See details for nick.bjoin, including group membership
-ipa user-show nick.bjoin
+# See details for nick_bjoin, including group membership
+ipa user-show nick_bjoin
 ```
 
 ### Show Group Information
