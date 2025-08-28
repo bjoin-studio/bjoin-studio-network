@@ -90,6 +90,7 @@ The repository is organized into the following sections:
 *   [Proxmox Host Backup](8-deployment/proxmox-host-backup.md)
 *   [Proxmox Host Setup Guide](8-deployment/proxmox-host-setup-guide.md)
 *   [Proxmox Monitoring Setup](8-deployment/proxmox-monitoring-setup.md)
+*   [QNAP Monitoring Setup](8-deployment/qnap-monitoring-setup.md)
 *   [Server Onboarding](8-deployment/server-onboarding.md)
 *   [Sodola Switch VLAN Configuration](8-deployment/sodola-switch-vlan-configuration.md)
 *   [TrueNAS Monitoring Setup](8-deployment/truenas-monitoring-setup.md)
