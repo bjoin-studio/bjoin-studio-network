@@ -72,6 +72,8 @@ The repository is organized into the following sections:
 *   [Firewall Firmware Updates](8-deployment/firewall-firmware-updates.md)
 *   [FreeIPA Server Setup Guide](8-deployment/freeipa-server-setup-guide.md)
 *   [FreeIPA User Group Management](8-deployment/freeipa-user-group-management.md)
+*   [FreeIPA Monitoring Setup](8-deployment/freeipa-monitoring-setup.md)
+*   [Grafana Docker Setup](8-deployment/grafana-docker-setup.md)
 *   [Monitoring VM Setup Proxmox](8-deployment/monitoring-vm-setup-proxmox.md)
 *   [Netgear GS108Ev4 Manual VLAN Config](8-deployment/netgear-gs108ev4-manual-vlan-config.md)
 *   [Netgear GS108Ev4 Switch VLAN Configuration](8-deployment/netgear-gs108ev4-switch-vlan-configuration.md)
@@ -84,10 +86,13 @@ The repository is organized into the following sections:
 *   [OPNsense VLAN Config 4x Workshop](8-deployment/opnsense-vlan-config-4x-workshop.md)
 *   [OPNsense VLAN Config 5x Management](8-deployment/opnsense-vlan-config-5x-management.md)
 *   [OPNsense VLAN Config 6x Guest](8-deployment/opnsense-vlan-config-6x-guest.md)
+*   [OPNsense Monitoring Setup](8-deployment/opnsense-monitoring-setup.md)
 *   [Proxmox Host Backup](8-deployment/proxmox-host-backup.md)
 *   [Proxmox Host Setup Guide](8-deployment/proxmox-host-setup-guide.md)
+*   [Proxmox Monitoring Setup](8-deployment/proxmox-monitoring-setup.md)
 *   [Server Onboarding](8-deployment/server-onboarding.md)
 *   [Sodola Switch VLAN Configuration](8-deployment/sodola-switch-vlan-configuration.md)
+*   [TrueNAS Monitoring Setup](8-deployment/truenas-monitoring-setup.md)
 
 ### 9. Maintenance
 *   [Backup and Recovery Plan](9-maintenance/backup-and-recovery-plan.md)
@@ -103,9 +108,10 @@ The repository is organized into the following sections:
 *   [References](11-references/references.md)
 
 ### 12. Appendix
-*   [GEMINI.md](12-appendix/GEMINI.md)
-*   [Asset Management](12-appendix/asset-management.md)
-*   [Host Naming Conventions](12-appendix/host-naming-conventions.md)
 *   [Acceptable Use Policy](12-appendix/acceptable-use-policy.md)
+*   [Asset Management](12-appendix/asset-management.md)
+*   [Credential Management Best Practices](12-appendix/security/credential-management-best-practices.md)
 *   [Firewall Rule Policy](12-appendix/firewall-rule-policy.md)
+*   [GEMINI.md](12-appendix/GEMINI.md)
+*   [Host Naming Conventions](12-appendix/host-naming-conventions.md)
 *   [VPN Access Policy](12-appendix/vpn-access-policy.md)

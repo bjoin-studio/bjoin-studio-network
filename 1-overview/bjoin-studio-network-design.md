@@ -1,5 +1,21 @@
 # 🍌 bjoin.studio Network Architecture Setup Guide
 
+This guide explains how our studio's computer network is set up. Think of it as the digital highway system for all our devices, from computers and cameras to specialized studio equipment. Our goal is to make sure everything runs smoothly, securely, and efficiently.
+
+**How the Internet Connects:**
+Imagine the internet as a vast, global highway. Our studio's connection to this highway comes through our Internet Service Provider (ISP) and enters our main network device, the "router on a stick." This isn't a literal stick, but a clever way we use a single physical connection to handle many different virtual network lanes (VLANs). It's like having one main road that branches off into many smaller, organized streets.
+
+**The Firewall: Our Digital Gatekeeper:**
+Right after the internet connection, we have our firewall. This is like a vigilant security guard at the entrance of our studio. Its job is to inspect all incoming and outgoing digital traffic. It only allows authorized traffic to pass, blocking anything suspicious or unwanted. This keeps our network safe from external threats and ensures our sensitive data stays private.
+
+**VLANs: Keeping Everyone in Their Lanes:**
+Inside our studio, we have different teams and types of equipment. For example, our production team needs access to specific high-performance storage, while our guest Wi-Fi needs to be completely separate for security. This is where VLANs (Virtual Local Area Networks) come in. Think of VLANs as dedicated, separate lanes on our digital highway. Each lane is for a specific group or type of device. This means:
+*   The production team's devices stay in their lane, accessing only what they need.
+*   Guest devices stay in their own isolated lane, preventing them from accessing our internal studio resources.
+*   Our IT management tools have their own secure lane.
+
+This organization prevents congestion, improves security by isolating different types of traffic, and ensures that everyone stays in their designated "lane" on the network.
+
 This guide outlines the full setup of your studio network using the updated VLAN schema, bandwidth tiers, device roles, and routing policies. It’s optimized for deployment with OPNsense on a Protectli Vault.
 
 ---

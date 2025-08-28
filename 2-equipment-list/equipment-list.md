@@ -4,12 +4,13 @@ This document lists the network, storage, and computer equipment used in the bjo
 
 ## Network Equipment
 
-*   **ISP Modem:** (Unknown brand)
-*   **Firewall:** Protectli FW4B (opnsense-fw.bjoin.studio) - 4 x 1Gb Ethernet ports
-*   **Distribution Switch:** Sodola KT-NOS SL-SWTGW2C8F 8 port 10Gb Ethernet Managed Switch
-*   **Core Switch:** Cisco NEXUS 9236c 36 port 100Gb Ethernet Managed Switch
-*   **Access Switch:** Bitengine SW08XM 8 port 1Gb Ethernet Managed Switch
+*   **Access Switch:** Bitengine SW08XM 8 port 10Gb Ethernet Managed Switch
 *   **Access Switch:** Netgear GS108Ev4 8 port 1Gb Ethernet Managed Switch
+*   **Core Switch:** Cisco NEXUS 9236c 36 port 100Gb Ethernet Managed Switch
+*   **Distribution Switch:** Sodola KT-NOS SL-SWTGW2C8F 8 port 10Gb Ethernet Managed Switch
+*   **Firewall:** Protectli FW4B (opnsense-fw.bjoin.studio) - 4 x 1Gb Ethernet ports
+*   **ISP Modem:** (Unknown brand)
+*   **Managed PoE Switch:** TP-Link TL-SG2428P (Jetstream 24 Port Gigabit Smart Managed PoE Switch) - 24 PoE+ Ports @250W, 4 SFP Slots
 *   **Unmanaged Switch:** Netgear GS105 5 port 1Gb Ethernet Unmanaged Switch
 
 ## Storage Equipment
@@ -26,3 +27,4 @@ This document lists the network, storage, and computer equipment used in the bjo
 *   **iMac 27":** (venus.bjoin.studio) - 2x 1Gb Ethernet Ports
 *   **iMac Pro:** (mars.bjoin.studio) - 10Gb Ethernet Port
 *   **Mac Pro 6,1:** (pmx-01.bjoin.studio) (Proxmox 9 / FreeIPA VM)
+*   **Raspberry Pi 5:** (hostname pending) - 1Gb Ethernet Port (temporary IP: 10.10.201.80)
