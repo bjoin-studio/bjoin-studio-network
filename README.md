@@ -94,6 +94,29 @@ The repository is organized into the following sections:
 *   [Server Onboarding](8-deployment/server-onboarding.md)
 *   [Sodola Switch VLAN Configuration](8-deployment/sodola-switch-vlan-configuration.md)
 *   [TrueNAS Monitoring Setup](8-deployment/truenas-monitoring-setup.md)
+*   [VLAN and SNMP Monitoring Guide](8-deployment/vlan-and-snmp-monitoring-guide.md)
+
+### 9. Maintenance
+*   [Backup and Recovery Plan](9-maintenance/backup-and-recovery-plan.md)
+*   [Disaster Recovery Plan](9-maintenance/disaster-recovery-plan.md)
+*   [Change Management Log](9-maintenance/change-management-log.md)
+*   [Incident Response Plan](9-maintenance/incident-response-plan.md)
+*   [Vulnerability Management Plan](9-maintenance/vulnerability-management-plan.md)
+
+### 10. Future Plans
+*   [Roadmap](10-future-plans/roadmap.md)
+
+### 11. References
+*   [References](11-references/references.md)
+
+### 12. Appendix
+*   [Acceptable Use Policy](12-appendix/acceptable-use-policy.md)
+*   [Asset Management](12-appendix/asset-management.md)
+*   [Credential Management Best Practices](12-appendix/security/credential-management-best-practices.md)
+*   [Firewall Rule Policy](12-appendix/firewall-rule-policy.md)
+*   [GEMINI.md](12-appendix/GEMINI.md)
+*   [Host Naming Conventions](12-appendix/host-naming-conventions.md)
+*   [VPN Access Policy](12-appendix/vpn-access-policy.md)
 
 ### 9. Maintenance
 *   [Backup and Recovery Plan](9-maintenance/backup-and-recovery-plan.md)

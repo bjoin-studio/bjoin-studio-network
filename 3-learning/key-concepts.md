@@ -84,3 +84,64 @@ FreeIPA traffic is generally not heavy. A 1Gbps connection is more than sufficie
 ### When Could it Spike?
 
 The only time you might see a spike in FreeIPA traffic is during a "login storm" – for example, if everyone in the studio logs in at exactly the same time on a Monday morning. Even in this worst-case scenario, the traffic is highly unlikely to saturate a 1Gbps link.
+
+## Host-Based Access Control (HBAC) with FreeIPA
+
+Host-Based Access Control (HBAC) is one of the most powerful features of FreeIPA. It allows you to create very specific, fine-grained rules about who can access what services on which machines.
+
+Think of it as a centralized firewall for user access. Instead of managing access lists on every single server, you define all the rules in one place: the FreeIPA server.
+
+An HBAC rule has three main components:
+*   **Who:** The users and user groups the rule applies to (e.g., `sysadmins`, `vfx_artists`).
+*   **Accessing:** The target hosts and host groups the rule applies to (e.g., `web_servers`, `render_nodes`).
+*   **Via:** The services the user is allowed to access on those hosts (e.g., `sshd` for SSH, `sudo`).
+
+By default, FreeIPA has a rule called `allow_all` which is enabled. For a secure environment, the first step is to disable this rule and then build your own specific rules from the ground up. This enforces a "deny by default" policy, which is a security best practice.
+
+## Understanding Digital Certificates
+
+Digital certificates are the foundation of trust and security on modern networks. They are electronic credentials that prove the identity of a person, server, or device, and they are essential for enabling encrypted communication (HTTPS, TLS).
+
+A certificate contains several key pieces of information:
+*   **Subject:** The identity of the certificate holder (e.g., the domain name of a website like `grafana.bjoin.studio`).
+*   **Public Key:** A cryptographic key that can be shared with anyone. Its corresponding private key is kept secret by the subject.
+*   **Issuer (Certificate Authority - CA):** The trusted entity that signed and issued the certificate, verifying that the subject is who they say they are.
+*   **Validity Period:** The dates for which the certificate is valid.
+
+When your browser connects to a secure website, the website presents its certificate. Your browser checks if it trusts the "Issuer" (the CA). If the CA is in your browser's built-in list of trusted authorities (like Let's Encrypt or DigiCert), the connection is trusted.
+
+## Managing Trust with a Self-Signed Certificate Authority (CA)
+
+For an internal network like `bjoin.studio`, buying public certificates for every internal service is impractical and unnecessary. Instead, we become our own Certificate Authority. This is known as creating a "self-signed" or "private" CA.
+
+The process involves two main stages:
+
+### Stage 1: Create Your Own Internal CA
+
+First, you generate a special root certificate that acts as the ultimate source of trust for your entire internal network. This is your "bjoin.studio Internal Root CA". This CA has its own private key (which must be kept extremely secure) and a public certificate.
+
+### Stage 2: Issue and Trust Certificates
+
+Once you have your internal CA, you can use it to sign and issue certificates for all of your internal services (e.g., `prometheus.bjoin.studio`, `opnsense.bjoin.studio`, etc.).
+
+The crucial final step is to **distribute the public certificate of your "bjoin.studio Internal Root CA" to all client devices on your network**. By installing this CA certificate into the "Trusted Root Certification Authorities" store on your computers (Windows, macOS, Linux), you are telling them: "Any certificate signed by this internal CA should be trusted completely."
+
+This provides several benefits:
+*   **Full Encryption:** All internal traffic can be encrypted.
+*   **No More Errors:** You get the green padlock in your browser for all internal sites without any security warnings.
+*   **Enhanced Security:** It allows services like the Docker daemon to be configured for secure, encrypted remote access (TLS).
+
+Setting up a private CA is a foundational step for building a secure and professional internal network environment.
+
+### Do You Need a Dedicated CA Server?
+
+This is an excellent question. A Certificate Authority is not necessarily a server. It's more accurate to say a CA is a **trusted entity that is represented by a root certificate and its corresponding private key**. These are, fundamentally, files.
+
+The *process* of signing certificates can be done on any machine that has the CA's private key. For high-security environments, this is often done on a completely offline computer.
+
+**For the `bjoin.studio` network, you do not need a dedicated CA server.** You already have two powerful CA management systems built into your key infrastructure:
+
+1.  **FreeIPA:** Your FreeIPA server has its own built-in CA. It automatically creates and manages certificates for all the servers and services that are enrolled in your FreeIPA domain. This is the most convenient option for domain-joined machines.
+2.  **OPNsense:** Your OPNsense firewall also has a full-featured Certificate Authority manager. This is perfect for creating certificates for devices or services that are *not* part of your FreeIPA domain, or for things like user VPN certificates.
+
+**Recommendation:** Use the FreeIPA CA for everything related to your IPA domain, and use the OPNsense CA for everything else.
