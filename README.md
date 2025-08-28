@@ -49,6 +49,9 @@ The repository is organized into the following sections:
 *   [FreeIPA Groups Ideas](4-insights/freeipa-groups-ideas.md)
 *   [Network Design Considerations](4-insights/network-design-considerations.md)
 *   [Repository Insights](4-insights/repository-insights.md)
+*   [VLAN Monitoring Considerations: Similarities and Differences](4-insights/vlan-monitoring-considerations.md)
+*   [Centralized Logging Server: A Cornerstone of Network Operations](4-insights/centralized-logging-server-insight.md)
+*   [APC UPS Network Integration: Insights and Best Practices](4-insights/apc-ups-network-integration-insight.md)
 
 ### 5. Physical Layout
 *   [Data Flow Diagrams](5-physical-layout/data-flow-diagrams.md)
@@ -69,6 +72,7 @@ The repository is organized into the following sections:
 ### 8. Deployment
 *   [Bootstrapping Managed Switch Guide](8-deployment/bootstrapping-managed-switch-guide.md)
 *   [Cisco Nexus 9236c Initial Setup](8-deployment/cisco-nexus-9236c-initial-setup.md)
+*   [Cisco Nexus 9236C - SNMP and Grafana Integration Runbook](8-deployment/cisco-nexus-9236c-snmp-grafana-setup.md)
 *   [Firewall Firmware Updates](8-deployment/firewall-firmware-updates.md)
 *   [FreeIPA Server Setup Guide](8-deployment/freeipa-server-setup-guide.md)
 *   [FreeIPA User Group Management](8-deployment/freeipa-user-group-management.md)
@@ -95,6 +99,7 @@ The repository is organized into the following sections:
 *   [Sodola Switch VLAN Configuration](8-deployment/sodola-switch-vlan-configuration.md)
 *   [TrueNAS Monitoring Setup](8-deployment/truenas-monitoring-setup.md)
 *   [VLAN and SNMP Monitoring Guide](8-deployment/vlan-and-snmp-monitoring-guide.md)
+*   [Guest VLAN Monitoring and Security Runbook](docs/operational/guest-vlan-monitoring.md)
 
 ### 9. Maintenance
 *   [Backup and Recovery Plan](9-maintenance/backup-and-recovery-plan.md)

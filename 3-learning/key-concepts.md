@@ -79,6 +79,7 @@ FreeIPA traffic is generally not heavy. A 1Gbps connection is more than sufficie
 
 *   **Lightweight Traffic:** FreeIPA traffic mostly consists of small, quick transactions like DNS lookups, Kerberos authentication tickets, and LDAP queries. These are very small packets and don't consume much bandwidth.
 *   **Not a File Server:** You won't be transferring large files to or from the FreeIPA server. It's purely for authentication and identity management.
+
 *   **The Real Bottleneck:** If you were to experience performance issues with FreeIPA, the bottleneck would almost certainly be the CPU or the disk I/O on the Proxmox host, not the network connection.
 
 ### When Could it Spike?
@@ -108,7 +109,7 @@ A certificate contains several key pieces of information:
 *   **Issuer (Certificate Authority - CA):** The trusted entity that signed and issued the certificate, verifying that the subject is who they say they are.
 *   **Validity Period:** The dates for which the certificate is valid.
 
-When your browser connects to a secure website, the website presents its certificate. Your browser checks if it trusts the "Issuer" (the CA). If the CA is in your browser's built-in list of trusted authorities (like Let's Encrypt or DigiCert), the connection is trusted.
+When your browser connects to a secure website, the website presents its certificate. Your browser checks if it trusts the "Issuer" (CA). If the CA is in your browser's built-in list of trusted authorities (like Let's Encrypt or DigiCert), the connection is trusted.
 
 ## Managing Trust with a Self-Signed Certificate Authority (CA)
 
@@ -145,3 +146,83 @@ The *process* of signing certificates can be done on any machine that has the CA
 2.  **OPNsense:** Your OPNsense firewall also has a full-featured Certificate Authority manager. This is perfect for creating certificates for devices or services that are *not* part of your FreeIPA domain, or for things like user VPN certificates.
 
 **Recommendation:** Use the FreeIPA CA for everything related to your IPA domain, and use the OPNsense CA for everything else.
+
+## Simple Network Management Protocol (SNMP)
+
+SNMP is an Internet Standard protocol for collecting and organizing information about managed devices on IP networks and for modifying that information to change device behavior. Devices that typically support SNMP include routers, switches, servers, workstations, printers, and more.
+
+**How SNMP Works:**
+*   **Managed Devices:** Network devices that run an SNMP agent.
+*   **SNMP Agent:** Software that runs on a managed device and translates local management information into a format compatible with SNMP.
+*   **Network Management Station (NMS):** A console or set of applications used to monitor and manage network devices. Grafana, when integrated with a data source like Prometheus or InfluxDB, can act as an NMS for visualizing SNMP data.
+*   **Management Information Base (MIB):** A hierarchical database of network device objects that can be managed using SNMP. Each object in the MIB has a unique Object Identifier (OID).
+
+**Enabling SNMP on Switches:**
+Enabling SNMP on a switch typically involves:
+1.  **Enabling the SNMP service:** Turning on the SNMP agent on the device.
+2.  **Configuring SNMP communities:** These are essentially passwords that allow access to the SNMP agent.
+    *   **Read-only (RO) community:** Allows an NMS to retrieve information from the device.
+    *   **Read-write (RW) community:** Allows an NMS to retrieve and modify information on the device (use with extreme caution).
+3.  **Defining SNMP views:** Limiting the MIB objects that can be accessed by certain communities.
+4.  **Configuring SNMP traps/informs:** Setting up the switch to send notifications (traps) to the NMS when specific events occur (e.g., a port going down).
+5.  **Specifying NMS hosts:** Limiting which IP addresses are allowed to query the SNMP agent.
+
+## Commonly Used Naming Convention for Cable Labels
+
+Adhering to a consistent naming convention for cable labels is crucial for efficient network management, troubleshooting, and documentation. The goal is to provide clear, concise, and actionable information at a glance.
+
+### Key Elements of a Good Cable Labeling Convention:
+
+1.  **Source (From):** Where the cable originates.
+2.  **Destination (To):** Where the cable terminates.
+3.  **Port/Interface:** The specific port number on the device.
+4.  **Device Identifier:** A unique name or ID for the device (e.g., switch name, server name).
+5.  **Cable Type (Optional but Recommended):** Especially useful for mixed environments (e.g., Cat6a, Fiber, Coax).
+6.  **VLAN (Optional but Recommended):** If the port is assigned to a specific VLAN.
+
+### Common Naming Convention Approaches/Examples:
+
+The most common and highly recommended approach is a **"From-To"** or **"Source-Destination"** format, applied at *both ends* of the cable. This means each end of the cable has a label indicating where it's coming from and where it's going.
+
+**Example Format:** `[Source_Device]-[Source_Port] -> [Destination_Device]-[Destination_Port]`
+
+Let's break down some variations:
+
+**1. Simple Device-Port (Most Common):**
+This is the most fundamental and widely adopted.
+*   **Label on End A:** `SW1-G0/1 -> SRV-NIC0`
+*   **Label on End B:** `SRV-NIC0 -> SW1-G0/1`
+    *   **Explanation:** Cable connects Switch 1, Gigabit Ethernet port 0/1, to Server's Network Interface Card 0.
+
+**2. Including Location/Rack (for larger environments):**
+Useful in data centers or multi-floor buildings.
+*   **Label on End A:** `RACK1-SW1-G0/1 -> RACK2-SRV-NIC0`
+*   **Label on End B:** `RACK2-SRV-NIC0 -> RACK1-SW1-G0/1`
+    *   **Explanation:** Adds rack or location identifier.
+
+**3. Including VLAN (for clarity on trunk/access ports):**
+Especially helpful when troubleshooting VLAN issues.
+*   **Label on End A:** `SW1-G0/1(VLAN10) -> AP1-ETH0`
+*   **Label on End B:** `AP1-ETH0 -> SW1-G0/1(VLAN10)`
+    *   **Explanation:** Indicates the port is associated with VLAN 10. For trunk ports, you might list multiple VLANs or just indicate "TRUNK".
+
+**4. Including Cable Type (for quick identification):**
+*   **Label on End A:** `SW1-G0/1 -> SRV-NIC0 (C6A)`
+*   **Label on End B:** `SRV-NIC0 -> SW1-G0/1 (C6A)`
+    *   **Explanation:** "C6A" for Cat6a.
+
+**5. Using a Unique Cable ID (for complex tracing):**
+Some organizations assign a unique ID to each physical cable run, which is then referenced in documentation.
+*   **Label on End A:** `CBL-001-A` (with `SW1-G0/1` written below or on the other side)
+*   **Label on End B:** `CBL-001-B` (with `SRV-NIC0` written below or on the other side)
+    *   **Explanation:** `CBL-001` is the unique identifier for that specific cable. Details are in a database.
+
+### Best Practices for Cable Labeling:
+
+*   **Label Both Ends:** Always label both ends of the cable with the same information, just reversed (source on one end, destination on the other). This is the single most important rule.
+*   **Consistency:** Once you choose a convention, stick to it rigorously across your entire network.
+*   **Conciseness:** Keep labels as short as possible while still being informative. Use abbreviations where clear.
+*   **Durability:** Use high-quality, durable labels that are resistant to fading, smudging, and peeling. Heat-shrink labels are excellent.
+*   **Readability:** Use a clear font and ensure the label is positioned so it can be easily read without disconnecting the cable.
+*   **Logical Order:** Typically, `FROM -> TO` is the most intuitive flow.
+*   **Documentation:** Maintain a separate, centralized document (like a spreadsheet or network diagram) that maps out all cable runs and their corresponding labels. This is your ultimate source of truth.
