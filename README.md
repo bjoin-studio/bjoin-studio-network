@@ -1,146 +1,115 @@
 # Bjoin Studio Network
 
-This repository contains the documentation, configuration, and automation for the bjoin.studio network.
+This document is designed to help you understand the bjoin.studio network designed for the creative photography studio of Bjoin Films. This repository contains comprehensive details about the design, construction and maintainmaintenanceof this infrastructure.
 
-## How to Use This Repository
+## What You'll Find Here
 
-This repository is designed to be a living document that can be used by both technical and non-technical people to understand and recreate the bjoin.studio network.
+This network uses enterprise-grade security with Linux-based systems, centralized identity management, and segmented VLANs for different work areas. Whether you're learning networking concepts or building your own studio network, this documentation provides both educational content and practical implementation guides.
 
-The repository is organized into the following sections:
+## Choose Your Path
 
-**1. Overview:** Start here for a high-level overview of the project.
+### 🎯 **New to Networking?** → [Start with Fundamentals](3-learning/)
+Learn the core concepts behind modern network design, including VLANs, firewalls, and identity management. No prior experience required.
 
-**2. Equipment List:** A list of all the hardware used in the network.
+- [Key Network Concepts](3-learning/key-concepts.md) - Essential concepts explained simply
+- [Network Design Philosophy](4-insights/network-design-considerations.md) - Why we made these choices
 
-**3. Learning:** Explanations of the key concepts and architectural decisions behind the network design.
+### 🛠️ **Ready to Build?** → [Implementation Guides](8-deployment/)
+Step-by-step instructions for setting up each component. Start with the basics and work your way up.
 
-**4. Insights:** Interesting findings and ideas related to the network.
+**Essential Setup (in order):**
+1. [Firewall Setup](8-deployment/opnsense-initial-setup-guide.md) - Your network's security foundation
+2. [Identity Server Setup](8-deployment/freeipa-server-setup-guide.md) - Centralized user management
+3. [Switch Configuration](8-deployment/netgear-gs108ev4-switch-vlan-configuration.md) - Network segmentation
+4. [Monitoring Setup](8-deployment/network-monitoring-setup.md) - Keep an eye on everything
 
-**5. Physical Layout:** Diagrams and guides for the physical setup of the network.
+### 🔧 **Managing an Existing Network?** → [Operations](9-maintenance/)
+Daily tasks, troubleshooting, and maintenance procedures for keeping things running smoothly.
 
-**6. Configuration:** The nitty-gritty details of the network configuration, including VLANs, IP addresses, and device settings.
+### 📋 **Need Specific Info?** → [Reference Materials](#reference-materials)
+Quick access to configurations, equipment lists, and technical details.
 
-**7. Testing:** How to test the network to make sure it's working correctly.
+---
 
-**8. Deployment:** Step-by-step guides for setting up and configuring the network devices.
+## Network Overview
 
-**9. Maintenance:** How to keep the network running smoothly, including backup and disaster recovery plans.
+This network serves different work areas through isolated VLANs:
+- **Production** - Critical creative workstations and render systems
+- **Studio** - General creative work and collaboration spaces  
+- **Management** - Servers, storage, and infrastructure systems
+- **Workshop** - Development, testing, and experimental work
+- **Guest** - Visitor access with restricted permissions
 
-**10. Future Plans:** The roadmap for the future of the network.
+All systems use centralized authentication through FreeIPA, providing single sign-on and consistent security policies across the entire network.
 
-**11. References:** Links to external resources.
+## Quick Reference
 
-**12. Appendix:** Additional information, such as naming conventions and security policies.
+### Essential Documents
+- [Equipment List](2-equipment-list/equipment-list.md) - What hardware you'll need
+- [Network Diagrams](5-physical-layout/) - Visual overview of connections
+- [IP Address Plan](6-configuration/ip-address-management.md) - How addresses are organized
 
-## Table of Contents
+### Common Tasks
+- [Adding New Users](8-deployment/freeipa-user-group-management.md)
+- [Configuring New Devices](8-deployment/server-onboarding.md)
+- [Backup Procedures](9-maintenance/backup-and-recovery-plan.md)
 
-### 1. Overview
-*   [README.md](1-overview/README.md)
+## Reference Materials
 
-### 2. Equipment List
-*   [Equipment List](2-equipment-list/equipment-list.md)
+<details>
+<summary>📚 Learning Resources</summary>
 
-### 3. Learning
-*   [Key Concepts](3-learning/key-concepts.md)
-*   [Network Device Role Optimization](3-learning/network-device-role-optimization.md)
+- [Key Concepts](3-learning/key-concepts.md)
+- [Device Optimization](3-learning/network-device-role-optimization.md)
+- [Design Insights](4-insights/)
+- [ZFS and FreeIPA Best Practices](4-insights/freeipa-and-zfs-insights.md)
 
-### 4. Insights
-*   [FreeIPA and ZFS Insights](4-insights/freeipa-and-zfs-insights.md)
-*   [FreeIPA Groups Ideas](4-insights/freeipa-groups-ideas.md)
-*   [Network Design Considerations](4-insights/network-design-considerations.md)
-*   [Repository Insights](4-insights/repository-insights.md)
-*   [VLAN Monitoring Considerations: Similarities and Differences](4-insights/vlan-monitoring-considerations.md)
-*   [Centralized Logging Server: A Cornerstone of Network Operations](4-insights/centralized-logging-server-insight.md)
-*   [APC UPS Network Integration: Insights and Best Practices](4-insights/apc-ups-network-integration-insight.md)
+</details>
 
-### 5. Physical Layout
-*   [Data Flow Diagrams](5-physical-layout/data-flow-diagrams.md)
-*   [Logical Diagram](5-physical-layout/logical-diagram.md)
-*   [Physical Cabling Guide](5-physical-layout/physical-c cabling-guide.md)
-*   [Physical Diagram](5-physical-layout/physical-diagram.md)
+<details>
+<summary>🔧 Implementation Guides</summary>
 
-### 6. Configuration
-*   [Network Design](6-configuration/bjoin-studio-network-design.md)
-*   [Netgear GS108Ev4 Port Config](6-configuration/netgear-gs108ev4-port-config.md)
-*   [IP Address Management](6-configuration/ip-address-management.md)
-*   [Ansible](6-configuration/ansible)
-*   [Device Configurations](6-configuration/cfg)
+**Core Infrastructure:**
+- [Firewall Configuration](8-deployment/opnsense-initial-setup-guide.md)
+- [Identity Management](8-deployment/freeipa-server-setup-guide.md)
+- [Virtualization Platform](8-deployment/proxmox-host-setup-guide.md)
+- [Storage System](8-deployment/truenas-server-setup-guide.md)
 
-### 7. Testing
-*   [VLAN Testing Procedure](7-testing/vlan-testing-procedure.md)
+**Network Devices:**
+- [Cisco Switch Setup](8-deployment/cisco-nexus-9236c-initial-setup.md)
+- [Managed Switch Config](8-deployment/netgear-gs108ev4-switch-vlan-configuration.md)
 
-### 8. Deployment
-*   [Bootstrapping Managed Switch Guide](8-deployment/bootstrapping-managed-switch-guide.md)
-*   [Cisco Nexus 9236c Initial Setup](8-deployment/cisco-nexus-9236c-initial-setup.md)
-*   [Cisco Nexus 9236C - SNMP and Grafana Integration Runbook](8-deployment/cisco-nexus-9236c-snmp-grafana-setup.md)
-*   [Firewall Firmware Updates](8-deployment/firewall-firmware-updates.md)
-*   [FreeIPA Server Setup Guide](8-deployment/freeipa-server-setup-guide.md)
-*   [FreeIPA User Group Management](8-deployment/freeipa-user-group-management.md)
-*   [FreeIPA Monitoring Setup](8-deployment/freeipa-monitoring-setup.md)
-*   [Grafana Docker Setup](8-deployment/grafana-docker-setup.md)
-*   [Monitoring VM Setup Proxmox](8-deployment/monitoring-vm-setup-proxmox.md)
-*   [Netgear GS108Ev4 Manual VLAN Config](8-deployment/netgear-gs108ev4-manual-vlan-config.md)
-*   [Netgear GS108Ev4 Switch VLAN Configuration](8-deployment/netgear-gs108ev4-switch-vlan-configuration.md)
-*   [Network Monitoring Setup](8-deployment/network-monitoring-setup.md)
-*   [Network Physical Logical Connections](8-deployment/network-physical-logical-connections.md)
-*   [OPNsense Initial Setup Guide](8-deployment/opnsense-initial-setup-guide.md)
-*   [OPNsense VLAN Config 1x Production](8-deployment/opnsense-vlan-config-1x-production.md)
-*   [OPNsense VLAN Config 2x Stage](8-deployment/opnsense-vlan-config-2x-stage.md)
-*   [OPNsense VLAN Config 3x Studio](8-deployment/opnsense-vlan-config-3x-studio.md)
-*   [OPNsense VLAN Config 4x Workshop](8-deployment/opnsense-vlan-config-4x-workshop.md)
-*   [OPNsense VLAN Config 5x Management](8-deployment/opnsense-vlan-config-5x-management.md)
-*   [OPNsense VLAN Config 6x Guest](8-deployment/opnsense-vlan-config-6x-guest.md)
-*   [OPNsense Monitoring Setup](8-deployment/opnsense-monitoring-setup.md)
-*   [Proxmox Host Backup](8-deployment/proxmox-host-backup.md)
-*   [Proxmox Host Setup Guide](8-deployment/proxmox-host-setup-guide.md)
-*   [Proxmox Monitoring Setup](8-deployment/proxmox-monitoring-setup.md)
-*   [QNAP Monitoring Setup](8-deployment/qnap-monitoring-setup.md)
-*   [Server Onboarding](8-deployment/server-onboarding.md)
-*   [Sodola Switch VLAN Configuration](8-deployment/sodola-switch-vlan-configuration.md)
-*   [TrueNAS Monitoring Setup](8-deployment/truenas-monitoring-setup.md)
-*   [VLAN and SNMP Monitoring Guide](8-deployment/vlan-and-snmp-monitoring-guide.md)
-*   [Guest VLAN Monitoring and Security Runbook](docs/operational/guest-vlan-monitoring.md)
+**Monitoring & Management:**
+- [Network Monitoring](8-deployment/network-monitoring-setup.md)
+- [Grafana Dashboard](8-deployment/grafana-docker-setup.md)
 
-### 9. Maintenance
-*   [Backup and Recovery Plan](9-maintenance/backup-and-recovery-plan.md)
-*   [Disaster Recovery Plan](9-maintenance/disaster-recovery-plan.md)
-*   [Change Management Log](9-maintenance/change-management-log.md)
-*   [Incident Response Plan](9-maintenance/incident-response-plan.md)
-*   [Vulnerability Management Plan](9-maintenance/vulnerability-management-plan.md)
+</details>
 
-### 10. Future Plans
-*   [Roadmap](10-future-plans/roadmap.md)
+<details>
+<summary>⚙️ Configuration Files</summary>
 
-### 11. References
-*   [References](11-references/references.md)
+- [Device Configurations](6-configuration/cfg/)
+- [Ansible Automation](6-configuration/ansible/)
+- [Prometheus Monitoring](6-configuration/prometheus/)
 
-### 12. Appendix
-*   [Acceptable Use Policy](12-appendix/acceptable-use-policy.md)
-*   [Asset Management](12-appendix/asset-management.md)
-*   [Credential Management Best Practices](12-appendix/security/credential-management-best-practices.md)
-*   [Firewall Rule Policy](12-appendix/firewall-rule-policy.md)
-*   [GEMINI.md](12-appendix/GEMINI.md)
-*   [Host Naming Conventions](12-appendix/host-naming-conventions.md)
-*   [VPN Access Policy](12-appendix/vpn-access-policy.md)
+</details>
 
-### 9. Maintenance
-*   [Backup and Recovery Plan](9-maintenance/backup-and-recovery-plan.md)
-*   [Disaster Recovery Plan](9-maintenance/disaster-recovery-plan.md)
-*   [Change Management Log](9-maintenance/change-management-log.md)
-*   [Incident Response Plan](9-maintenance/incident-response-plan.md)
-*   [Vulnerability Management Plan](9-maintenance/vulnerability-management-plan.md)
+<details>
+<summary>📋 Policies & Procedures</summary>
 
-### 10. Future Plans
-*   [Roadmap](10-future-plans/roadmap.md)
+- [Security Policies](12-appendix/firewall-rule-policy.md)
+- [Naming Conventions](12-appendix/host-naming-conventions.md)
+- [Incident Response](9-maintenance/incident-response-plan.md)
+- [Disaster Recovery](9-maintenance/disaster-recovery-plan.md)
 
-### 11. References
-*   [References](11-references/references.md)
+</details>
 
-### 12. Appendix
-*   [Acceptable Use Policy](12-appendix/acceptable-use-policy.md)
-*   [Asset Management](12-appendix/asset-management.md)
-*   [Credential Management Best Practices](12-appendix/security/credential-management-best-practices.md)
-*   [Firewall Rule Policy](12-appendix/firewall-rule-policy.md)
-*   [GEMINI.md](12-appendix/GEMINI.md)
-*   [Host Naming Conventions](12-appendix/host-naming-conventions.md)
-*   [VPN Access Policy](12-appendix/vpn-access-policy.md)
+## Getting Help
+
+- Check the [troubleshooting guides](9-maintenance/) for common issues
+- Review [change logs](9-maintenance/change-management-log.md) for recent modifications
+- Consult [reference materials](11-references/references.md) for external documentation
+
+## Contributing
+
+This documentation is designed to evolve. If you find errors, have improvements, or want to add your own insights, contributions are welcome.
