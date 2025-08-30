@@ -82,6 +82,8 @@ All systems use centralized authentication through FreeIPA, providing single sig
 **Monitoring & Management:**
 - [Network Monitoring](8-deployment/network-monitoring-setup.md)
 - [Grafana Dashboard](8-deployment/grafana-docker-setup.md)
+- [InfluxDB Setup](docs/configuration/monitoring/influxdb-setup.md)
+- [Custom InfluxDB on TrueNAS](docs/guides/operations/custom-influxdb-setup-truenas.md)
 
 </details>
 

@@ -1,0 +1,62 @@
+version: '3.8'
+services:
+  librenms:
+    image: librenms/librenms:latest
+    container_name: librenms
+    ports:
+      - "8000:80" # You can change 8000 to any available port on your host
+    environment:
+      - APP_KEY=${APP_KEY}
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - MEMCACHED_HOST=memcached
+      - REDIS_HOST=redis
+    volumes:
+      - ./librenms:/opt/librenms
+      - ./logs:/opt/librenms/logs
+    depends_on:
+      - db
+      - memcached
+      - redis
+    restart: always
+
+  db:
+    image: mariadb:10.11
+    container_name: librenms_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - ./db:/var/lib/mysql
+    restart: always
+
+  memcached:
+    image: memcached:latest
+    container_name: librenms_memcached
+    restart: always
+
+  redis:
+    image: redis:latest
+    container_name: librenms_redis
+    restart: always
+
+  snmpd:
+    image: librenms/librenms:latest
+    container_name: librenms_snmpd
+    command: /usr/sbin/snmpd -Lf /dev/null -p /run/snmpd.pid UDP:161,UDP6:161
+    network_mode: "host" # Required for SNMP polling from the host
+    volumes:
+      - ./librenms:/opt/librenms
+    restart: always
+
+  cron:
+    image: librenms/librenms:latest
+    container_name: librenms_cron
+    command: /opt/librenms/cronic /opt/librenms/discovery.php -h all && /opt/librenms/cronic /opt/librenms/poller-wrapper.py 16
+    volumes:
+      - ./librenms:/opt/librenms
+    restart: always
