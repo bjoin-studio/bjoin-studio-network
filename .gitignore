@@ -2,3 +2,5 @@
 docker/librenms/.env
 .DS_Store
 scratch
+docker/prometheus/.env
+docker/grafana/.env
