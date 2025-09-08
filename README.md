@@ -36,6 +36,8 @@ The repository is organized into the following sections:
 
 ### 1. Overview
 *   [README.md](1-overview/README.md)
+*   [Network Physical Connections Overview](1-overview/overview-network-physical-connections.md)
+*   [Network Data Paths Overview](1-overview/overview-network-data-paths.md)
 
 ### 2. Equipment List
 *   [Equipment List](2-equipment-list/equipment-list.md)

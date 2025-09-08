@@ -1,0 +1,3 @@
+This document provides an overview of the data paths within the bjoin.studio network. It details how information flows between different network segments, devices, and services, highlighting the logical routes and protocols used for communication.
+
+The OPNsense virtual machine acts as the primary firewall and router, segmenting the internal network into various VLANs. Incoming traffic from the internet is inspected and routed to the appropriate internal network segments based on defined firewall rules and routing policies.

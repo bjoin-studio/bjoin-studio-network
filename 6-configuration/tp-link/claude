@@ -1,0 +1,1422 @@
+```I am trying to create VLAN trunks on my TP-Link SG3428X but i cannot see how to do it? What is the correct way to form trunks or access ports? I have defined teh 802.1Q VLANs already
+```
+
+
+
+On the TP-Link SG3428X, VLAN configuration follows a slightly different terminology than some other switches. Here's how to configure trunk and access ports:
+
+## For Trunk Ports (carrying multiple VLANs):
+
+1. **Navigate to VLAN settings:**
+   - Go to **L2 Features > VLAN > 802.1Q VLAN**
+
+2. **Configure the port as a trunk:**
+   - Find your target port in the VLAN table
+   - For each VLAN you want to trunk:
+     - Set the port to **Tagged** for that VLAN
+     - This allows the port to carry traffic for multiple VLANs with tags
+
+3. **Alternative method via Port Config:**
+   - Go to **L2 Features > VLAN > Port Config**
+   - Select your port
+   - Set **VLAN Mode** to **Trunk**
+   - Configure **Allowed VLANs** (specify which VLANs can pass through)
+
+## For Access Ports (single VLAN):
+
+1. **In the 802.1Q VLAN table:**
+   - Set the port to **Untagged** for the desired VLAN
+   - Set the port to **Not Member** for all other VLANs
+
+2. **Set the PVID (Port VLAN ID):**
+   - Go to **L2 Features > VLAN > Port Config**
+   - Set the **PVID** to match the VLAN number for that access port
+
+## Key Points:
+
+- **Tagged ports** = Trunk ports (carry multiple VLANs)
+- **Untagged ports** = Access ports (single VLAN)
+- Always set the correct **PVID** for access ports
+- VLAN 1 is typically the management VLAN by default
+
+The interface might show "Tagged/Untagged/Not Member" options rather than explicitly saying "trunk" - Tagged is your trunk configuration for carrying multiple VLANs with 802.1Q tags.
+
+Does this match what you're seeing in your interface? If the exact menu structure differs, let me know what options you see and I can provide more specific guidance.
+
+
+
+
+
+
+```
+There are 4x 10Gb SFP+ ports which I have grouped as a LAG. I am unsure about the hashing algorithm. should I use:
+SRC MAC
+DST MAC
+SRC MAC + DST MAC
+SRC IP
+DST IP
+SRC IP + DST IP?
+```
+
+
+For your 4x 10Gb SFP+ LAG on the TP-Link SG3428X, the best hashing algorithm depends on your traffic patterns, but here are the general recommendations:
+
+## **Recommended: SRC IP + DST IP**
+
+This is typically the best choice for most environments because:
+- **Better distribution** across multiple links
+- **Works well with routed traffic** between different subnets/VLANs
+- **More entropy** - combines both source and destination for better load balancing
+- **Future-proof** as your network grows
+
+## **Second Choice: SRC MAC + DST MAC**
+
+Good alternative if:
+- You have mostly **Layer 2 switching** within the same VLAN
+- **Diverse MAC addresses** in your environment
+- Simple network topology
+
+## **Avoid These Options:**
+
+- **SRC MAC only** or **DST MAC only** - Poor distribution, especially if one device (like a router/firewall) is a common source/destination
+- **SRC IP only** or **DST IP only** - Same issue with uneven distribution
+
+## **Why IP-based is usually better:**
+
+- **MAC-based hashing** can create hotspots if traffic frequently goes through the same gateway/router MAC
+- **IP-based hashing** distributes based on actual traffic flows between different hosts
+- More granular distribution with modern networks using routed designs
+
+## **Test and Monitor:**
+
+After configuring, monitor the individual link utilization in your LAG to ensure traffic is distributing evenly. You can adjust if you notice significant imbalance.
+
+**Start with SRC IP + DST IP** - it's the most universally effective option for modern network designs.
+
+
+
+
+
+
+```
+there is a page for LACP configuration which has these options: Global Config
+System Priority:
+(0-65535)
+Apply
+LACP Config
+* UNIT1
+PortStatusGroup IDPort PriorityModeLAG
+1/0/1
+Disabled
+0
+32768
+Passive
+---
+1/0/2
+Disabled
+0
+32768
+Passive
+---
+1/0/3
+Disabled
+0
+32768
+Passive
+---
+1/0/4
+Disabled
+0
+32768
+Passive
+---
+1/0/5
+Disabled
+0
+32768
+Passive
+---
+1/0/6
+Disabled
+0
+32768
+Passive
+---
+1/0/7
+Disabled
+0
+32768
+Passive
+---
+1/0/8
+Disabled
+0
+32768
+Passive
+---
+1/0/9
+Disabled
+0
+32768
+Passive
+---
+1/0/10
+Disabled
+0
+32768
+Passive
+---
+1/0/11
+Disabled
+0
+32768
+Passive
+---
+1/0/12
+Disabled
+0
+32768
+Passive
+---
+1/0/13
+Disabled
+0
+32768
+Passive
+---
+1/0/14
+Disabled
+0
+32768
+Passive
+---
+1/0/15
+Disabled
+0
+32768
+Passive
+---
+1/0/16
+Disabled
+0
+32768
+Passive
+---
+1/0/17
+Disabled
+0
+32768
+Passive
+---
+1/0/18
+Disabled
+0
+32768
+Passive
+---
+1/0/19
+Disabled
+0
+32768
+Passive
+---
+1/0/20
+Disabled
+0
+32768
+Passive
+---
+1/0/21
+Disabled
+0
+32768
+Passive
+---
+1/0/22
+Disabled
+0
+32768
+Passive
+---
+1/0/23
+Disabled
+0
+32768
+Passive
+---
+1/0/24
+Disabled
+0
+32768
+Passive
+---
+1/0/25
+Disabled
+0
+32768
+Passive
+LAG1
+1/0/26
+Disabled
+0
+32768
+Passive
+LAG1
+1/0/27
+Disabled
+0
+32768
+Passive
+LAG1
+1/0/28
+Disabled
+0
+32768
+Passive
+LAG1
+Total: 281 entry selected.
+Cancel
+Apply
+```
+
+
+
+
+
+
+
+
+Perfect! I can see you already have ports 1/0/25-28 assigned to LAG1 (those are your 4x 10Gb SFP+ ports). Here's how to properly configure LACP:
+
+## **Configuration Steps:**
+
+1. **Enable LACP on your 4 ports:**
+   - Change **Status** from "Disabled" to **"Enabled"** for ports 1/0/25, 1/0/26, 1/0/27, and 1/0/28
+
+2. **Set LACP Mode:**
+   - Change **Mode** from "Passive" to **"Active"** on all 4 ports
+   - **Active mode** initiates LACP negotiations (recommended)
+   - **Passive mode** only responds to LACP requests
+
+3. **Port Priority (optional):**
+   - Keep default **32768** unless you need specific failover behavior
+   - Lower numbers = higher priority
+
+4. **System Priority:**
+   - Default is usually fine, but you can lower it (e.g., **32768**) if you want this switch to be preferred in LACP negotiations
+
+## **Recommended Settings:**
+```
+Ports 1/0/25-28:
+- Status: Enabled
+- Group ID: LAG1 (already set)
+- Port Priority: 32768 (default is fine)
+- Mode: Active
+- LAG: LAG1
+```
+
+## **After LACP Configuration:**
+Once LACP is working, you'll need to configure the **load balancing algorithm** in a separate section, usually under:
+- **Advanced > LAG > Load Balance** or 
+- **L2 Features > LAG > Load Balance**
+
+That's where you'll set the **SRC IP + DST IP** hashing we discussed earlier.
+
+Make sure the device on the other end of these connections also has LACP configured and active!
+
+
+
+
+
+```
+There is also a page for Static LAG. Do I configure both Static LAG and LACP?
+Here are teh opptions for Static LAG:
+LAG TableStatic LAGLACP Config
+LAG Config
+Group ID:
+Description:
+Static LAG
+Port:
+(Format: 1/0/1, input or choose below)
+* UNIT1
+Selected
+Unselected
+Not Available
+Apply
+```
+
+
+
+
+
+**No, you should configure either Static LAG OR LACP, not both.** They are two different methods for creating link aggregation:
+
+## **Choose One Method:**
+
+### **LACP (Recommended):**
+- **Dynamic protocol** - automatically negotiates the LAG
+- **Detects link failures** and removes failed links from the bundle
+- **Standards-based** (IEEE 802.3ad) - works with any LACP-capable device
+- **Self-healing** - automatically recovers when links come back up
+- **Better for production environments**
+
+### **Static LAG:**
+- **Manual configuration** - no automatic negotiation
+- **No failure detection** - bad links stay in the bundle
+- **Simpler** but less robust
+- **Use only if** the other device doesn't support LACP
+
+## **For Your Setup:**
+
+Since you have 4x 10Gb SFP+ ports, **stick with LACP configuration**:
+
+1. **Don't configure anything in Static LAG**
+2. **Use the LACP Config page** we discussed earlier
+3. Set ports 1/0/25-28 to **Active mode** and **Enabled**
+
+## **Why LACP is Better:**
+- If one of your 4 SFP+ links fails, LACP will automatically detect it and continue using the remaining 3 links
+- Static LAG would keep trying to use the failed link, causing packet loss
+- LACP provides better redundancy and reliability
+
+**Configure LACP only** - leave the Static LAG page alone unless the device you're connecting to doesn't support LACP (which would be unusual for enterprise equipment).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+here's what i configured on the LACP Config page:
+LAG TableStatic LAGLACP Config
+Global Config
+System Priority:
+(0-65535)
+Apply
+LACP Config
+* UNIT1
+PortStatusGroup IDPort PriorityModeLAG
+1/0/1
+Disabled
+0
+32768
+Passive
+---
+1/0/2
+Disabled
+0
+32768
+Passive
+---
+1/0/3
+Disabled
+0
+32768
+Passive
+---
+1/0/4
+Disabled
+0
+32768
+Passive
+---
+1/0/5
+Disabled
+0
+32768
+Passive
+---
+1/0/6
+Disabled
+0
+32768
+Passive
+---
+1/0/7
+Disabled
+0
+32768
+Passive
+---
+1/0/8
+Disabled
+0
+32768
+Passive
+---
+1/0/9
+Disabled
+0
+32768
+Passive
+---
+1/0/10
+Disabled
+0
+32768
+Passive
+---
+1/0/11
+Disabled
+0
+32768
+Passive
+---
+1/0/12
+Disabled
+0
+32768
+Passive
+---
+1/0/13
+Disabled
+0
+32768
+Passive
+---
+1/0/14
+Disabled
+0
+32768
+Passive
+---
+1/0/15
+Disabled
+0
+32768
+Passive
+---
+1/0/16
+Disabled
+0
+32768
+Passive
+---
+1/0/17
+Disabled
+0
+32768
+Passive
+---
+1/0/18
+Disabled
+0
+32768
+Passive
+---
+1/0/19
+Disabled
+0
+32768
+Passive
+---
+1/0/20
+Disabled
+0
+32768
+Passive
+---
+1/0/21
+Disabled
+0
+32768
+Passive
+---
+1/0/22
+Disabled
+0
+32768
+Passive
+---
+1/0/23
+Disabled
+0
+32768
+Passive
+---
+1/0/24
+Disabled
+0
+32768
+Passive
+---
+1/0/25
+Enabled
+1
+32768
+Active
+---
+1/0/26
+Enabled
+1
+32768
+Active
+---
+1/0/27
+Enabled
+1
+32768
+Active
+---
+1/0/28
+Enabled
+1
+32768
+Active
+---
+Total: 28
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Your LACP configuration looks correct! You've properly configured:
+
+✅ **Ports 1/0/25-28:**
+- Status: **Enabled** 
+- Group ID: **1** (they're all in the same LAG group)
+- Mode: **Active** (will initiate LACP negotiations)
+- Port Priority: **32768** (default is fine)
+
+## **Next Steps:**
+
+1. **Apply the configuration** if you haven't already clicked "Apply"
+
+2. **Check LAG status** - Look for a status page that shows:
+   - LAG1 operational status
+   - Which ports are actively participating
+   - Link speeds/duplex
+
+3. **Configure load balancing** - Find the load balancing/hashing algorithm setting (usually under Advanced > LAG or similar) and set it to **SRC IP + DST IP**
+
+4. **Verify the other device** has matching LACP configuration:
+   - LACP enabled and active
+   - Same 4 ports bundled
+   - Compatible settings
+
+## **To Check if it's Working:**
+
+Look for:
+- **LAG1 shows as "Up"** in status
+- **All 4 member ports show as active**
+- **Aggregate bandwidth** showing 40Gbps total
+- **No LACP timeout errors** in logs
+
+Your configuration appears correct - the key was enabling the ports and setting them to Active mode with the same Group ID (1). The LAG should negotiate automatically once both sides are properly configured.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+Here is the LAG Table page:
+
+LAG TableStatic LAGLACP Config
+Global Config
+Hash Algorithm:
+Apply
+LAG Table
+Delete
+Group IDDescriptionMembersOperation
+1
+Active LACP
+--
+Total: 1
+```
+
+
+
+
+
+
+
+
+
+
+
+Perfect! I can see you have the LAG table and there's the **Hash Algorithm** setting right at the top. Here's what you need to do:
+
+## **Configure Hash Algorithm:**
+
+1. **Set the Hash Algorithm dropdown** to **"SRC IP + DST IP"** (or similar wording like "Source IP + Destination IP")
+
+2. **Click Apply**
+
+## **About the LAG Status:**
+
+Your LAG1 shows:
+- **Group ID: 1** ✅
+- **Description: Active LACP** ✅ 
+- **Members: --** ⚠️ (This should show your 4 ports once LACP negotiates)
+- **Operation: [blank]** ⚠️ (Should show "Up" when working)
+
+## **Why Members Shows "--":**
+
+The members field is empty because:
+1. **LACP negotiation hasn't completed yet**, OR
+2. **The other device isn't configured for LACP**, OR  
+3. **Physical connections aren't established**
+
+## **Next Steps:**
+
+1. **Set the hash algorithm** first
+2. **Check physical connections** - ensure all 4 SFP+ cables are connected and showing link
+3. **Verify the other device** has LACP configured
+4. **Wait a few minutes** for LACP negotiation to complete
+5. **Refresh the LAG Table page** to see if members populate
+
+Once LACP negotiates successfully, you should see something like "1/0/25,1/0/26,1/0/27,1/0/28" in the Members column and "Up" in Operation.
+
+What hash algorithm options do you see in that dropdown?
+
+
+
+
+
+
+
+
+
+
+```
+This will be the level 2 "Destination Switch" and I am waiting for the "Core Switch" to come on line so I can't properly test the connections yet. I have more questions about the VLAN Trunking:
+
+On the VLAN Config page there is a chart for 'Tagged Ports' where I can click on port icons to select or deselect ports. There are two tabs - the first is for 'UNIT1', the second is for 'LAGS'.  If I want to add LAG1 as a trunk, do I need to switch to the 'UNIT1' tab and also select the ports?
+
+The same UI arrangement exists for 'Untagged Ports'.
+```
+
+
+
+**No, you should NOT configure both!** Here's the correct approach:
+
+## **Use ONLY the LAGs Tab:**
+
+Since you've created LAG1 with ports 1/0/25-28, you should:
+
+1. **Configure VLANs on the "LAGs" tab only**
+   - Select LAG1 for the VLANs you want to trunk
+   - This treats the entire 4-port bundle as a single logical interface
+
+2. **Leave the individual ports (1/0/25-28) unconfigured on the "UNIT1" tab**
+   - Don't select them individually for any VLANs
+   - The LAG supersedes individual port configuration
+
+## **Why This Matters:**
+
+- **LAG1 is a logical interface** that represents all 4 physical ports
+- **Configuring both** would create conflicts and unpredictable behavior
+- **VLAN membership** should be assigned to the LAG, not the individual member ports
+
+## **Correct Configuration:**
+
+**For Trunk (Multiple VLANs):**
+- **LAGs tab > Tagged Ports:** Select LAG1 for each VLAN you want to trunk
+- **UNIT1 tab:** Leave ports 1/0/25-28 unselected
+
+**For Access (Single VLAN):**
+- **LAGs tab > Untagged Ports:** Select LAG1 for one VLAN only
+- Set LAG1's PVID to match that VLAN
+
+## **Rule of Thumb:**
+Once ports are in a LAG, **always configure VLANs on the LAG interface, never on the individual member ports.**
+
+This is standard behavior across most managed switches - the LAG becomes the logical interface you configure, and the physical ports become "invisible" for VLAN purposes.
+
+
+
+
+
+
+```
+Examine the config that I just downloaded from the switch:
+6-configuration/tp-link/sysConfigBackup (3).cfg
+```
+
+
+
+
+
+
+Excellent! Your configuration is already properly set up. Looking at your config file, I can see:
+
+## **What's Already Configured Correctly:**
+
+✅ **LACP is working:**
+```
+interface ten-gigabitEthernet 1/0/25-28
+  channel-group 1 mode active
+```
+
+✅ **Load balancing algorithm is set:**
+```
+port-channel load-balance src-dst-ip
+```
+
+✅ **LAG1 (port-channel 1) is configured as a trunk:**
+```
+interface port-channel 1
+  switchport general allowed vlan 1,11-15,21-25,31-35,41-45,51-55 tagged
+  switchport general allowed vlan 61-65 tagged
+```
+
+## **Key Observations:**
+
+1. **Your 4x 10Gb SFP+ ports** (1/0/25-28) are correctly bundled into **channel-group 1** with **LACP active mode**
+
+2. **Port-channel 1** (LAG1) is trunking **ALL your VLANs** as tagged:
+   - VLANs 11-15 (PROD)
+   - VLANs 21-25 (STAGE) 
+   - VLANs 31-35 (STUDIO)
+   - VLANs 41-45 (WORKSHOP)
+   - VLANs 51-55 (MGMT)
+   - VLANs 61-65 (GUEST)
+
+3. **Hash algorithm** is already set to **src-dst-ip** (source + destination IP)
+
+4. **Port 1/0/24** is also configured as a trunk with the same VLANs (likely another uplink)
+
+## **Everything looks perfect!** 
+
+Your LAG and VLAN configuration is already complete and properly set up. Once your core switch comes online with matching LACP configuration, the LAG should negotiate automatically and you'll have a 40Gbps trunk carrying all your VLANs.
+
+The configuration shows you know what you're doing - this is a well-organized VLAN scheme!
+
+
+
+
+
+
+
+```
+Port 1/0/24 is configured as a trunk so that it can communicate with opnsense
+```
+
+
+Perfect! That makes complete sense. You have a well-designed network topology:
+
+## **Your Current Setup:**
+
+✅ **Port 1/0/24:** Trunk to **OPNsense** (firewall/router)
+- Carries all VLANs (11-15, 21-25, 31-35, 41-45, 51-55, 61-65) as tagged
+- Allows OPNsense to route between VLANs and provide firewall services
+
+✅ **LAG1 (ports 1/0/25-28):** Trunk to **Core Switch** (when online)
+- Same VLANs trunked for inter-switch communication
+- 40Gbps aggregate bandwidth
+
+## **This is Smart Design Because:**
+
+- **OPNsense gets all VLANs** for inter-VLAN routing and firewall policies
+- **Core switch gets all VLANs** for distribution to other access switches
+- **Consistent VLAN trunking** across both uplinks
+- **Load balancing** between firewall (1Gb) and core switch (40Gb) paths
+
+## **Traffic Flow:**
+- **Inter-VLAN routing:** Goes through OPNsense on port 1/0/24
+- **Intra-VLAN switching:** Can use the high-bandwidth LAG1 to core switch
+- **Internet traffic:** Routes through OPNsense
+
+Your network architecture looks well-planned! The OPNsense trunk ensures proper VLAN segmentation and security policies, while the LAG provides high-bandwidth connectivity for switched traffic. When your core switch comes online, you should have a robust, high-performance network.
+
+
+
+
+
+
+
+
+
+
+```
+is there a function to ensure thhat the running-config is copied to the startup-config on this switch?
+```
+
+
+
+
+
+
+
+Yes! On TP-Link switches like the SG3428X, you need to save the running configuration to make it persistent across reboots. Here are the typical methods:
+
+## **Web Interface Method:**
+
+Look for a **"Save Configuration"** or **"Save"** button, usually located:
+- **Top menu bar** (often a "Save" button)
+- **System > Configuration > Save**
+- **Maintenance > Save Configuration**
+- **Administration > Configuration Management**
+
+## **CLI Method (if you have CLI access):**
+
+```
+copy running-config startup-config
+```
+or
+```
+write memory
+```
+or simply
+```
+write
+```
+
+## **Important Notes:**
+
+- **TP-Link switches** don't always auto-save changes like Cisco IOS
+- **Always save** after making VLAN, LAG, or other configuration changes
+- **Look for a save indicator** - some models show "unsaved changes" warnings
+- **Configuration may be lost** on reboot if not saved
+
+## **Where to Find It:**
+
+Check the **top toolbar** first - most TP-Link web interfaces have a prominent "Save" or "Apply & Save" button. If not there, look under:
+- System menu
+- Maintenance menu  
+- Configuration menu
+
+Since you've made significant LACP and VLAN changes, definitely save the configuration before the switch is rebooted or powered off!
+
+Have you seen a save button anywhere in the interface, or do you have CLI access to the switch?
+
+
+
+
+```
+can i set an ipv4 address for the switch
+```
+
+
+
+
+Yes! You can set an IPv4 address for the switch management interface. Here's how:
+
+## **Web Interface Method:**
+
+Look for:
+- **System > IP Configuration**
+- **Network > Management Interface** 
+- **Administration > IP Settings**
+- **System > Network Configuration**
+
+## **What You'll Configure:**
+
+1. **Management VLAN** - Usually VLAN 1 (default) or your management VLAN (like VLAN 51 "MGMT-WIRED-1")
+2. **IP Address** - Static IP in your management subnet
+3. **Subnet Mask** 
+4. **Default Gateway** - Your OPNsense interface IP for that VLAN
+
+## **From Your Config File:**
+
+I can see you currently have:
+```
+interface vlan 1
+  ip address-alloc dhcp
+```
+
+This means the switch is getting its IP via **DHCP on VLAN 1**.
+
+## **To Change to Static IP:**
+
+You'd typically change this to something like:
+- **VLAN:** 1 (or move to VLAN 51 for dedicated management)
+- **IP:** 192.168.1.10 (example - use your management subnet)
+- **Mask:** 255.255.255.0
+- **Gateway:** Your OPNsense IP for that VLAN
+
+## **Recommendation:**
+
+Consider using **VLAN 51 (MGMT-WIRED-1)** for switch management instead of VLAN 1, as this provides better security segmentation and aligns with your organized VLAN scheme.
+
+What management subnet are you planning to use?
+
+
+
+
+
+
+
+
+```
+I think I found the correct page: "L3 Features -> Interface":
+
+Routing Config
+IPv4 Routing:
+* Enable
+IPv6 Routing:
+* Enable
+Apply
+Interface Config
+AddDelete
+Interface IDIP Address ModeIP AddressSubnet MaskInterface NameStatusOperation
+VLAN1
+DHCP
+192.168.0.1
+255.255.255.0
+Up
+Edit IPv4
+Edit IPv6
+Detail
+Total: 1
+```
+
+Perfect! You found the right page. I can see your switch management is currently configured as:
+
+## **Current Configuration:**
+- **Interface:** VLAN1
+- **IP Mode:** DHCP 
+- **Current IP:** 192.168.0.1 (assigned by DHCP)
+- **Subnet:** 255.255.255.0
+- **Status:** Up ✅
+
+## **To Set Static IP:**
+
+1. **Click "Edit IPv4"** for the VLAN1 interface
+
+2. **Change IP Address Mode** from "DHCP" to **"Static"**
+
+3. **Configure static settings:**
+   - **IP Address:** Choose an IP in your management range (e.g., 192.168.0.10)
+   - **Subnet Mask:** 255.255.255.0 
+   - **Default Gateway:** Your OPNsense interface IP (probably 192.168.0.1 if that's your gateway)
+
+## **Alternative - Use Dedicated Management VLAN:**
+
+Since you have **VLAN 51 "MGMT-WIRED-1"**, you could:
+
+1. **Click "Add"** to create a new interface
+2. **Select VLAN 51** instead of VLAN 1
+3. **Configure static IP** in your management subnet
+4. **Disable/remove** the VLAN 1 interface (optional)
+
+## **Benefits of VLAN 51:**
+- **Better security** - dedicated management network
+- **Consistent with your VLAN scheme**
+- **Easier to manage firewall rules** in OPNsense
+
+Which approach do you prefer - keep using VLAN 1 with static IP, or move to VLAN 51 for management?
+
+
+
+
+
+
+
+
+
+
+
+
+```
+Back
+Modify IPv4 Interface
+Interface ID:
+Admin Status:
+* Enable
+Interface Name:
+(Optional. 1-128 characters)
+IP Address Mode:
+* None
+* Static
+* DHCP
+* BOOTP
+IP Address: 10.20.51.4
+(Format: 192.168.0.1)
+Subnet Mask: 255.255.255.0
+(Format: 255.255.255.0)
+Apply
+Secondary IP Table
+AddDelete
+IndexIP AddressSubnet Mask
+No entries in this table.
+Total: 0
+```
+
+
+Perfect! I can see you're configuring a static IP on what appears to be VLAN 51 (based on the IP 10.20.51.4). Here's how to complete this:
+
+## **Configuration Settings:**
+
+✅ **Admin Status:** Enable (already selected)
+
+✅ **IP Address Mode:** Select **"Static"** 
+
+✅ **IP Address:** 10.20.51.4 (good choice - fits your MGMT VLAN scheme)
+
+✅ **Subnet Mask:** 255.255.255.0 (already filled)
+
+## **Missing Configuration:**
+
+You'll also need to set the **Default Gateway** - this should be your OPNsense interface IP for VLAN 51. Based on your IP scheme, it's likely:
+- **10.20.51.1** (typical gateway)
+
+## **Optional but Recommended:**
+
+**Interface Name:** You could add something descriptive like:
+- "MGMT-Interface" 
+- "Switch-Management"
+
+## **Next Steps:**
+
+1. **Click Apply** to save these settings
+2. **Configure the default gateway** (there might be a separate field or page for this)
+3. **Save the configuration** to startup-config
+4. **Test connectivity** once applied
+
+This setup puts your switch management on the dedicated MGMT VLAN (51), which is much better security practice than using VLAN 1. Make sure your OPNsense has the corresponding interface/gateway configured for the 10.20.51.0/24 subnet.
+
+Does the interface show a field for default gateway, or is that configured elsewhere?
+
+
+
+
+
+
+
+
+
+
+
+```
+I don't see an entry to configure the gateway, but the switch appears to be working. can you refresh my mind on setting up access ports? e.g. I want to reserve 5 1Gb ports to allow traffic on VLAN 11-15. Is that a good way to think about it?
+```
+
+
+
+
+
+You're thinking about it correctly, but let me clarify the terminology and approach:
+
+## **Access Ports vs. Your Goal:**
+
+**Access ports** typically carry **one VLAN only** (untagged). What you're describing sounds more like you want **trunk ports** that carry multiple specific VLANs.
+
+## **Two Approaches for Ports Carrying VLANs 11-15:**
+
+### **Option 1: Individual Access Ports (One VLAN each):**
+- **Port 1:** Access port for VLAN 11 (PROD-WIRED-1)
+- **Port 2:** Access port for VLAN 12 (PROD-WIRED-10)  
+- **Port 3:** Access port for VLAN 13 (PROD-RESERVED)
+- **Port 4:** Access port for VLAN 14 (PROD-WIFI)
+- **Port 5:** Access port for VLAN 15 (PROD-MONITOR)
+
+### **Option 2: Trunk Ports (Multiple VLANs):**
+- **All 5 ports:** Trunk carrying VLANs 11-15 as tagged
+- Devices connected would need to understand VLAN tags
+
+## **For Access Ports (Option 1):**
+
+**In the VLAN configuration:**
+- **Untagged Ports tab:** Select the port for its assigned VLAN
+- **Tagged Ports tab:** Don't select the port for any VLAN
+- **Set PVID:** Port's PVID = its VLAN number
+
+**Example for Port 1/0/1 → VLAN 11:**
+- VLAN 11 untagged ports: Select 1/0/1
+- PVID for 1/0/1: Set to 11
+
+Which approach matches what you want to accomplish? Are you connecting devices that understand VLAN tags, or regular devices that need access to specific VLANs?
+
+
+
+
+
+
+
+
+
+
+
+```
+well,  i have four mac minis and one laptop that i want to put in PROD_WIRED_1 VLAN11. I want them to connect to a port which will give them a 10.20.11.(100-200)/24 DHCP address from opnsense.
+```
+
+
+
+
+
+
+
+Perfect! You want **access ports** for those devices. Here's exactly how to configure it:
+
+## **Access Port Configuration for VLAN 11:**
+
+### **Step 1: VLAN Membership**
+- **Untagged Ports tab:** Select 5 ports (e.g., 1/0/1 through 1/0/5) for **VLAN 11**
+- **Tagged Ports tab:** Make sure those same ports are **NOT selected** for VLAN 11 or any other VLAN
+
+### **Step 2: Set PVID**
+- Go to **L2 Features > VLAN > Port Config**
+- For each of the 5 ports (1/0/1-1/0/5):
+  - Set **PVID = 11**
+  - Set **VLAN Mode = Access** (if available)
+
+## **What This Accomplishes:**
+
+✅ **Mac Minis and laptop** connect with regular Ethernet cables
+✅ **No VLAN tagging required** on the devices  
+✅ **Traffic automatically placed** in VLAN 11
+✅ **OPNsense DHCP** will assign 10.20.11.100-200 addresses
+✅ **Devices can communicate** within VLAN 11 and route through OPNsense
+
+## **Result:**
+Your devices will plug into these access ports and automatically get:
+- VLAN 11 membership
+- DHCP address from OPNsense (10.20.11.x range)
+- Access to PROD-WIRED-1 network segment
+
+This is the standard way to connect end devices - they don't need to know about VLANs, the switch handles the VLAN assignment automatically based on which port they're plugged into.
+
+
+
+
+
+
+
+
+
+
+
+```
+so if a mac mini in VLAN11 wants to talk to a macbook pro on VLAN21 the rules for Intra VLAN communication are set using opnsense?
+```
+
+
+
+
+
+
+
+Almost correct, but it's actually **Inter-VLAN** communication, and yes - OPNsense controls this!
+
+## **Traffic Flow:**
+
+**Mac Mini (VLAN 11) → MacBook Pro (VLAN 21):**
+
+1. **Mac Mini** sends packet to MacBook Pro IP
+2. **Switch** receives on access port, tags as VLAN 11
+3. **Packet goes to OPNsense** via trunk port 1/0/24
+4. **OPNsense routing** determines path from VLAN 11 → VLAN 21
+5. **OPNsense firewall rules** allow/deny the traffic
+6. **OPNsense** routes packet back to switch tagged as VLAN 21
+7. **Switch** delivers to MacBook Pro on VLAN 21
+
+## **OPNsense Controls:**
+
+✅ **Inter-VLAN routing** (between different VLANs)
+✅ **Firewall rules** (what traffic is allowed between VLANs)
+✅ **NAT/Internet access**
+✅ **DHCP** for each VLAN
+
+## **Switch Controls:**
+
+✅ **Intra-VLAN switching** (devices within same VLAN)
+✅ **VLAN membership** (which ports belong to which VLANs)
+✅ **Trunk/access port configuration**
+
+## **Terminology:**
+- **Intra-VLAN** = within same VLAN (switch handles)
+- **Inter-VLAN** = between different VLANs (OPNsense handles)
+
+So yes, your OPNsense firewall rules will determine whether VLAN 11 devices can talk to VLAN 21 devices, and vice versa. You'll configure those policies in OPNsense based on your security requirements.
+
+
+
+
+
+
+
+
+```
+this brings up a question for me: for example, mac mini (vlan 11) wants to send a 100Gigabyte QuickTime file to macbook pro (vlan21). does the entire 100GB file pass through opnsense? or does opnsense just permit teh transfer to happen?
+```
+
+
+**Yes, the entire 100GB file passes through OPNsense.** This is how Layer 3 routing works - every packet must traverse the router.
+
+## **Why the Full File Goes Through OPNsense:**
+
+1. **Different subnets** (10.20.11.x vs 10.20.21.x) require routing
+2. **Each packet** needs Layer 3 forwarding from VLAN 11 → VLAN 21
+3. **OPNsense is the router** between these networks
+4. **No direct Layer 2 path** exists between VLANs
+
+## **Performance Impact:**
+
+- **OPNsense CPU/RAM** will process all 100GB
+- **Limited by** OPNsense throughput (typically much less than switch capacity)
+- **1Gb trunk** to OPNsense becomes bottleneck vs. your 40Gb LAG capability
+
+## **Solutions for High-Bandwidth Inter-VLAN:**
+
+### **Option 1: Same VLAN**
+Put devices needing high-speed transfers in the **same VLAN** - then it's pure Layer 2 switching at full speed
+
+### **Option 2: Layer 3 Switch**
+Replace/supplement with a **Layer 3 switch** that can route between VLANs at wire speed
+
+### **Option 3: Dedicated Transfer Network**
+Create a separate **high-speed VLAN** for large file transfers
+
+### **Option 4: Direct Connection**
+Temporary direct connection between devices for large transfers
+
+For your 100GB QuickTime scenario, putting both devices in the same VLAN (like VLAN 11) would give you full gigabit speeds without routing overhead.
+
+This is a common design consideration - security/segmentation vs. performance.
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+I have a choice of Core Switches - a Cisco Nexus 9236c, or a Mikrotik  CRS504-4XQ-IN.
+It's my understanding that if I connect Protectli (opnsense) 1Gb LAN to TP-Link SG3428X then traffic gets routed to the Core Switch for transport and doesn't go through the firewall, so my 100GB file would flow from VLAN11 to VLAN21 via the Core Switch?
+```
+
+
+
+
+
+
+**No, that's not correct.** The traffic will still go through OPNsense for inter-VLAN routing, regardless of which core switch you choose.
+
+## **Why Traffic Must Go Through OPNsense:**
+
+**Layer 3 routing** is required to move between VLANs 11 and 21. The path will be:
+1. **Mac Mini (VLAN 11)** → TP-Link switch
+2. **TP-Link** → OPNsense (via 1Gb trunk)
+3. **OPNsense routes** VLAN 11 → VLAN 21
+4. **OPNsense** → TP-Link → Core Switch → destination
+
+## **Core Switch Role:**
+- **Layer 2 switching** within VLANs
+- **VLAN transport** between switches
+- **NOT Layer 3 routing** between your VLANs (unless configured as such)
+
+## **To Avoid OPNsense for Inter-VLAN:**
+
+You'd need **Layer 3 routing** on one of your switches:
+
+### **Cisco Nexus 9236c:**
+- **Full Layer 3 capabilities** 
+- Can route between VLANs at wire speed
+- Would need VLAN interfaces (SVIs) configured
+- More complex but high-performance
+
+### **Mikrotik CRS504-4XQ-IN:**
+- **Limited Layer 3** (basic routing)
+- Primarily a Layer 2 switch
+- Less suitable for inter-VLAN routing
+
+## **Current Bottleneck:**
+Your **1Gb connection to OPNsense** will limit all inter-VLAN traffic to ~1Gbps, regardless of your 40Gb LAG between switches.
+
+**For 100GB file transfers between VLANs, you're limited to 1Gb speeds** unless you implement Layer 3 routing on the Nexus or upgrade OPNsense connectivity.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+I have a QNAP TS-h1290FX NVMe NAS. It has 2 x 100Gb Ethernet ports, 2x 25Gb Ethernet Ports, 2 x 2.5Gb Ethernet ports. 
+If I create an NFS export can I expose it on 3 different VLANS with 3 different IP addresses? i.e. 10.20.33.88 for 200Gb (VLAN33 - LAG3), 10.20.32.88 for 50Gb (VLAN32 - LAG2) and 10.20.31.88 for 5Gb (VLAN31- LAG1)?
+If a workstation on VLAN33 wants to copy a file to the QNAP does it go through the opnsense?
+```
+
+
+
+
+
+**Excellent question!** Yes, you can absolutely configure your QNAP with multiple IP addresses on different VLANs, and this is a smart way to provide different performance tiers.
+
+## **QNAP Multi-VLAN Configuration:**
+
+### **Yes, you can expose NFS on multiple VLANs:**
+- **10.20.33.88** (VLAN 33) - 200Gb aggregate (2x 100Gb ports)
+- **10.20.32.88** (VLAN 32) - 50Gb aggregate (2x 25Gb ports)  
+- **10.20.31.88** (VLAN 31) - 5Gb aggregate (2x 2.5Gb ports)
+
+### **QNAP Configuration:**
+- **Network interfaces** can be assigned to different VLANs
+- **Same NFS export** accessible via multiple IP addresses
+- **LACP bonding** on each speed tier for redundancy/performance
+
+## **Traffic Flow - Key Point:**
+
+**If a workstation on VLAN 33 accesses 10.20.33.88 (also VLAN 33):**
+- **NO routing through OPNsense!** ✅
+- **Pure Layer 2 switching** at full speed
+- **Intra-VLAN communication** stays on the switch fabric
+
+**Path:** Workstation → TP-Link → Core Switch → QNAP (all within VLAN 33)
+
+## **This Bypasses the 1Gb OPNsense Bottleneck!**
+
+Your design is brilliant because:
+- **High-performance workstations** (VLAN 33) get direct 100Gb+ access
+- **Medium workstations** (VLAN 32) get 25Gb access
+- **Standard workstations** (VLAN 31) get 2.5Gb access
+- **No firewall bottleneck** for storage traffic within each VLAN
+
+This is exactly how you'd design a high-performance media/studio network!
