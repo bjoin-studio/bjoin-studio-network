@@ -68,7 +68,10 @@ The repository is organized into the following sections:
 ### 7. Testing
 *   [VLAN Testing Procedure](7-testing/vlan-testing-procedure.md)
 
-### 8. Deployment
+### 8. Operational
+*   [Proxmox Bridge STP Configuration](docs/operational/runbooks/proxmox-bridge-stp-configuration.md)
+
+### 9. Deployment
 *   [Bootstrapping Managed Switch Guide](8-deployment/bootstrapping-managed-switch-guide.md)
 *   [Cisco Nexus 9236c Initial Setup](8-deployment/cisco-nexus-9236c-initial-setup.md)
 *   [Firewall Firmware Updates](8-deployment/firewall-firmware-updates.md)
@@ -91,20 +94,20 @@ The repository is organized into the following sections:
 *   [Server Onboarding](8-deployment/server-onboarding.md)
 *   [Sodola Switch VLAN Configuration](8-deployment/sodola-switch-vlan-configuration.md)
 
-### 9. Maintenance
+### 10. Maintenance
 *   [Backup and Recovery Plan](9-maintenance/backup-and-recovery-plan.md)
 *   [Disaster Recovery Plan](9-maintenance/disaster-recovery-plan.md)
 *   [Change Management Log](9-maintenance/change-management-log.md)
 *   [Incident Response Plan](9-maintenance/incident-response-plan.md)
 *   [Vulnerability Management Plan](9-maintenance/vulnerability-management-plan.md)
 
-### 10. Future Plans
+### 11. Future Plans
 *   [Roadmap](10-future-plans/roadmap.md)
 
-### 11. References
+### 12. References
 *   [References](11-references/references.md)
 
-### 12. Appendix
+### 13. Appendix
 *   [GEMINI.md](12-appendix/GEMINI.md)
 *   [Asset Management](12-appendix/asset-management.md)
 *   [Host Naming Conventions](12-appendix/host-naming-conventions.md)

@@ -55,3 +55,35 @@ This document summarizes key insights and considerations regarding the bjoin.stu
     *   **Capabilities:** Simple plug-and-play 1Gbps switching, without any management or VLAN capabilities.
 
 **Recommendation:** Adhering to this hierarchical structure helps in managing network complexity, optimizing traffic flow, and simplifying troubleshooting.
+
+---
+
+## 4. Extending a VLAN Across a Routed Trunk Link
+
+To provide access to a specific Layer 2 network (e.g., the Management Network, VLAN 51) from an access port on a different switch, the VLAN must be extended across the main trunk link.
+
+### Scenario
+
+A device plugged into an access port on the TP-Link SG3428X needed to reach the MikroTik's primary management IP (`10.20.51.14`), which lives on the core management bridge.
+
+### Logical Flow
+
+`[Device on TP-Link Port] <> [Access Port (Untagged VLAN 51)] <> [TP-Link Switch Logic] <> [Trunk Port LAG1 (Tagged VLAN 51)] <> [40G Link] <> [MikroTik Trunk Port (Tagged VLAN 51)] <> [MikroTik Bridge] <> [MikroTik Management IP]`
+
+### Configuration Method
+
+This was achieved by configuring both switches to pass VLAN 51 traffic over the 40Gbps LACP trunk.
+
+#### On the "Access" Switch (TP-Link)
+
+1.  **Ensure VLAN Exists:** The target VLAN (51) must be created.
+2.  **Configure Trunk Port:** The trunk interface (`LAG1`) must be set as a **`Tagged`** member of the VLAN.
+3.  **Configure Access Port:** The desired user-facing port (e.g., Port 1) must be set as an **`Untagged`** member of the VLAN.
+4.  **Set Access Port PVID:** The access port's PVID must be set to the VLAN ID (51) to ensure incoming untagged traffic is correctly placed into that VLAN.
+
+#### On the "Core" Switch (MikroTik)
+
+1.  **Create VLAN Interface on Trunk:** A new virtual VLAN interface (e.g., `VLAN51-on-Trunk`) is created on the bond/LAG interface for the target VLAN ID.
+2.  **Bridge the VLAN Interface:** This new VLAN interface is then added as a port to the main destination `bridge` that holds the target Layer 2 network.
+
+This is the standard methodology for extending a Layer 2 segment across a routed network core.

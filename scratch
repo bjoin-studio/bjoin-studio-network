@@ -498,3 +498,19 @@ could we simplify the folder structure?
 [domain_realm]
   .bjoin.studio = BJOIN.STUDIO
   bjoin.studio = BJOIN.STUDIO
+
+
+
+
+
+1. Internet Modem/Router (ISP provided)
+   - Connects to the internet via your ISP.
+   - Provides basic routing and firewall functions.
+   - Connects to the Protectli FW4B (opnsense-fw.bjoin.studio) via Ethernet on port WAN.
+
+2. Protectli FW4B (opnsense-fw.bjoin.studio)
+   - Acts as the main firewall and router for the network.
+   - Connects to the ISP Modem/Router via Ethernet on port WAN.
+   - Connects to the Sodola KT-NOS SL-SWTGW2C8F port 8 (TRUNK - ALL VLANs) from Ethernet port LAN, using CAT6e RJ45 cable to 10Gb SFP+ transceiver.
+
+Should I disconnect the sodola and connect to port 24 on the TP-Link SG3428X Instead
