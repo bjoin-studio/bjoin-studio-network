@@ -1,49 +1,107 @@
-# 🍌 bjoin.studio Network Architecture Setup Guide
+# Overview - Network Architecture (bjoin.studio)
 
-This guide outlines the full setup of your studio network using the updated VLAN schema, bandwidth tiers, device roles, and routing policies. It’s optimized for deployment with OPNsense on a Protectli Vault.
+## Table of Contents
+1. [Introduction](#introduction)
+2. [Core Networking Fabric](#core-networking-fabric)
+3. [Ethernet Switch Capabilities](#ethernet-switch-capabilities)
+4. [Identity, Policy and Auditing](#identity-policy-and-auditing)
+5. [Appendix A: Configuration](#appendix-a-configuration)
+6. [Appendix B: Troubleshooting](#appendix-b-troubleshooting)
 
----
+## Introduction
 
-## 🗺️ Definitive VLAN and IP Plan
+This document provides a high level overview of the bjoin.studio intranet network architecture.
 
-This table serves as the single source of truth for VLANs, subnets, and IP addressing, and their corresponding FreeIPA groups.
+- **Core Networking Fabric**: [Ethernet](https://en.wikipedia.org/wiki/Ethernet)   
+  (standardized, fast, reliable and scalable data transmission)
 
-| VLAN ID | Zone         | Purpose                          | Primary FreeIPA Group | Devices / Use Cases              | Subnet          | Gateway IP     | DHCP Range                  |
-|:--------|:-------------|:---------------------------------|:----------------------|:---------------------------------|:----------------|:---------------|:----------------------------|
-| **11**  | Production   | Business-critical services       | `grp-production`      | Producer, admin staff, finance systems, CRM, secure document storage | `10.20.11.0/24` | `10.20.11.1`   | `10.20.11.100 – 200`        |
-| **12**  | Production   | High-performance production      | `grp-production`      | Render nodes, file servers       | `10.20.12.0/24` | `10.20.12.1`   | `10.20.12.100 – 200`        |
-| **13**  | Production   | Production Reserved              | `grp-production`      | Future production needs          | `10.20.13.0/24` | `10.20.13.1`   | Static only                 |
-| **14**  | Production   | Production Wifi                  | `grp-production`      | Staff laptops, mobile devices    | `10.20.14.0/24` | `10.20.14.1`   | `10.20.14.100 – 200`        |
-| **15**  | Production   | Production Monitoring            | `grp-management`      | Syslog, SNMP, NetFlow            | `10.20.15.0/24` | `10.20.15.1`   | `10.20.15.100 – 200`        |
-| **21**  | Stage        | Physical photography stage       | `grp-stage`           | Robotic rigs, lighting arrays, product movers, control systems, IoT interfaces | `10.20.21.0/24` | `10.20.21.1`   | `10.20.21.100 – 200`        |
-| **22**  | Stage        | High-performance stage           | `grp-stage`           | Image servers, preview stations  | `10.20.22.0/24` | `10.20.22.1`   | `10.20.22.100 – 200`        |
-| **23**  | Stage        | Stage Reserved                   | `grp-stage`           | Future stage needs               | `10.20.23.0/24` | `10.20.23.1`   | Static only                 |
-| **24**  | Stage        | Stage Wifi                       | `grp-stage`           | Tablets, mobile control apps     | `10.20.24.0/24` | `10.20.24.1`   | `10.20.24.100 – 200`        |
-| **25**  | Stage        | Stage Monitoring                 | `grp-management`      | Syslog, SNMP, NetFlow            | `10.20.25.0/24` | `10.20.25.1`   | `10.20.25.100 – 200`        |
-| **31**  | Studio       | Digital photography processing   | `grp-studio`          | Director, editors, retouchers, editing suites, color grading tools | `10.20.31.0/24` | `10.20.31.1`   | `10.20.31.100 – 200`        |
-| **32**  | Studio       | High-performance studio          | `grp-studio`          | Color grading, VFX workstations  | `10.20.32.0/24` | `10.20.32.1`   | `10.20.32.100 – 200`        |
-| **33**  | Studio       | Ultra-high-performance studio    | `grp-studio`          | SAN/NAS systems, media servers   | `10.20.33.0/24` | `10.20.33.1`   | Static only                 |
-| **34**  | Studio       | Studio Wifi                      | `grp-studio`          | Creative team mobile devices     | `10.20.34.0/24` | `10.20.34.1`   | `10.20.34.100 – 200`        |
-| **35**  | Studio       | Studio Monitoring                | `grp-management`      | Syslog, SNMP, NetFlow            | `10.20.35.0/24` | `10.20.35.1`   | `10.20.35.100 – 200`        |
-| **41**  | Workshop     | Fabrication and prototyping      | `grp-workshop`        | Makers, engineers, technicians, CAD stations, equipment controllers | `10.20.41.0/24` | `10.20.41.1`   | `10.20.41.100 – 200`        |
-| **42**  | Workshop     | Workshop Reserved                | `grp-workshop`        | Future workshop needs            | `10.20.42.0/24` | `10.20.42.1`   | Static only                 |
-| **43**  | Workshop     | Workshop Reserved                | `grp-workshop`        | Future workshop needs            | `10.20.43.0/24` | `10.20.43.1`   | Static only                 |
-| **44**  | Workshop     | Workshop Wifi                    | `grp-workshop`        | Tool-connected devices           | `10.20.44.0/24` | `10.20.44.1`   | `10.20.44.100 – 200`        |
-| **45**  | Workshop     | Workshop Monitoring              | `grp-management`      | Syslog, SNMP, NetFlow            | `10.20.45.0/24` | `10.20.45.1`   | `10.20.45.100 – 200`        |
-| **51**  | Management   | IT infrastructure and oversight  | `grp-management`      | IT manager, C-level staff, FreeIPA admin tools, audit logs, network monitoring | `10.20.51.0/24` | `10.20.51.1`   | Static only                 |
-| **52**  | Management   | Management Reserved              | `grp-management`      | Future management needs          | `10.20.52.0/24` | `10.20.52.1`   | Static only                 |
-| **53**  | Management   | Management Reserved              | `grp-management`      | Future management needs          | `10.20.53.0/24` | `10.20.53.1`   | Static only                 |
-| **54**  | Management   | Management Wifi                  | `grp-management`      | Admin mobile devices             | `10.20.54.0/24` | `10.20.54.1`   | `10.20.54.100 – 200`        |
-| **55**  | Management   | Management Monitoring            | `grp-management`      | Syslog, SNMP, NetFlow            | `10.20.55.0/24` | `10.20.55.1`   | `10.20.55.100 – 200`        |
-| **61**  | Guest        | Visitor access                   | `grp-guest`           | Clients, freelancers, visitors, isolated VLAN, no internal resource access | `10.20.61.0/24` | `10.20.61.1`   | `10.20.61.100 – 200`        |
-| **62**  | Guest        | Guest Reserved                   | `grp-guest`           | Future guest needs               | `10.20.62.0/24` | `10.20.62.1`   | Static only                 |
-| **63**  | Guest        | Guest Reserved                   | `grp-guest`           | Future guest needs               | `10.20.63.0/24` | `10.20.63.1`   | Static only                 |
-| **64**  | Guest        | Guest Wifi                       | `grp-guest`           | Visitor laptops, phones          | `10.20.64.0/24` | `10.20.64.1`   | `10.20.64.100 – 200`        |
-| **65**  | Guest        | Guest Monitoring                 | `grp-management`      | Syslog, SNMP, NetFlow            | `10.20.65.0/24` | `10.20.65.1`   | `10.20.65.100 – 200`        |
+- **Identity, Policy and Auditing**: [FreeIPA](https://www.freeipa.org/)  
+  (identity authentication, policy, and auditing)
+
+- **Access Control, Routing and Perimeter Defense**: [OPNsense](https://www.opnsense.org)  
+  (packet inspection and traffic management)
+
+- **Security Layering**: [VLANs](https://en.wikipedia.org/wiki/VLAN)  
+  (logical segmentation and network zone isolation)
+
+   [Back to Table of Contents](#table-of-contents)
 
 ---
 
-## 🔐 Identity and Access Management
+## Core Networking Fabric
+
+The bjoin.studio fabric is comprised of Ethernet switches of varying speed and port density.
+
+- **100 Gb Ethernet**:
+   - **Core Switch:** [MikroTik CRS520-4XS-16XQ-RM](https://mikrotik.com/product/crs520_4xs_16xq_rm)  
+   Layer 2 / Layer 3 Managed Ethernet Switch
+
+   - **Core Switch:** [MikroTik CRS504-4XQ-IN](https://mikrotik.com/product/crs504_4xq_in)  
+   Layer 2 / Layer 3 Managed Ethernet Switch
+
+   - **Core Switch:** [Cisco NEXUS 9236c](https://www.cisco.com/c/en/us/products/switches/nexus-9236c-switch/index.html)  
+   Layer 2 / Layer 3 Managed Ethernet Switch
+
+- **10 Gb Ethernet**:
+   - **Access Switch:** [Sodola KT-NOS SL-SWTGW2C8F](https://sodola-network.com/products/10g-sfp-switch-8-port-10g-sfp-unmanaged-switch-10g-ethernet-switch-with-2-port-10g-rj45-10g-fiber-switch-plug-play-fanless-metal-vlan-qos)  
+   Layer 2 Managed Ethernet Switch
+
+   - **Access Switch:** Bitengine SW08XM  
+   Layer 2 Managed Ethernet Switch - 8x 10Gb
+
+- **1Gb Ethernet**:
+
+   - **Distribution Switch:** [TP-Link SG3428X](https://www.tp-link.com/us/business-networking/omada-sdn-switch/sg3428x/)  
+   Layer 2 Managed Ethernet Switch
+
+   - **Access Switch:** [Netgear GS108Ev4](https://www.netgear.com/business/wired/switches/plus/gs108e/)  
+   Layer 2 Managed Ethernet Switch
+
+   - **Unmanaged Switch:** [Netgear GS105](https://www.netgear.com/home/wired/switches/unmanaged/gs105/)  
+   Unmanaged Ethernet Switch
+
+   [Back to Table of Contents](#table-of-contents)
+
+---
+## Ethernet Switch Capabilities
+
+- **Summary**
+
+   | Switch Type              | Configurable | VLAN Support | Routing | Use Case                      |
+   |--------------------------|--------------|--------------|---------|-------------------------------|
+   | Layer 2/3 Managed        | ✅ Yes       | ✅ Yes       | ✅ Yes  | Enterprise-grade networks     |
+   | Layer 2 Managed          | ✅ Yes       | ✅ Yes       | ❌ No   | Segmented LANs                |
+   | Unmanaged                | ❌ No        | ❌ No        | ❌ No   | Small plug-and-play setups    |
+
+---
+
+- **Layer 2 / Layer 3 Managed Switch**
+   - Combines Layer 2 switching **plus** Layer 3 routing.
+   - Can route traffic between **different subnets or VLANs** using **IP addresses**.
+   - Supports **inter-VLAN routing**, **ACLs**, **static/dynamic routing**, and more.
+   - Ideal for **larger, complex networks** needing both switching and routing.
+
+---
+
+- **Layer 2 Managed Switch**
+   - Operates at **Layer 2 (Data Link Layer)** of the OSI model.
+   - Uses **MAC addresses** to forward Ethernet frames.
+   - Supports **VLANs**, **port mirroring**, **QoS**, and **basic security**.
+   - Great for **LAN segmentation** and **traffic control** within a single network.
+
+---
+
+- **Unmanaged Switch**
+   - **Plug-and-play**: No configuration needed.
+   - **Basic connectivity**: Just forwards traffic between devices.
+   - **No control**: No VLANs, no security settings, no monitoring.
+   - Best for **small, simple networks**.
+
+   [Back to Table of Contents](#table-of-contents)
+
+---
+
+## Identity, Policy and Auditing
 
 This section outlines the FreeIPA group structure and design. This design is intended to be modular, scalable, and intuitive, mirroring the physical and operational layout of the studio.
 
@@ -103,7 +161,52 @@ Sudo rules are used to grant elevated privileges to specific users and groups. F
 
 Automount can be used to automatically mount users' home directories from a central file server (e.g., the QNAP NAS) when they log in to a workstation. This provides a consistent user experience and simplifies home directory management.
 
+   [Back to Table of Contents](#table-of-contents)
+
 ---
+
+---
+
+
+## Definitive VLAN and IP Plan
+
+This table serves as the single source of truth for VLANs, subnets, and IP addressing, and their corresponding FreeIPA groups.
+
+| VLAN ID | Zone         | Purpose                          | Primary FreeIPA Group | Devices / Use Cases              | Subnet          | Gateway IP     | DHCP Range                  |
+|:--------|:-------------|:---------------------------------|:----------------------|:---------------------------------|:----------------|:---------------|:----------------------------|
+| **11**  | Production   | Business-critical services       | `grp-production`      | Producer, admin staff, finance systems, CRM, secure document storage | `10.20.11.0/24` | `10.20.11.1`   | `10.20.11.100 – 200`        |
+| **12**  | Production   | High-performance production      | `grp-production`      | Render nodes, file servers       | `10.20.12.0/24` | `10.20.12.1`   | `10.20.12.100 – 200`        |
+| **13**  | Production   | Production Reserved              | `grp-production`      | Future production needs          | `10.20.13.0/24` | `10.20.13.1`   | Static only                 |
+| **14**  | Production   | Production Wifi                  | `grp-production`      | Staff laptops, mobile devices    | `10.20.14.0/24` | `10.20.14.1`   | `10.20.14.100 – 200`        |
+| **15**  | Production   | Production Monitoring            | `grp-management`      | Syslog, SNMP, NetFlow            | `10.20.15.0/24` | `10.20.15.1`   | `10.20.15.100 – 200`        |
+| **21**  | Stage        | Physical photography stage       | `grp-stage`           | Robotic rigs, lighting arrays, product movers, control systems, IoT interfaces | `10.20.21.0/24` | `10.20.21.1`   | `10.20.21.100 – 200`        |
+| **22**  | Stage        | High-performance stage           | `grp-stage`           | Image servers, preview stations  | `10.20.22.0/24` | `10.20.22.1`   | `10.20.22.100 – 200`        |
+| **23**  | Stage        | Stage Reserved                   | `grp-stage`           | Future stage needs               | `10.20.23.0/24` | `10.20.23.1`   | Static only                 |
+| **24**  | Stage        | Stage Wifi                       | `grp-stage`           | Tablets, mobile control apps     | `10.20.24.0/24` | `10.20.24.1`   | `10.20.24.100 – 200`        |
+| **25**  | Stage        | Stage Monitoring                 | `grp-management`      | Syslog, SNMP, NetFlow            | `10.20.25.0/24` | `10.20.25.1`   | `10.20.25.100 – 200`        |
+| **31**  | Studio       | Digital photography processing   | `grp-studio`          | Director, editors, retouchers, editing suites, color grading tools | `10.20.31.0/24` | `10.20.31.1`   | `10.20.31.100 – 200`        |
+| **32**  | Studio       | High-performance studio          | `grp-studio`          | Color grading, VFX workstations  | `10.20.32.0/24` | `10.20.32.1`   | `10.20.32.100 – 200`        |
+| **33**  | Studio       | Ultra-high-performance studio    | `grp-studio`          | SAN/NAS systems, media servers   | `10.20.33.0/24` | `10.20.33.1`   | Static only                 |
+| **34**  | Studio       | Studio Wifi                      | `grp-studio`          | Creative team mobile devices     | `10.20.34.0/24` | `10.20.34.1`   | `10.20.34.100 – 200`        |
+| **35**  | Studio       | Studio Monitoring                | `grp-management`      | Syslog, SNMP, NetFlow            | `10.20.35.0/24` | `10.20.35.1`   | `10.20.35.100 – 200`        |
+| **41**  | Workshop     | Fabrication and prototyping      | `grp-workshop`        | Makers, engineers, technicians, CAD stations, equipment controllers | `10.20.41.0/24` | `10.20.41.1`   | `10.20.41.100 – 200`        |
+| **42**  | Workshop     | Workshop Reserved                | `grp-workshop`        | Future workshop needs            | `10.20.42.0/24` | `10.20.42.1`   | Static only                 |
+| **43**  | Workshop     | Workshop Reserved                | `grp-workshop`        | Future workshop needs            | `10.20.43.0/24` | `10.20.43.1`   | Static only                 |
+| **44**  | Workshop     | Workshop Wifi                    | `grp-workshop`        | Tool-connected devices           | `10.20.44.0/24` | `10.20.44.1`   | `10.20.44.100 – 200`        |
+| **45**  | Workshop     | Workshop Monitoring              | `grp-management`      | Syslog, SNMP, NetFlow            | `10.20.45.0/24` | `10.20.45.1`   | `10.20.45.100 – 200`        |
+| **51**  | Management   | IT infrastructure and oversight  | `grp-management`      | IT manager, C-level staff, FreeIPA admin tools, audit logs, network monitoring | `10.20.51.0/24` | `10.20.51.1`   | Static only                 |
+| **52**  | Management   | Management Reserved              | `grp-management`      | Future management needs          | `10.20.52.0/24` | `10.20.52.1`   | Static only                 |
+| **53**  | Management   | Management Reserved              | `grp-management`      | Future management needs          | `10.20.53.0/24` | `10.20.53.1`   | Static only                 |
+| **54**  | Management   | Management Wifi                  | `grp-management`      | Admin mobile devices             | `10.20.54.0/24` | `10.20.54.1`   | `10.20.54.100 – 200`        |
+| **55**  | Management   | Management Monitoring            | `grp-management`      | Syslog, SNMP, NetFlow            | `10.20.55.0/24` | `10.20.55.1`   | `10.20.55.100 – 200`        |
+| **61**  | Guest        | Visitor access                   | `grp-guest`           | Clients, freelancers, visitors, isolated VLAN, no internal resource access | `10.20.61.0/24` | `10.20.61.1`   | `10.20.61.100 – 200`        |
+| **62**  | Guest        | Guest Reserved                   | `grp-guest`           | Future guest needs               | `10.20.62.0/24` | `10.20.62.1`   | Static only                 |
+| **63**  | Guest        | Guest Reserved                   | `grp-guest`           | Future guest needs               | `10.20.63.0/24` | `10.20.63.1`   | Static only                 |
+| **64**  | Guest        | Guest Wifi                       | `grp-guest`           | Visitor laptops, phones          | `10.20.64.0/24` | `10.20.64.1`   | `10.20.64.100 – 200`        |
+| **65**  | Guest        | Guest Monitoring                 | `grp-management`      | Syslog, SNMP, NetFlow            | `10.20.65.0/24` | `10.20.65.1`   | `10.20.65.100 – 200`        |
+
+---
+
 
 ## 🧱 Hardware Roles & Physical Connectivity
 
@@ -194,3 +297,42 @@ This section guides you through installing and configuring OPNsense on your Prot
 2.  **Configure OPNsense:** Perform the initial setup of OPNsense, including creating VLANs, configuring DHCP, and setting up firewall rules.
 3.  **Deploy FreeIPA:** Set up the FreeIPA server on the Proxmox host.
 4.  **Test Connectivity:** Thoroughly test connectivity between all VLANs and to the internet.
+
+
+
+
+
+
+
+- **100 Gb Ethernet**:
+   - **Core Switch:** [MikroTik CRS520-4XS-16XQ-RM](https://mikrotik.com/product/crs520_4xs_16xq_rm)  
+   Layer 2 / Layer 3 Managed Ethernet Switch - 16x 100Gb, 4x 25Gb, 2x 1Gb  
+      - [Manual](https://help.mikrotik.com/docs/display/UM/CRS520-4XS-16XQ-RM)
+
+   - **Core Switch:** [MikroTik CRS504-4XQ-IN](https://mikrotik.com/product/crs504_4xq_in)  
+   Layer 2 / Layer 3 Managed Ethernet Switch - 4x 100Gb, 1x 1Gb
+      - [Manual](https://help.mikrotik.com/docs/display/UM/CRS504-4XQ-IN)
+
+   - **Core Switch:** [Cisco NEXUS 9236c](https://www.cisco.com/c/en/us/products/switches/nexus-9236c-switch/index.html)  
+   Layer 2 / Layer 3 Managed Ethernet Switch - 36x 100Gb, 4x 1Gb
+      - [Data Sheet](https://www.cisco.com/c/en/us/products/collateral/switches/nexus-9000-series-switches/datasheet-c78-735989.html)
+
+- **10 Gb Ethernet**:
+   - **Access Switch:** [Sodola KT-NOS SL-SWTGW2C8F](https://sodola-network.com/products/10g-sfp-switch-8-port-10g-sfp-unmanaged-switch-10g-ethernet-switch-with-2-port-10g-rj45-10g-fiber-switch-plug-play-fanless-metal-vlan-qos)  
+   Layer 2 Managed Ethernet Switch - 8x 10Gb
+      - [Manual](https://sodola-network.com/pages/download)
+
+   - **Access Switch:** Bitengine SW08XM  
+   Layer 2 Managed Ethernet Switch - 8x 10Gb
+
+- **1Gb Ethernet**:
+
+   - **Distribution Switch:** [TP-Link SG3428X](https://www.tp-link.com/us/business-networking/omada-sdn-switch/sg3428x/)  
+   Layer 2 Managed Ethernet Switch - 24x 1Gb, 4x 10Gb
+      - [Data Sheet](https://static.tp-link.com/upload/product-overview/2021/202103/20210311/JetStream%20L2+%20Managed%20Switches%20Datasheet.pdf)
+   - **Access Switch:** [Netgear GS108Ev4](https://www.netgear.com/business/wired/switches/plus/gs108e/)  
+   Layer 2 Managed Ethernet Switch - 8x 1Gb
+      - [Data Sheet](https://www.netgear.com/media/GS108Ev3_tcm148-69377.pdf)
+   - **Unmanaged Switch:** [Netgear GS105](https://www.netgear.com/home/wired/switches/unmanaged/gs105/)  
+   Unanaged Ethernet Switch - 5x 1Gb
+      - [Data Sheet](https://www.netgear.com/media/GS105_108_116_DS_tcm148-69371.pdf)
