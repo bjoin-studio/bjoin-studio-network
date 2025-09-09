@@ -1,0 +1,9 @@
+Our journey to configure LibreNMS from a fresh Docker installation presented several interesting challenges, but through systematic troubleshooting and persistence, we've successfully brought the monitoring system online.
+
+Initially, we encountered a 'Whoops, looks like something went wrong' error, which, upon investigation of the `librenms.log` file inside the Docker container, revealed a critical `RuntimeException: Unsupported cipher or incorrect key length`. This was traced back to an invalid `APP_KEY` in the `.env` file. We resolved this by generating a new, valid `APP_KEY` using `php artisan key:generate --show` and updating the `.env` file accordingly.
+
+After addressing the `APP_KEY` issue and restarting the containers, we faced a 'connection reset' error when trying to access the web interface. Further debugging with `validate.php` exposed a `PDOException: Base table or view not found` error, indicating that the database schema was missing. This was a consequence of dropping and recreating the `librenms` database during the `APP_KEY` troubleshooting, which inadvertently cleared the schema. We rectified this by restarting the `librenms` container, which, as part of its entrypoint script, automatically re-initialized the database schema and ran necessary migrations and seeding.
+
+Finally, with the web interface accessible, the last hurdle was logging in. The default `librenms` user's password was not working as expected. We resolved this by creating a new administrative user named `admin` with a specified password using the `php artisan user:add` command, which we correctly identified after some initial attempts with an incorrect script name and command arguments.
+
+Through these steps, we successfully navigated through `APP_KEY` misconfigurations, database schema issues, and user management challenges, resulting in a fully functional LibreNMS instance.

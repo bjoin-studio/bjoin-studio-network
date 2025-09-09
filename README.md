@@ -47,6 +47,7 @@ All systems use centralized authentication through FreeIPA, providing single sig
 ### Essential Documents
 - [Equipment List](2-equipment-list/equipment-list.md) - What hardware you'll need
 - [Network Diagrams](5-physical-layout/) - Visual overview of connections
+- [Alternative Network Design (MikroTik Core)](docs/architecture/mikrotik-core-design.md) - Proposal for a MikroTik-based core
 - [IP Address Plan](6-configuration/ip-address-management.md) - How addresses are organized
 
 ### Common Tasks
@@ -81,6 +82,7 @@ All systems use centralized authentication through FreeIPA, providing single sig
 
 **Monitoring & Management:**
 - [Network Monitoring](8-deployment/network-monitoring-setup.md)
+- [LibreNMS Application Recommendations](docs/software/monitoring/librenms-application-recommendations.md)
 - [Grafana Dashboard](8-deployment/grafana-docker-setup.md)
 - [InfluxDB Setup](docs/configuration/monitoring/influxdb-setup.md)
 - [Custom InfluxDB on TrueNAS](docs/guides/operations/custom-influxdb-setup-truenas.md)

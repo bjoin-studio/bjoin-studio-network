@@ -4,3 +4,4 @@ docker/librenms/.env
 scratch
 docker/prometheus/.env
 docker/grafana/.env
+docker/librenms/db/

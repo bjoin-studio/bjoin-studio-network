@@ -4,7 +4,7 @@ services:
     image: librenms/librenms:latest
     container_name: librenms
     ports:
-      - "8000:80" # You can change 8000 to any available port on your host
+      - "8000:8000" # You can change 8000 to any available port on your host
     environment:
       - APP_KEY=${APP_KEY}
       - DB_HOST=db
@@ -13,9 +13,7 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - MEMCACHED_HOST=memcached
       - REDIS_HOST=redis
-    volumes:
-      - ./librenms:/opt/librenms
-      - ./logs:/opt/librenms/logs
+    # No volumes for /opt/librenms/logs to avoid resource busy error
     depends_on:
       - db
       - memcached
