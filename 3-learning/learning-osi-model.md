@@ -1,3 +1,7 @@
+# Understanding the OSI Model
+
+The **OSI (Open Systems Interconnection) model** is a conceptual framework that standardizes the functions of a telecommunication or computing system in seven abstract layers. Each layer serves a specific function and communicates with the layers directly above and below it. This model helps to visualize and understand the complex interactions that occur when data is transmitted over a network.
+
 **Layer 1: Physical Layer**
 
 The Physical Layer focuses on the physical transmission of raw bit streams over a communication medium. It defines electrical and physical specifications for devices, including cabling, connectors, voltage levels, and data rates. This layer is concerned with how data is actually transmitted as electrical signals, light pulses, or radio waves, without any regard for their meaning or structure. Examples include Ethernet cables, USB, and Wi-Fi physical components.
