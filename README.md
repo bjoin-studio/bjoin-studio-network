@@ -39,8 +39,12 @@ The repository is organized into the following sections:
 *   [Network Physical Connections Overview](1-overview/overview-network-physical-connections.md)
 *   [Network Data Paths Overview](1-overview/overview-network-data-paths.md)
 
-### 2. Equipment List
-*   [Equipment List](2-equipment-list/equipment-list.md)
+### 2. Inventory
+*   [Overall Inventory](02-inventory/inventory.md)
+*   [Network Switches Inventory](02-inventory/inventory-switches.md)
+*   [Server Inventory](02-inventory/inventory-servers.md)
+*   [Software Inventory](02-inventory/inventory-software.md)
+*   [Storage Inventory](02-inventory/inventory-storage.md)
 
 ### 3. Learning
 *   [Key Concepts](3-learning/key-concepts.md)
