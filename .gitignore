@@ -4,3 +4,14 @@
 .DS_Store
 .DS_Store
 scratch
+docker/librenms/db/.my-healthcheck.cnf
+docker/librenms/db/aria_log_control
+docker/librenms/db/aria_log.00000001
+docker/librenms/db/ddl_recovery.log
+docker/librenms/db/ib_buffer_pool
+docker/librenms/db/ib_logfile0
+docker/librenms/db/ibdata1
+docker/librenms/db/ibtmp1
+docker/librenms/db/multi-master.info
+docker/librenms/db/mysql_upgrade_info
+bjoin-studio-network-backup-20250909.zip
