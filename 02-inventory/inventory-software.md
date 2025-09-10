@@ -69,3 +69,29 @@
   A fully featured network monitoring system with automatic discovery, customizable alerting, and extensive device support.
 
 </details>
+
+---
+
+## Automation Tools
+<details>
+  <summary>Automation Tools</summary>
+
+- [**Ansible**](https://docs.ansible.com/ansible/latest/index.html)  
+  An open-source automation tool for configuration management, application deployment, and orchestration. It uses simple YAML-based playbooks and operates agentlessly over SSH.
+
+</details>
+```
+
+---
+
+## Containerization Tools
+<details>
+  <summary>Containerization Tools</summary>
+
+- [**Docker**](https://www.docker.com/)  
+  A platform for developing, shipping, and running applications in containers. It simplifies deployment by packaging code and dependencies into isolated environments.
+
+</details>
+```
+
+---

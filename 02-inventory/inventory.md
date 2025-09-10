@@ -4,7 +4,7 @@ This document serves as the main entry point for the inventory of the bjoin.stud
 
 ## Table of Contents
 
-*   [Network Switches Inventory](inventory-switches.md)
-*   [Server Inventory](inventory-servers.md)
-*   [Software Inventory](inventory-software.md)
-*   [Storage Inventory](inventory-storage.md)
+*   [Network Switches](inventory-switches.md)
+*   [Servers](inventory-servers.md)
+*   [Software](inventory-software.md)
+*   [Storage Servers](inventory-storage.md)
