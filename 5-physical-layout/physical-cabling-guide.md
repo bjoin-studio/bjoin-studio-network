@@ -4,10 +4,10 @@ This document provides a step-by-step guide for physically connecting the networ
 
 ## High-Level Topology Flow
 
-The network follows a layered approach, starting from the internet and moving inwards to the distribution and access layers.
+The network follows a layered approach, starting from the internet and moving inwards to the core and access layers.
 
 ```
-[Internet] -> [ISP Modem] -> [Protectli FW4B (Firewall)] -> [Sodola 8-Port 10G (Distribution Switch)] -> [Cisco/BitEngine/Netgear Switches] -> [End Devices]
+[Internet] -> [ISP Modem] -> [HP Z620 (Proxmox Host with OPNsense VM)] -> [MikroTik CRS520-4XS-16XQ-RM (Core Switch)] -> [End Devices]
 ```
 
 ---
@@ -18,70 +18,18 @@ Follow these connections in order.
 
 ### 1. Internet to Firewall
 
-This connection provides the internet uplink to your entire network.
+This connection provides the internet uplink to your entire network, now managed by an OPNsense VM running on a Proxmox host.
 
-| Source Device  | Source Port  | Destination Device | Destination Port | Cable Type | Purpose      |
-|:---------------|:-------------|:-------------------|:-----------------|:-----------|:-------------|
-| ISP Modem      | Any LAN Port | Protectli FW4B     | WAN Port         | Ethernet   | WAN Uplink   |
-
----
-
-### 2. Firewall to Distribution Switch (Sodola)
-
-This is the most critical link in your network. It carries all tagged VLAN traffic from your firewall to the rest of the network.
-
-| Source Device  | Source Port | Destination Device | Destination Port               | Cable Type | Purpose         |
-|:---------------|:------------|:-------------------|:-------------------------------|:-----------|:----------------|
-| Protectli FW4B | LAN Port    | Sodola 8-Port 10G  | Port 8 (with RJ45 Transceiver) | Ethernet   | Main VLAN Trunk |
+| Source Device  | Source Port  | Destination Device           | Destination Port | Cable Type | Purpose      |
+|:---------------|:-------------|:-----------------------------|:-----------------|:-----------|:-------------|
+| ISP Modem      | Any LAN Port | HP Z620 (OPNsense VM WAN)    | WAN Interface    | Ethernet   | WAN Uplink   |
 
 ---
 
-### 3. Distribution Switch (Sodola) to Core Switch (Cisco)
+### 2. Firewall to Core Switch
 
-This is a high-speed LAG trunk that connects your distribution switch to your core switch.
+This is the critical link carrying all tagged VLAN traffic from your OPNsense firewall to the core switch.
 
-| Source Device     | Source Port(s) | Destination Device | Destination Port(s) | Cable Type / Required Adapter      |
-|:------------------|:---------------|:-------------------|:--------------------|:-----------------------------------|
-| Sodola 8-Port 10G | Ports 1-4 (LAG)| Cisco Nexus 9236C  | Port 1              | SFP+ to QSFP28 Adapter/Cable       |
-
----
-
-### 4. Distribution Switch (Sodola) to Access Switches
-
-These connections distribute the VLANs from your main distribution switch (Sodola) to the other access switches.
-
-| Source Device     | Source Port                    | Destination Device | Destination Port           | Cable Type / Required Adapter      |
-|:------------------|:-------------------------------|:-------------------|:---------------------------|:-----------------------------------|
-| Sodola 8-Port 10G | Port 7 (with SFP+ Transceiver) | Netgear GS108Ev4   | Port 8 (Trunk)             | Ethernet                           |
-
----
-
-### 5. Connecting the Proxmox Host (and Critical Services like FreeIPA)
-
-For critical services like FreeIPA, it is highly recommended to connect the host directly to a managed switch. This avoids single points of failure introduced by unmanaged switches.
-
-| Source Device     | Source Port     | Destination Device | Destination Port(s) | Cable Type | Purpose            |
-|:------------------|:----------------|:-------------------|:--------------------|:-----------|:-------------------|
-| Sodola 8-Port 10G | Port 5 (Access) | Mac Pro 6,1        | 1Gb Ethernet Port   | Ethernet   | Management Access  |
-
----
-
-### 6. Connecting the QNAP NAS
-
-This is a high-speed LAG connection for the QNAP NAS.
-
-| Source Device     | Source Port(s) | Destination Device | Destination Port(s) | Cable Type | Purpose         |
-|:------------------|:----------------|:-------------------|:--------------------|:-----------|:----------------|
-| Cisco Nexus 9236C | Ports 3-4 (LAG)| QNAP TS-h1290FX    | Ports 1-2 (LAG)     | Ethernet   | High-Speed Access |
-
----
-
-### 7. Connecting Unmanaged Switches
-
-Your unmanaged switches (like the **Netgear ProSafe GS105**) cannot understand VLAN tags. Therefore, they must be connected to **ACCESS ports** on a managed switch, not trunk ports. Use unmanaged switches only for non-critical devices within a single VLAN.
-
----
-
-### 8. Connecting End Devices
-
-Connect servers, workstations, and other devices to the appropriate access switches based on the VLAN they need to be in.
+| Source Device             | Source Port | Destination Device                 | Destination Port | Cable Type | Purpose         |
+|:--------------------------|:------------|:-----------------------------------|:-----------------|:-----------|:----------------|
+| HP Z620 (OPNsense VM LAN) | LAN Interface | MikroTik CRS520-4XS-16XQ-RM (Core) | Port 1 (Trunk)   | Ethernet   | Main VLAN Trunk |
