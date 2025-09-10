@@ -8,23 +8,23 @@ This repository is designed to be a living document that can be used by both tec
 
 The repository is organized into the following sections:
 
-**1. Overview:** Start here for a high-level overview of the project.
+**01. Overview:** Start here for a high-level overview of the project.
 
-**2. Equipment List:** A list of all the hardware used in the network.
+**02. Inventory:** A list of all the hardware used in the network.
 
-**3. Learning:** Explanations of the key concepts and architectural decisions behind the network design.
+**03. Research:** Explanations of key concepts and considerations for the network design.
 
-**4. Insights:** Interesting findings and ideas related to the network.
+**04. Insights:** Interesting findings and ideas related to the network.
 
-**5. Physical Layout:** Diagrams and guides for the physical setup of the network.
+**05. Plans:** Documents related to network planning and future development.
 
-**6. Configuration:** The nitty-gritty details of the network configuration, including VLANs, IP addresses, and device settings.
+**07. Physical Layout:** Diagrams and guides for the physical setup of the network.
 
-**7. Testing:** How to test the network to make sure it's working correctly.
+**06. Configuration:** The nitty-gritty details of the network configuration, including VLANs, IP addresses, and device settings.
 
-**8. Deployment:** Step-by-step guides for setting up and configuring the network devices.
+**08. Deployment:** Step-by-step guides for setting up and configuring the network devices.
 
-**9. Maintenance:** How to keep the network running smoothly, including backup and disaster recovery plans.
+**09. Maintenance:** How to keep the network running smoothly, including backup and disaster recovery plans.
 
 **10. Future Plans:** The roadmap for the future of the network.
 
@@ -56,7 +56,7 @@ The repository is organized into the following sections:
 *   [Network Design Considerations](4-insights/network-design-considerations.md)
 *   [Repository Insights](4-insights/repository-insights.md)
 
-### 5. Physical Layout
+### 7. Physical Layout
 *   [Data Flow Diagrams](5-physical-layout/data-flow-diagrams.md)
 *   [Logical Diagram](5-physical-layout/logical-diagram.md)
 *   [Physical Cabling Guide](5-physical-layout/physical-c cabling-guide.md)
@@ -69,8 +69,9 @@ The repository is organized into the following sections:
 *   [Ansible](6-configuration/ansible)
 *   [Device Configurations](6-configuration/cfg)
 
-### 7. Testing
-*   [VLAN Testing Procedure](7-testing/vlan-testing-procedure.md)
+### 5. Plans
+*   [Network Plan](05-plans/plan-network.md)
+*   [VLAN Testing Procedure](05-plans/vlan-testing-procedure.md)
 
 ### 8. Operational
 *   [Proxmox Bridge STP Configuration](docs/operational/runbooks/proxmox-bridge-stp-configuration.md)
