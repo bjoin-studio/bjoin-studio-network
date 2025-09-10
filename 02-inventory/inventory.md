@@ -20,7 +20,6 @@ It provides links to more detailed inventory lists for different categories of e
 
 ---
 
-
 ## Servers
 
 - [HP z620](servers/hp-z620.md)
@@ -31,6 +30,9 @@ It provides links to more detailed inventory lists for different categories of e
     - **Hypervisor Host**
     - **Identity Management (VM)**
     - **Network Attached Storage (VM)**
+
+- [Protectli F4WB](servers/protectli-f4wb.md)
+    - **Firewall (Failover)**
 
    [Back to Table of Contents](#table-of-contents)
 

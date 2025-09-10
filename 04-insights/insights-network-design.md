@@ -1,38 +1,30 @@
-# Key Network Concepts
+# Evolving the Network: From "Router-on-a-Stick" to Hybrid Routing
 
-This document explains some of the key concepts and architectural decisions behind the bjoin.studio network design.
+This document explains the key concepts and architectural decisions behind the bjoin.studio network design, highlighting its evolution from a simple "Router-on-a-Stick" model to a more sophisticated **hybrid routing** strategy. This new approach is designed to balance security with the high-performance demands of a media production environment.
 
-## Key Architectural Decision: "Router-on-a-Stick"
+## The Core Challenge: Overcoming the 1Gbps Bottleneck
 
-A core principle of this network design is the use of a "Router-on-a-Stick" configuration. You might notice that even though the Protectli firewall has four ports, we are only using two: one for `WAN` (internet) and one for `LAN` (internal network). This is intentional and is a standard practice for building secure, scalable networks.
+The initial network design relied on a Protectli firewall with 1Gbps ports. While excellent for security, it created a performance bottleneck. All traffic between different VLANs (e.g., a video editor accessing a file on a server in another VLAN) was forced through this 1Gbps link.
 
-Here’s why we do it this way:
+This was an intentional trade-off, prioritizing security and inspection for all cross-VLAN traffic. However, as the need for high-speed access to large media files grew, this bottleneck became a significant limitation.
 
-*   **Centralized Control:** By forcing all traffic between VLANs to go up the "stick" to the OPNsense firewall through a single port, we guarantee that every packet is inspected. This gives us a single, powerful point of control for all security policies.
-*   **Specialized Roles:** It lets the switches do what they do best (handle high-speed VLAN traffic) and lets the firewall do what it does best (deep packet inspection, routing, and security).
-*   **Flexibility:** We can add dozens of new VLANs in the future without ever needing to change the physical cabling on the firewall.
+## The Solution: A Hybrid Routing Strategy
 
-The spare ports on the firewall give us great options for the future, like a dedicated high-security DMZ or a redundant link to the core switch.
+To address this, the network was upgraded to a **hybrid routing** model. This approach combines the strengths of two different types of devices:
 
-## A Note on Performance and Bottlenecks
+1.  **A High-Performance 10Gbps Virtualized Firewall:** The primary routing and security functions are now handled by a powerful OPNsense firewall running as a virtual machine on an HP Z620 workstation. This VM has a dedicated **10Gbps Solarflare network card**, eliminating the 1Gbps bottleneck for inter-VLAN traffic that requires inspection.
 
-It's fair to ask: "If we have a 100Gb/s switch, won't the 1Gb/s firewall be a bottleneck?" The answer is **no** for the most important traffic, and it highlights the power of this design. The key is understanding the two types of traffic on our network.
+2.  **A High-Speed Layer 3 Core Switch:** For specific, trusted, high-bandwidth VLANs (like the `Studio` zone), routing is offloaded to the **MikroTik CRS520-4XS-16XQ-RM core switch**. This allows traffic between these performance-critical zones to be routed at the switch's full backplane speed (up to 100Gbps), bypassing the firewall entirely.
 
-### 1. Traffic *Inside* a VLAN (East-West)
-This is your high-speed lane. When a 100Gb/s editing workstation needs to pull a huge file from a 100Gb/s media server in the same VLAN, that traffic goes directly to the Cisco 100G switch and is handled there. It **never touches the firewall**. This is where the heavy lifting is done, at full speed.
+### How Hybrid Routing Works
 
-### 2. Traffic *Between* VLANs (North-South)
-When a device from one VLAN needs to talk to another (e.g., a 1G office workstation accessing a server), that traffic *must* go through the firewall to be inspected and routed. This traffic **is limited to the 1Gb/s speed of the firewall's port**.
+This model provides the best of both worlds:
 
-This is an intentional trade-off. We are using the expensive, high-speed switch for the bulk data transfers *within* our performance-critical zones, while using the firewall to apply security and control to the lower-speed traffic that needs to cross between those zones.
+*   **Performance-Critical Traffic (East-West):** When a 100Gb/s editing workstation needs to pull a huge file from a 100Gb/s media server in another trusted, high-speed VLAN, that traffic is routed directly by the MikroTik core switch. It **never touches the firewall**, ensuring maximum speed.
 
-### Upgrading Firewall Performance
-If, in the future, the 1Gb/s speed for traffic *between* VLANs becomes a limitation, the solution is to upgrade the firewall hardware. To achieve true 10Gb/s firewalling, you would need a new machine with:
+*   **Security-Sensitive Traffic (North-South):** When a device from one VLAN needs to talk to a less-trusted VLAN, or to the internet, that traffic *must* go through the 10Gbps OPNsense firewall to be inspected and routed.
 
-*   **10Gb Ports:** This raises the maximum physical speed of the connection to the network.
-*   **A Powerful CPU:** This is the "engine" of the firewall. A faster CPU is critical for processing packets, inspecting traffic, and handling routing at high speeds.
-*   **Sufficient RAM:** More memory is needed to handle the state table for a larger number of connections.
-*   **Awareness of Services:** Performance-intensive services like Intrusion Detection (IDS/IPS) and VPNs will always require a more powerful CPU to maintain high throughput.
+This is an intentional, strategic design. We use the expensive, high-speed switch for bulk data transfers within our performance-critical zones, while using the powerful virtualized firewall to apply security and control to all other traffic.
 
 ## VLAN Tagging Standard: 802.1Q
 
