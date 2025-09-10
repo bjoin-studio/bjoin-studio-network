@@ -1,6 +1,6 @@
 # Bjoin Studio Network
 
-This repository contains the documentation, configuration, and automation for the bjoin.studio network.
+This repository contains information related to the bjoin.studio network.
 
 ## How to Use This Repository
 
@@ -16,7 +16,7 @@ The repository is organized into the following sections:
 
 **04. Insights:** Interesting findings and ideas related to the network.
 
-**05. Plans:** Documents related to network planning and future development.
+**05. Design:** Documents related to network planning and future development.
 
 **07. Physical Layout:** Diagrams and guides for the physical setup of the network.
 

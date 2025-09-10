@@ -9,7 +9,7 @@ This document outlines the comprehensive plan for designing, implementing, and m
 - **Device Placement:** Strategic positioning of network devices (routers, switches, firewalls, servers) for optimal performance, accessibility, and redundancy.
     - **Core Switch:** The MikroTik CRS520-4XS-16XQ-RM will serve as the network's core switch, providing high-speed inter-VLAN routing and aggregation for all network traffic.
     - **Access Switches:** All other switches in the network will function as access layer switches, connecting end-user devices and servers to the core switch. Connections between access switches and the core switch will utilize appropriate high-bandwidth uplinks (e.g., 10GbE or 40GbE fiber).
-    - *Consideration:* Document specific hardware models (e.g., Cisco Nexus 9236C, Netgear GS108Ev4) and their physical connections.
+    - *Consideration:* Document specific hardware models (e.g., MikroTik CRS520-4XS-16XQ-RM, Netgear GS108Ev4) and their physical connections.
 
 ## 3. IP Addressing
 - **Subnetting:** Detailed subnetting scheme for all network segments, including production, staging, studio, workshop, management, and guest networks.
