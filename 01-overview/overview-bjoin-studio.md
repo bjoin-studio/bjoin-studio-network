@@ -1,47 +1,60 @@
 # bjoin.studio Network Overview
 
 ## Table of Contents
-1. [Introduction](#introduction)
-2. [Analysis of Existing Infrastructure](#analysis-of-existing-infrastructure)
-3. [High-Level Plan](#high-level-plan)
-4. [New Network Design](#new-network-design)
+1. [**Introduction**](#introduction)
+2. [**Analysis of Existing Infrastructure**](#analysis-of-existing-infrastructure)
+3. [**High-Level Plan**](#high-level-plan)
+4. [**New Network Design**](#new-network-design)
 
 ---
 
 ## Introduction
 
-This document provides a comprehensive overview of the bjoin.studio network. It details the design of the new network, the reasons for the redesign, and the plan for its implementation. This document is intended to be a living document that will be updated as the network evolves.
+This document outlines the redesign of the bjoin.studio network, including the rationale, strategic goals, and implementation plan. It serves as a living reference that will evolve alongside the infrastructure.
 
-   [Back to Table of Contents](#table-of-contents)
+[Back to Table of Contents](#table-of-contents)
 
 ---
 
 ## Analysis of Existing Infrastructure
 
-The previous network infrastructure at bjoin.studio was a collection of disparate components that had grown organically over time. This resulted in a network that was difficult to manage, insecure, and unable to keep up with the studio's growing needs. The network was a flat, single-VLAN network, which meant that there was no separation of traffic between different devices and services. This posed a significant security risk, as a compromise of any single device could potentially compromise the entire network. The network was also difficult to manage, as there was no central point of control for network services. This made it difficult to troubleshoot problems and to make changes to the network.
+The existing network was built around consumer-grade hardware and lacked intentional design. Workstations connected to a single 10Gb NAS operated without a DHCP server or static IP configuration, relying instead on APIPA (Automatic Private IP Addressing) addresses in the `169.254.x.x` range. This setup allowed for basic file sharing but lacked routing, segmentation, and centralized control. Meanwhile, Wi-Fi devices received IP addresses via DHCP from a domestic modem/router using a Class C private address space (typically `192.168.x.x`). 
 
-   [Back to Table of Contents](#table-of-contents)
+The network was effectively flat, with no VLANs or traffic isolation. There was no firewall between internal devices, no identity management, and no monitoring or logging. As a result, the infrastructure was difficult to scale, insecure by design, and prone to configuration drift. Troubleshooting was manual and inconsistent, and the lack of a unified management plane made even simple changes risky and error-prone.
 
----
-
-## High-Level Plan
-
-The new network is designed to address the shortcomings of the previous network. The new network is a complete overhaul of the studio's digital infrastructure, designed to meet the demands of a modern, data-intensive creative environment. The new network is a cohesive and centrally managed system that is built on a foundation of modern networking principles.
-
-The high-level plan for the new network is as follows:
-- **Core Network:** A 100GbE core network will be implemented to provide high-speed connectivity between all network devices.
-- **VLANs:** The network will be segmented into a number of VLANs to isolate different types of traffic and to provide a high level of security.
-- **Centralized Management:** The network will be centrally managed using a combination of OPNsense and FreeIPA, which will provide a single point of control for all network services.
-- **Security:** The network will be secured using a combination of firewalls, access control lists, and intrusion detection and prevention systems.
-
-   [Back to Table of Contents](#table-of-contents)
+[Back to Table of Contents](#table-of-contents)
 
 ---
 
 ## New Network Design
 
-The new bjoin.studio network is a complete overhaul of the studio's digital infrastructure, designed to meet the demands of a modern, data-intensive creative environment. The previous network was a collection of disparate components that had grown organically over time. This resulted in a network that was difficult to manage, insecure, and unable to keep up with the studio's growing needs. The new network, on the other hand, is a cohesive and centrally managed system that is built on a foundation of modern networking principles.
+The new network is called bjoin.studio, a class A network starting at 10.20.x.x
 
-The new network is designed to be highly available, scalable, and secure. It is built around a 100GbE core, with a combination of 10GbE and 1GbE access switches to provide connectivity for a wide range of devices. The network is segmented into a number of VLANs, which are used to isolate different types of traffic and to provide a high level of security. The network is also centrally managed using a combination of OPNsense and FreeIPA, which provide a single point of control for all network services.
+The bjoin.studio network is engineered for scalability, resilience, and security.
+It replaces the previous ad hoc setup with a structured, centrally managed architecture.
 
-The new network is a critical component of the studio's digital infrastructure. It provides the foundation for all of the studio's creative and business operations, and it is essential for the studio's continued success. The new network is a significant investment, but it is one that will pay dividends for years to come.
+Built around a 100GbE core, the design incorporates 10GbE and 1GbE access layers to support a diverse range of endpoints.
+VLAN segmentation ensures logical separation of traffic, reducing attack surfaces and simplifying policy enforcement.
+OPNsense handles routing and firewall duties, while FreeIPA provides identity and access management across services.
+
+This infrastructure underpins all studio operations—from creative workflows to business systems—and positions bjoin.studio for long-term growth. Though the investment is substantial, the benefits in performance, reliability, and security will be transformative.
+
+[Back to Table of Contents](#table-of-contents)
+
+---
+
+## High-Level Plan
+
+The redesigned network is a ground-up rebuild tailored to the demands of a modern, data-intensive creative environment. It emphasizes performance, segmentation, and centralized control.
+
+Key components of the plan:
+
+- **Core Backbone:** A 100GbE core will interconnect all major systems, ensuring low-latency, high-throughput communication.
+
+- **Traffic Segmentation:** VLANs will isolate services and device classes, enhancing both security and manageability.
+
+- **Centralized Control:** OPNsense and FreeIPA will provide unified management for routing, identity, and policy enforcement.
+
+- **Security Architecture:** Firewalls, ACLs, and intrusion detection/prevention systems will form a layered defense strategy.
+
+[Back to Table of Contents](#table-of-contents)
