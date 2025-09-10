@@ -17,17 +17,28 @@ Adopting a structured IP allocation scheme provides several key advantages over 
 
 This table defines the recommended logical grouping for the `10.20.51.0/24` subnet.
 
-| IP Range | Asset Group | Purpose & Notes |
-| :--- | :--- | :--- |
-| `10.20.51.1 - .9` | **Gateways & Firewalls** | For core network routing and security appliances. The `.1` address is the primary gateway. |
-| `10.20.51.10 - .19` | **Core Switches** | Backbone switches that handle major network traffic (e.g., Cisco Nexus, MikroTik 100G). |
-| `10.20.51.20 - .39` | **Access Switches** | Edge switches that connect endpoints to the network (e.g., TP-Link, Netgear, Sodola). |
-| `10.20.51.40 - .59` | **Hypervisor Hosts** | Management interfaces for virtualization hosts like Proxmox or ESXi (e.g., `pmx-01`, `pmx-02`). |
-| `10.20.51.60 - .79` | **Infrastructure Servers** | Core service servers like FreeIPA (Identity/DNS), monitoring, and automation (e.g., Ansible). |
-| `10.20.51.80 - .99` | **Storage & Appliances** | Management interfaces for NAS/SAN controllers, UPS systems, and other hardware appliances. |
-| `10.20.51.100 - .119`| **Out-of-Band Mgmt** | For IPMI, iDRAC, and other remote server management interfaces. |
-| `10.20.51.120 - .199`| **Reserved / Future Use** | A large block left available for future device categories or expansion of existing ones. |
-| `10.20.51.200 - .254`| **DHCP / Testing** | Optional range for temporary devices or for provisioning new hosts before assigning a static IP. |
+
+| IP range | Asset group | Purpose & notes |
+| :-- | :-- | :-- |
+| 10.20.51.1 | **Primary gateway** | Default gateway/virtual IP for the subnet. |
+| 10.20.51.2 – .9 | **Gateways & firewalls** | HA/secondary VIPs, dedicated firewall interfaces, router services. |
+| 10.20.51.10 – .29 | **Core switches** | Distribution/backbone switches, stack management IPs. |
+| 10.20.51.30 – .59 | **Access switches** | Edge switches for endpoints and AP uplinks. |
+| 10.20.51.60 – .79 | **Hypervisor hosts** | Proxmox/ESXi host management (e.g., pmx-01, pmx-02). |
+| 10.20.51.80 – .99 | **Infrastructure servers** | Identity/DNS (FreeIPA), monitoring (LibreNMS), automation (Ansible), jump hosts. |
+| 10.20.51.100 – .200 | **DHCP pool** | Dynamic clients, provisioning, testing. Do not assign statics here. |
+| 10.20.51.201 – .219 | **Storage & appliances** | NAS/SAN controllers (TrueNAS), UPS, PDU, NTP/PTP, out-of-band appliance UIs. |
+| 10.20.51.220 – .239 | **Out-of-band management** | IPMI/iDRAC/iLO BMC interfaces. |
+| 10.20.51.240 – .249 | **Reserved/future infrastructure** | Growth space for any static infrastructure roles. |
+| 10.20.51.250 – .254 | **Special use** | Anycast VIPs, VRRP/HSRP, testing statics. Avoid .255 (broadcast). |
+
+---
+
+#### Implementation tips
+- **DHCP scope:** 10.20.51.100–10.20.51.200 with reservations only inside that range if you must, otherwise prefer static IPs outside the pool.
+- **Exclusions:** Ensure the DHCP server has explicit exclusions for 10.20.51.1–.99 and 10.20.51.201–.254.
+- **Documentation:** Add hostnames and roles next to each assigned static (e.g., 10.20.51.61 pmx-01) to prevent drift.
+- **Gateway HA:** If using VRRP/HSRP/Carp, put the VIP at .1 and use .2/.3 for member devices.
 
 ---
 
