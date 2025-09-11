@@ -45,7 +45,8 @@ Silent, fanless design for compact 10Gb aggregation.
     </details>
 
 ## Identification
-
-| Hostname(s)               | IP Address(es)   | VLAN  | Cable ID   |
-|---------------------------|------------------|-------|------------|
-| `sodola-10g.bjoin.studio` | `10.20.51.20`    | `51`  | `----/----` |
+```
+| Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
+| -------------------------------------- | ----------------- | ------ | ----------- |
+| sodola-10g.bjoin.studio                |    10.20.51.15    |   51   |  ----/----  |
+```

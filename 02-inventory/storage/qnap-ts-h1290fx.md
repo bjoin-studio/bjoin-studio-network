@@ -95,7 +95,8 @@ Equipped with AMD EPYC processor, PCIe Gen4 architecture, and dual 100GbE via Co
     </details>
 
 ## Identification
-
-| Hostname(s)         | IP Address(es)   | VLAN  | Cable ID   |
-|---------------------|------------------|-------|------------|
-| `qnap.bjoin.studio` | `10.20.51.80`    | `51`  | `----/----` |
+```
+| Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
+| -------------------------------------- | ----------------- | ------ | ----------- |
+| qnap-01.bjoin.studio                   |    10.20.51.201   |   51   |  ----/----  |
+```

@@ -52,7 +52,8 @@ Compact switch with essential VLAN and QoS features.
     </details>
 
 ## Identification
-
-| Hostname(s)               | IP Address(es)   | VLAN  | Cable ID   |
-|---------------------------|------------------|-------|------------|
-| `netgear-gs108e.bjoin.studio` | `10.20.51.31` | `51`  | `----/----` |
+```
+| Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
+| -------------------------------------- | ----------------- | ------ | ----------- |
+| netgear-gs108e.bjoin.studio            |    10.20.51.17    |   51   |  ----/----  |
+```

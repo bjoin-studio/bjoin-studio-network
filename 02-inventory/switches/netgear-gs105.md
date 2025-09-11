@@ -53,7 +53,8 @@ Reliable plug-and-play switch for basic connectivity.
     </details>
 
 ## Identification
-
-| Hostname(s)               | IP Address(es)   | VLAN  | Cable ID   |
-|---------------------------|------------------|-------|------------|
-| `netgear-gs105.bjoin.studio` | `10.20.51.32` | `51`  | `----/----` |
+```
+| Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
+| -------------------------------------- | ----------------- | ------ | ----------- |
+| netgear-gs105.bjoin.studio             |    10.20.51.18    |   51   |  ----/----  |
+```

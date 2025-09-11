@@ -77,7 +77,9 @@ High-performance enterprise switch with advanced routing capabilities and hardwa
     </details>
 
 ## Identification
-
-|  Hostname(s)                      |  IP Address(es)   |  VLAN  |  Cable ID   |
-| -------------------------------- | ----------------- | ------ | ----------- |
-| `crs520-core.bjoin.studio`       |   `10.20.51.10`   |  `51`  | `----/----` |
+```
+| Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
+| -------------------------------------- | ----------------- | ------ | ----------- |
+| crs520-core.bjoin.studio               |    10.20.51.11    |   51   |  ----/----  |
+| crs520-qsfp.bjoin.studio               |    10.20.51.21    |  4090  |  ----/----  |
+```

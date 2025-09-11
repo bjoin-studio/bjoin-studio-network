@@ -43,35 +43,6 @@ This table defines the recommended logical grouping for the `10.20.51.0/24` subn
 
 ---
 
-## New IP Assignments for Existing Equipment
-
-This table provides a concrete migration plan, mapping existing devices to their new, logical IP addresses within the proposed structure.
-
-| Hostname | Device Type | New IP Address | Old IP Address | Notes |
-| :--- | :--- | :--- | :--- | :--- |
-| `opnsense-fw` | Gateway | **`10.20.51.1`** | `10.20.51.1` | No change (Primary Gateway) |
-| `opnsense-fw-hpz620-1` | Firewall | **`10.20.51.2`** | `10.20.51.9` | Secondary firewall |
-| | | | | |
-| `cisco-nexus-1` | Core Switch | **`10.20.51.10`** | `10.20.51.2` | |
-| `mikrotik-crs520-1` | Core Switch | **`10.20.51.11`** | `10.20.51.6` | |
-| `mikrotik-crs504-1` | Core Switch | **`10.20.51.12`** | `10.20.51.7` | |
-| `tp-link-sg3428x-1` | Core Switch | **`10.20.51.13`** | `10.20.51.4` | Classified as Core/Distro |
-| | | | | |
-| `bitengine-10g-1` | Access Switch | **`10.20.51.20`** | `10.20.51.3` | |
-| `netgear-gs108ev4-1` | Access Switch | **`10.20.51.21`** | `10.20.51.5` | |
-| `sodola-10g-1` | Access Switch | **`10.20.51.22`** | `10.20.51.8` | |
-| | | | | |
-| `pmx-01.bjoin.studio` | Hypervisor Host | **`10.20.51.40`** | `10.20.51.20` | |
-| `pmx-02.bjoin.studio` | Hypervisor Host | **`10.20.51.41`** | `10.20.51.40` | Made sequential with pmx-01 |
-| | | | | |
-| `ipa1.bjoin.studio` | Infra Server | **`10.20.51.60`** | `10.20.51.10` | FreeIPA Primary |
-| `ipa2.bjoin.studio` | Infra Server | **`10.20.51.61`** | `10.20.51.11` | FreeIPA Secondary |
-| | | | | |
-| `nas-01.bjoin.studio` | Storage | **`10.20.51.80`** | `10.20.33.10` | Mgmt IP moved to VLAN 51 |
-| `san-01.bjoin.studio` | Storage | **`10.20.51.81`** | `10.20.33.11` | Mgmt IP moved to VLAN 51 |
-
----
-
 # IP Address Management (IPAM)
 
 This document is the central source of truth for all IP address allocations within the bjoin.studio network. Keeping this up-to-date is critical for preventing IP conflicts and maintaining network organization.
@@ -123,19 +94,6 @@ Reserved IP Range for Static Assignments: `.2` to `.99` in each subnet.
 
 | IP Address     | Device Hostname        | MAC Address        | Notes                            |
 |:---------------|:-----------------------|:-------------------|:---------------------------------|
-| `10.20.51.1`   | `opnsense-fw`          | (from hardware)    | OPNsense LAN Gateway             |
-| `10.20.51.2`   | `cisco-nexus-1`        | (from hardware)    | 100G Core Switch                 |
-| `10.20.51.3`   | `bitengine-10g-1`      | (from hardware)    | Access Switch                    |
-| `10.20.51.13`  | `tp-link-sg3428x-1`    | (from hardware)    | Distribution Switch              |
-| `10.20.51.21`  | `netgear-gs108ev4-1`   | (from hardware)    | Access Switch                    |
-| `10.20.51.14`  | `mikrotik-crs520-1`    | (from hardware)    | 100G Core Switch                 |
-| `10.20.51.12`  | `mikrotik-crs504-1`    | (from hardware)    | 100G Core Switch                 |
-| `10.20.51.22`  | `sodola-10g-1`         | (from hardware)    | Access Switch                    |
-| `10.20.51.9`   | `opnsense-fw-hpz620-1` | (from hardware)    | OPNsense Firewall (High Perf)    |
-| `10.20.51.10`  | `ipa1.bjoin.studio`    | (from hardware)    | Primary FreeIPA / DNS Server     |
-| `10.20.51.11`  | `ipa2.bjoin.studio`    | (from hardware)    | Secondary FreeIPA / DNS Server   |
-| `10.20.51.20`  | `pmx-01.bjoin.studio`  | (from hardware)    | Proxmox VE Hypervisor Host       |
-| `10.20.51.40`  | `pmx-02.bjoin.studio`  | (from hardware)    | Proxmox VE Hypervisor Host       |
 
 ### Management - Reserved (VLAN 52)
 
@@ -153,8 +111,6 @@ Reserved IP Range for Static Assignments: `.2` to `.99` in each subnet.
 
 | IP Address     | Device Hostname        | MAC Address        | Notes                            |
 |:---------------|:-----------------------|:-------------------|:---------------------------------|
-| `10.20.33.10`  | `nas-01.bjoin.studio`  | (from hardware)    | Main NAS Storage                 |
-| `10.20.33.11`  | `san-01.bjoin.studio`  | (from hardware)    | SAN Controller                   |
 
 ### Printers
 

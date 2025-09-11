@@ -76,7 +76,8 @@ Ideal for high-speed aggregation and breakout configurations.
     </details>
 
 ## Identification
-
-| Hostname(s)               | IP Address(es)   | VLAN  | Cable ID   |
-|---------------------------|------------------|-------|------------|
-| `crs504-agg.bjoin.studio` | `10.20.51.11`    | `51`  | `----/----` |
+```
+| Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
+| -------------------------------------- | ----------------- | ------ | ----------- |
+| crs504-access.bjoin.studio             |    10.20.51.12    |   51   |  ----/----  |
+```

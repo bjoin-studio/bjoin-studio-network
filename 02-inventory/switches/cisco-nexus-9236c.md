@@ -64,7 +64,8 @@ Designed for data center spine or aggregation roles.
     </details>
 
 ## Identification
-
-| Hostname(s)               | IP Address(es)   | VLAN  | Cable ID   |
-|---------------------------|------------------|-------|------------|
-| `nexus9236c-core.bjoin.studio` | `10.20.51.12` | `51`  | `----/----` |
+```
+| Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
+| -------------------------------------- | ----------------- | ------ | ----------- |
+| nexus-9236c.bjoin.studio               |    10.20.51.13    |   51   |  ----/----  |
+```

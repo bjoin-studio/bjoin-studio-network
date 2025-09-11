@@ -94,7 +94,8 @@ Powered by Intel Celeron N5105 and equipped with 12x M.2 NVMe slots and 10GbE co
     </details>
 
 ## Identification
-
-| Hostname(s)             | IP Address(es)   | VLAN  | Cable ID   |
-|-------------------------|------------------|-------|------------|
-| `asustor.bjoin.studio`  | `10.20.51.81`    | `51`  | `----/----` |
+```
+| Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
+| -------------------------------------- | ----------------- | ------ | ----------- |
+| asustor-01.bjoin.studio                |    10.20.51.202   |   51   |  ----/----  |
+```

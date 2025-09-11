@@ -92,7 +92,8 @@ Ideal for running OPNsense, pfSense, or other open-source routing platforms.
     </details>
 
 ## Identification
-
-| Hostname(s)            | IP Address(es)   | VLAN  | Cable ID   |
-|------------------------|------------------|-------|------------|
-| `protectli-fw4b.bjoin.studio` | `10.20.51.2` | `51`  | `----/----` |
+```
+| Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
+| -------------------------------------- | ----------------- | ------ | ----------- |
+| opnsense-backup.bjoin.studio           |    10.20.51.3     |   51   |  ----/----  |
+```

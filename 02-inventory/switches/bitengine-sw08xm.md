@@ -38,7 +38,8 @@ Compact 10Gb RJ45 switch for high-speed edge connectivity.
     </details>
 
 ## Identification
-
-| Hostname(s)               | IP Address(es)   | VLAN  | Cable ID   |
-|---------------------------|------------------|-------|------------|
-| `bitengine-sw08xm.bjoin.studio` | `10.20.51.21` | `51`  | `----/----` |
+```
+| Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
+| -------------------------------------- | ----------------- | ------ | ----------- |
+| bitengine-sw08xm.bjoin.studio          |    10.20.51.16    |   51   |  ----/----  |
+```

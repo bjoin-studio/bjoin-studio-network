@@ -65,21 +65,9 @@ Enterprise-grade switch with 10Gb uplinks and Omada SDN integration.
     </details>
 
 ## Identification
-
-| Hostname(s)               | IP Address(es)   | VLAN  | Cable ID   |
-|---------------------------|------------------|-------|------------|
-| `tplink-sg3428x.bjoin.studio` | `10.20.51.30` | `51`  | `----/----` |
-
-## Port Map – TP-Link SG3428X
-
-| Port | Connected Device         | VLAN | Mode   | Notes                      |
-|------|--------------------------|------|--------|----------------------------|
-| 1    | HP Z620 Workstation      | 51   | Access | Proxmox Host               |
-| 2    | FreeIPA Server           | 51   | Access | Identity/DNS               |
-| 3    | TrueNAS Storage          | 51   | Access | ZFS over NFS               |
-| 4    | Sodola 10Gb Switch (Uplink) | 51 | Trunk  | VLAN trunk to 10Gb switch |
-| 5–24 | Open                     | —    | Access | Available for endpoints    |
-| SFP1 | CRS504 Aggregation       | 51   | Trunk  | 10Gb uplink                |
-| SFP2 | Cisco Nexus 9236C        | 51   | Trunk  | 10Gb uplink                |
-| SFP3 | Open                     | —    | —      |                            |
-| SFP4 | Open                     | —    | —      |                            |
+```
+| Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
+| -------------------------------------- | ----------------- | ------ | ----------- |
+| tplink-sg3428x.bjoin.studio            |    10.20.51.14    |   51   |  ----/----  |
+| tplink-sg3428x-qsfp.bjoin.studio       |    10.20.51.24    |  4090  |  ----/----  |
+```
