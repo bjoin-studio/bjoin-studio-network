@@ -78,7 +78,8 @@ High-performance desktop powered by Apple Silicon, designed for demanding profes
     </details>
 
 ## Identification
-
-| Hostname(s)             | IP Address(es)   | VLAN  | Cable ID   |
-|-------------------------|------------------|-------|------------|
-| `macstudio-ultra.bjoin.studio` | `10.20.51.50` | `51`  | `----/----` |
+```
+| Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
+| -------------------------------------- | ----------------- | ------ | ----------- |
+| macstudio-ultra.bjoin.studio           |    10.20.51.50    |   51   |  ----/----  |
+```

@@ -78,7 +78,8 @@ Premium all-in-one workstation with Xeon-class performance and ECC memory, desig
     </details>
 
 ## Identification
-
-| Hostname(s)         | IP Address(es)   | VLAN  | Cable ID   |
-|---------------------|------------------|-------|------------|
-| `imacpro-2017.bjoin.studio` | `10.20.51.51` | `51`  | `----/----` |
+```
+| Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
+| -------------------------------------- | ----------------- | ------ | ----------- |
+| imacpro-2017.bjoin.studio              |    10.20.51.51    |   51   |  ----/----  |
+```

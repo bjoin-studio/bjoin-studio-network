@@ -74,7 +74,8 @@ Compact and efficient laptop powered by Apple Silicon, ideal for mobile producti
     </details>
 
 ## Identification
-
-| Hostname(s)         | IP Address(es)   | VLAN  | Cable ID   |
-|---------------------|------------------|-------|------------|
-| `macbookpro-m1.bjoin.studio` | `10.20.51.53` | `51`  | `----/----` |
+```
+| Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
+| -------------------------------------- | ----------------- | ------ | ----------- |
+| macbookpro-m1.bjoin.studio             |    10.20.51.53    |   51   |  ----/----  |
+```

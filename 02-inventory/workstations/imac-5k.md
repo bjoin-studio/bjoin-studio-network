@@ -78,7 +78,8 @@ All-in-one desktop with stunning 5K Retina display, ideal for creative professio
     </details>
 
 ## Identification
-
-| Hostname(s)         | IP Address(es)   | VLAN  | Cable ID   |
-|---------------------|------------------|-------|------------|
-| `imac5k-2017.bjoin.studio` | `10.20.51.52` | `51`  | `----/----` |
+```
+| Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
+| -------------------------------------- | ----------------- | ------ | ----------- |
+| imac5k-2017.bjoin.studio               |    10.20.51.52    |   51   |  ----/----  |
+```
