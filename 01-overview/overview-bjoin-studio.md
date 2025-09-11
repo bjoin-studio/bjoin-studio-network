@@ -1,4 +1,4 @@
-# bjoin.studio Network Overview
+# Overview bjoin.studio
 
 ## Table of Contents
 1. [**Introduction**](#introduction)

@@ -69,5 +69,5 @@ High-performance single-socket workstation
 
 |  Hostname(s)                           |  IP Address(es)   |  VLAN  |  Cable ID   |
 | -------------------------------------- | ----------------- | ------ | ----------- |
-| `pmx-01.bjoin.studio`                  |   `10.20.51.41`   |  `51`  | `----/----` |
-| `freeipa-vm--01.bjoin.studio`          |   `10.20.51.61`   |  `51`  | `----/----` |
+| `proxmox-42.bjoin.studio`              |   `10.20.51.42`   |  `51`  | `----/----` |
+| `ipa-vm-01.bjoin.studio`               |   `10.20.51.61`   |  `51`  | `----/----` |
