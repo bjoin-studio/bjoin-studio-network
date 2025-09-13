@@ -1,5 +1,9 @@
 # Netgear GS108Ev4
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Description
 Layer 2 Smart Managed Ethernet Switch  
 Compact switch with essential VLAN and QoS features.
@@ -40,6 +44,10 @@ Compact switch with essential VLAN and QoS features.
 
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **Access Switch**
     - <details>
@@ -51,9 +59,17 @@ Compact switch with essential VLAN and QoS features.
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
 | -------------------------------------- | ----------------- | ------ | ----------- |
 | netgear-gs108e.bjoin.studio            |    10.20.51.17    |   51   |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

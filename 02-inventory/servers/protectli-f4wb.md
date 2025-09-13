@@ -1,5 +1,9 @@
 # Protectli Vault FW4B
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Description
 Fanless, low-power firewall appliance designed for secure networking and virtualization.  
 Ideal for running OPNsense, pfSense, or other open-source routing platforms.
@@ -79,6 +83,10 @@ Ideal for running OPNsense, pfSense, or other open-source routing platforms.
 
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **Dedicated Firewall Appliance**
     - <details>
@@ -91,9 +99,17 @@ Ideal for running OPNsense, pfSense, or other open-source routing platforms.
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
 | -------------------------------------- | ----------------- | ------ | ----------- |
 | opnsense-backup.bjoin.studio           |    10.20.51.3     |   51   |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

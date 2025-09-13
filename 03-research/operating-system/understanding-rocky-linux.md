@@ -1,11 +1,32 @@
 # Understanding Rocky Linux
 
+## Table of Contents
+- [**Introduction**](#introduction)
+
+- [Back to Research File](../research.md)
+
+---
+
+## Introduction
+
 **Rocky Linux** is a community-enterprise operating system designed to be 100% bug-for-bug compatible with Red Hat Enterprise Linux (RHEL). It emerged as a spiritual successor to CentOS Linux after Red Hat shifted CentOS's focus from a stable RHEL rebuild to CentOS Stream, a rolling release distribution. Rocky Linux aims to provide a stable, production-ready, and free alternative for users and organizations that rely on the long-term stability and enterprise-grade features of RHEL without the associated subscription costs. Developed and maintained by the community, it offers a reliable platform for servers, workstations, and cloud environments, ensuring a consistent and predictable operating experience.
+
+- [Back to Table of Contents](#table-of-contents)
+
+---
 
 ## Key Features and Benefits
 
 One of the key appeals of Rocky Linux is its commitment to stability and longevity. Like RHEL, it adheres to a predictable release cycle with extensive support periods, making it suitable for critical infrastructure where frequent changes are undesirable. The project emphasizes transparency and community governance, ensuring that its development aligns with the needs of its users. For those migrating from CentOS Linux, Rocky Linux provides a straightforward transition path, offering familiar tools, commands, and package management (YUM/DNF) that minimize the learning curve and facilitate seamless integration into existing IT ecosystems. Its robust security features, including SELinux and firewalld, further enhance its suitability for enterprise deployments.
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Use Cases and Community
 
 Rocky Linux is an excellent choice for a wide range of use cases, from web servers and database servers to virtualization hosts and development platforms. Its binary compatibility with RHEL ensures that applications certified for RHEL will run seamlessly on Rocky Linux, providing access to a vast ecosystem of enterprise software. The active and growing community provides extensive documentation, support forums, and contributions, making it a viable and sustainable option for organizations seeking a free, open-source, and enterprise-grade Linux distribution. As a testament to its reliability and community backing, Rocky Linux continues to gain traction as a preferred alternative for those seeking RHEL's stability without the commercial overhead.
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

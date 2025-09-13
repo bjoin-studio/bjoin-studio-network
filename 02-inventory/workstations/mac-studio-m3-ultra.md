@@ -1,5 +1,13 @@
 # Mac Studio M3 Ultra
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Description
 High-performance desktop powered by Apple Silicon, designed for demanding professional workflows including AI, video editing, and scientific computing.
 
@@ -64,6 +72,10 @@ High-performance desktop powered by Apple Silicon, designed for demanding profes
 
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **Creative Workstation**
     - <details>
@@ -77,9 +89,17 @@ High-performance desktop powered by Apple Silicon, designed for demanding profes
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
 | -------------------------------------- | ----------------- | ------ | ----------- |
 | macstudio-ultra.bjoin.studio           |    10.20.51.50    |   51   |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

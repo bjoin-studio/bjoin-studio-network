@@ -1,5 +1,9 @@
 # MikroTik CRS504-4XQ-IN
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Description
 Compact Layer 2 / Layer 3 Managed Ethernet Switch  
 Ideal for high-speed aggregation and breakout configurations.
@@ -63,6 +67,10 @@ Ideal for high-speed aggregation and breakout configurations.
 
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **High-speed Aggregation Switch**
     - <details>
@@ -75,9 +83,17 @@ Ideal for high-speed aggregation and breakout configurations.
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
 | -------------------------------------- | ----------------- | ------ | ----------- |
 | crs504-access.bjoin.studio             |    10.20.51.12    |   51   |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

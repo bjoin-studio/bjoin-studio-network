@@ -1,11 +1,32 @@
 # Understanding DHCP (Dynamic Host Configuration Protocol)
 
+## Table of Contents
+- [**Introduction**](#introduction)
+
+- [Back to Research File](../research.md)
+
+---
+
+## Introduction
+
 **The Dynamic Host Configuration Protocol (DHCP)** is a network management protocol used on Internet Protocol (IP) networks for dynamically distributing network configuration parameters, such as IP addresses, to devices connected to the network. Without DHCP, network administrators would have to manually assign IP addresses to each new device, a tedious and error-prone task, especially in large or frequently changing networks. DHCP automates this process, allowing devices to obtain necessary network configurations automatically upon connecting, which simplifies network administration and reduces the likelihood of IP address conflicts.
+
+- [Back to Table of Contents](#table-of-contents)
+
+---
 
 ## The DORA Process
 
 The DHCP process typically involves a four-step exchange known as DORA: Discover, Offer, Request, and Acknowledge. When a new device connects to a network, it broadcasts a DHCP Discover message to find a DHCP server. The server then responds with a DHCP Offer, proposing an IP address and other configuration details. The client sends a DHCP Request to accept the offer, and finally, the server sends a DHCP Acknowledge to confirm the assignment and lease the IP address for a specified period. This automated negotiation ensures that devices can quickly and efficiently join the network without manual intervention.
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Beyond IP Addressing
 
 Beyond IP address assignment, DHCP servers can also provide other crucial network configuration parameters, including subnet mask, default gateway, DNS server addresses, and even time server information. This centralized management of network settings ensures consistency across all devices, simplifying troubleshooting and maintaining network stability. DHCP is an indispensable protocol in virtually all modern IP networks, from small home networks to large enterprise environments, playing a vital role in the seamless operation and scalability of network infrastructure.
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

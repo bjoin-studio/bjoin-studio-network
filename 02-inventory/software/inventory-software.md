@@ -1,5 +1,9 @@
 # Software Inventory
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Operating Systems
 <details>
   <summary>Operating Systems</summary>
@@ -15,7 +19,10 @@
 
 </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
 ---
+
 
 ## Hypervisor
 <details>
@@ -26,7 +33,10 @@
 
 </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
 ---
+
 
 ## Identity Management Systems
 <details>
@@ -37,7 +47,10 @@
 
 </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
 ---
+
 
 ## Firewall & Routing Platforms
 <details>
@@ -48,7 +61,10 @@
 
 </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
 ---
+
 
 ## Storage Systems
 <details>
@@ -59,7 +75,10 @@
 
 </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
 ---
+
 
 ## Monitoring Systems
 <details>
@@ -70,7 +89,10 @@
 
 </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
 ---
+
 
 ## Automation Tools
 <details>
@@ -82,7 +104,10 @@
 </details>
 ```
 
+- [Back to Table of Contents](#table-of-contents)
+
 ---
+
 
 ## Containerization Tools
 <details>
@@ -94,4 +119,7 @@
 </details>
 ```
 
+- [Back to Table of Contents](#table-of-contents)
+
 ---
+

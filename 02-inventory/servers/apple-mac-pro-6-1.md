@@ -1,5 +1,9 @@
 # Apple Mac Pro 6,1 Workstation
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Description
 High-performance single-socket workstation
 
@@ -46,6 +50,10 @@ High-performance single-socket workstation
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **Virtualization Host**
     - <details>
@@ -65,6 +73,10 @@ High-performance single-socket workstation
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            |  IP Address(es)   |  VLAN  |  Cable ID   |
@@ -72,3 +84,7 @@ High-performance single-socket workstation
 | proxmox-62.bjoin.studio                |    10.20.51.62    |   51   |  ----/----  |
 | ipa-vm-01.bjoin.studio                 |    10.20.51.81    |   51   |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

@@ -1,5 +1,9 @@
 # Sodola KT-NOS SL-SWTGW2C8F
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Description
 Layer 2 Managed Ethernet Switch  
 Silent, fanless design for compact 10Gb aggregation.
@@ -33,6 +37,10 @@ Silent, fanless design for compact 10Gb aggregation.
 
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **Access Aggregation Switch**
     - <details>
@@ -44,9 +52,17 @@ Silent, fanless design for compact 10Gb aggregation.
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
 | -------------------------------------- | ----------------- | ------ | ----------- |
 | sodola-10g.bjoin.studio                |    10.20.51.15    |   51   |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

@@ -1,11 +1,27 @@
 # Understanding Network Attached Storage (NAS)
 
+## Table of Contents
+
+- [Back to Research File](../research.md)
+
 **Network Attached Storage (NAS)** is a dedicated file storage device connected to a network that allows authorized network users and heterogeneous clients to retrieve data from centralized disk capacity. Unlike direct-attached storage (DAS) that is connected directly to a single server, NAS devices are standalone appliances that contain their own operating system and file system, making them accessible to multiple clients over a standard Ethernet network. This centralized approach simplifies data management, enhances collaboration, and provides a scalable solution for storing and sharing files across an organization or within a home network. NAS devices are particularly popular for their ease of deployment, relatively low cost, and ability to provide shared storage without the complexity of a Storage Area Network (SAN).
+
+- [Back to Table of Contents](#table-of-contents)
+
+---
 
 ## How NAS Works
 
 NAS systems are designed for file-level data access, meaning they present storage to clients as shared folders or network drives, typically using protocols like NFS (Network File System) for Unix/Linux environments or SMB/CIFS (Server Message Block/Common Internet File System) for Windows environments. This file-based access makes them ideal for common use cases such as centralized document storage, media streaming, data backups, and hosting shared applications. Many modern NAS devices also offer advanced features like RAID (Redundant Array of Independent Disks) for data protection, snapshot capabilities for point-in-time recovery, and built-in applications for media serving, surveillance, and cloud synchronization, further extending their utility beyond simple file sharing.
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Benefits of NAS
 
 The benefits of Network Attached Storage include improved data accessibility, as multiple users can simultaneously access the same files from different devices. They also offer enhanced data protection through RAID configurations, which can safeguard against individual drive failures. Furthermore, NAS solutions are highly scalable, allowing users to expand storage capacity by adding more hard drives or connecting additional NAS units. For businesses and individuals seeking a reliable, efficient, and easy-to-manage solution for centralized data storage and sharing, NAS provides a compelling alternative to traditional server-based storage or cloud-only solutions, offering a balance of control, performance, and cost-effectiveness.
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

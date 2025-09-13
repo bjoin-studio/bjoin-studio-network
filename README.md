@@ -16,12 +16,14 @@ It can be used by both technical and non-technical people to research, understan
 
 The information is organized into the following sections:
 
-## [**01-Overview - Bjoin Studio Network**](./01-overview/overview-bjoin-studio.md)
+## [**01-Overview**](./01-overview/overview-bjoin-studio.md)
+- [**Overview - Bjoin Studio**](./01-overview/overview-bjoin-studio.md)
 - [Back to Table of Contents](#table-of-contents)
 
 ---
 
-## [**02-Inventory - Hardware & Software**](02-inventory/inventory.md)
+## [**02-Inventory**](02-inventory/inventory.md)
+- [**Inventory - Hardware & Software**](02-inventory/inventory.md)
 - [Back to Table of Contents](#table-of-contents)
 
 ---

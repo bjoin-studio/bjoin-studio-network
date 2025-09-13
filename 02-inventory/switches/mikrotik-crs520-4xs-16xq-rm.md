@@ -1,5 +1,9 @@
 # MikroTik CRS520-4XS-16XQ-RM
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Description
 Layer 2 / Layer 3 Managed Ethernet Switch  
 High-performance enterprise switch with advanced routing capabilities and hardware offloading.
@@ -64,6 +68,10 @@ High-performance enterprise switch with advanced routing capabilities and hardwa
 
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **Core Aggregation Switch**
     - <details>
@@ -76,6 +84,10 @@ High-performance enterprise switch with advanced routing capabilities and hardwa
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
@@ -83,3 +95,7 @@ High-performance enterprise switch with advanced routing capabilities and hardwa
 | crs520-core.bjoin.studio               |    10.20.51.11    |   51   |  ----/----  |
 | crs520-qsfp.bjoin.studio               |    10.20.51.21    |  4090  |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

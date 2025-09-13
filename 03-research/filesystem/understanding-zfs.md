@@ -1,11 +1,27 @@
 # Understanding ZFS
 
+## Table of Contents
+
+- [Back to Research File](../research.md)
+
 **ZFS** is an advanced file system and logical volume manager originally developed by Sun Microsystems. It stands out due to its unique architecture, which integrates features typically found in separate tools, such as volume management, RAID capabilities, and a robust file system, into a single, cohesive system. This integration provides unparalleled data integrity, scalability, and ease of management, making ZFS a popular choice for critical data storage, from personal servers to enterprise-level network-attached storage (NAS) and cloud environments. Its copy-on-write transactional model ensures data consistency and prevents data corruption, even during unexpected power failures.
+
+- [Back to Table of Contents](#table-of-contents)
+
+---
 
 ## Data Integrity
 
 One of ZFS's most compelling features is its strong focus on data integrity. It employs end-to-end checksums for all data and metadata, continuously verifying data against corruption. If corruption is detected, ZFS can automatically repair it using redundant copies of data (if configured with RAID-Z or mirroring). This self-healing capability, combined with its ability to create instant, space-efficient snapshots and clones, makes ZFS an incredibly powerful tool for data protection and recovery. Snapshots allow users to revert to previous states of the file system, providing a robust mechanism for disaster recovery and version control.
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Scalability and Features
 
 Beyond data integrity, ZFS offers remarkable scalability, allowing storage pools to grow dynamically by adding more disks, without requiring complex reconfigurations. Its flexible pooling mechanism supports various RAID levels (RAID-Z, RAID-Z2, RAID-Z3, and mirroring), catering to different performance and redundancy needs. Furthermore, ZFS includes built-in features like data compression and deduplication, which can significantly reduce storage consumption for certain types of data. These combined attributes make ZFS a highly versatile and resilient storage solution, ideal for environments where data reliability, performance, and efficient management are paramount.
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

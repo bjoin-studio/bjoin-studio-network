@@ -1,7 +1,13 @@
 # iMac Pro (2017)
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Description
 Premium all-in-one workstation with Xeon-class performance and ECC memory, designed for professional creatives and developers.
+
+---
 
 - **System Details**
     - <details>
@@ -65,6 +71,10 @@ Premium all-in-one workstation with Xeon-class performance and ECC memory, desig
 
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **Creative Workstation**
     - <details>
@@ -77,9 +87,17 @@ Premium all-in-one workstation with Xeon-class performance and ECC memory, desig
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
 | -------------------------------------- | ----------------- | ------ | ----------- |
 | imacpro-2017.bjoin.studio              |    10.20.51.51    |   51   |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

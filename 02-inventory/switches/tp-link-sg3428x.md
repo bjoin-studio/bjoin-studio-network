@@ -1,5 +1,9 @@
 # TP-Link SG3428X
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Description
 Layer 2+ Managed Ethernet Switch  
 Enterprise-grade switch with 10Gb uplinks and Omada SDN integration.
@@ -52,6 +56,10 @@ Enterprise-grade switch with 10Gb uplinks and Omada SDN integration.
 
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **Access Switch**
     - <details>
@@ -64,6 +72,10 @@ Enterprise-grade switch with 10Gb uplinks and Omada SDN integration.
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
@@ -71,3 +83,7 @@ Enterprise-grade switch with 10Gb uplinks and Omada SDN integration.
 | tplink-sg3428x.bjoin.studio            |    10.20.51.14    |   51   |  ----/----  |
 | tplink-sg3428x-qsfp.bjoin.studio       |    10.20.51.24    |  4090  |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

@@ -412,7 +412,7 @@ vendorVersion: 389-Directory/2.6.1 B2025.160.0000
 2025-08-22T22:30:08Z DEBUG updated dn: cn=uid mapping,cn=mapping,cn=sasl,cn=config with {'cn': [b'uid mapping'], 'nsSaslMapRegexString': [b'^[^:@]+$'], 'nsSaslMapBaseDNTemplate': [b'dc=bjoin,dc=studio'], 'nsSaslMapFilterTemplate': [b'(uid=&)']}
 2025-08-22T22:30:08Z DEBUG Created entry cn=uid mapping,cn=mapping,cn=sasl,cn=config : {'objectclass': [b'top', b'nsSaslMapping'], 'cn': [b'uid mapping'], 'nsSaslMapRegexString': [b'^[^:@]+$'], 'nsSaslMapBaseDNTemplate': [b'dc=bjoin,dc=studio'], 'nsSaslMapFilterTemplate': [b'(uid=&)']}
 2025-08-22T22:30:08Z INFO Perform post-installation tasks ...
-2025-08-22T22:30:08Z DEBUG cn=config set REPLACE: ('nsslapd-rootpw', '********')
+2025-08-22T22:30:08Z DEBUG cn=config set REPLACE: ('nsslapd-rootpw', '****')
 2025-08-22T22:30:08Z DEBUG systemd status -> True
 2025-08-22T22:30:08Z DEBUG systemd status -> True
 2025-08-22T22:30:11Z DEBUG systemd status -> True

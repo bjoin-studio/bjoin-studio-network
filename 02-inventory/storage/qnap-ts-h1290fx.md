@@ -1,5 +1,9 @@
 # QNAP TS-h1290FX
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Description
 High-performance NVMe NAS designed for intensive workloads, media editing, and virtualization.  
 Equipped with AMD EPYC processor, PCIe Gen4 architecture, and dual 100GbE via ConnectX-6 SmartNIC.
@@ -81,6 +85,10 @@ Equipped with AMD EPYC processor, PCIe Gen4 architecture, and dual 100GbE via Co
 
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **Primary Storage Node**
     - <details>
@@ -94,9 +102,17 @@ Equipped with AMD EPYC processor, PCIe Gen4 architecture, and dual 100GbE via Co
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
 | -------------------------------------- | ----------------- | ------ | ----------- |
 | qnap-01.bjoin.studio                   |    10.20.51.201   |   51   |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

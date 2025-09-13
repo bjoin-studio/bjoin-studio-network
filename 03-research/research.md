@@ -1,14 +1,13 @@
 # Research
 
 ## Table of Contents
-1. [**Filesystem****](#filesystem)
-2. [**Identity Management (IdM)****](#identity-management)
-3. [**Monitoring****](#monitoring)
-4. [**Network****](#network)
-4. [**Operating System****](#operating-system)
-5. [**Virtualization****](#virtualization)
-
-- [**Back to READ ME File**](../README.md)
+- [**Filesystem**](#filesystem)
+- [**Identity Management (IdM)**](#identity-management)
+- [**Monitoring**](#monitoring)
+- [**Network**](#network)
+- [**Operating System**](#operating-system)
+- [**Virtualization**](#virtualization)
+- [Back to READ ME File](../README.md)
 
 ---
 

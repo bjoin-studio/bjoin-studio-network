@@ -1,5 +1,9 @@
 # ASUSTOR Flashstor 12 Pro FS6712X
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Description
 Compact NVMe-based NAS designed for high-speed storage workflows, media editing, and virtualization.  
 Powered by Intel Celeron N5105 and equipped with 12x M.2 NVMe slots and 10GbE connectivity.
@@ -80,6 +84,10 @@ Powered by Intel Celeron N5105 and equipped with 12x M.2 NVMe slots and 10GbE co
 
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **High-Speed NVMe Storage Node**
     - <details>
@@ -93,9 +101,17 @@ Powered by Intel Celeron N5105 and equipped with 12x M.2 NVMe slots and 10GbE co
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
 | -------------------------------------- | ----------------- | ------ | ----------- |
 | asustor-01.bjoin.studio                |    10.20.51.202   |   51   |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

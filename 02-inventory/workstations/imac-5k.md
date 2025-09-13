@@ -1,5 +1,9 @@
 # iMac 5K (2017)
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Description
 All-in-one desktop with stunning 5K Retina display, ideal for creative professionals and general productivity.
 
@@ -65,6 +69,10 @@ All-in-one desktop with stunning 5K Retina display, ideal for creative professio
 
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **General Purpose Workstation**
     - <details>
@@ -77,9 +85,17 @@ All-in-one desktop with stunning 5K Retina display, ideal for creative professio
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
 | -------------------------------------- | ----------------- | ------ | ----------- |
 | imac5k-2017.bjoin.studio               |    10.20.51.52    |   51   |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

@@ -1,5 +1,9 @@
 # Bitengine SW08XM
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Description
 Layer 2 Managed Ethernet Switch  
 Compact 10Gb RJ45 switch for high-speed edge connectivity.
@@ -26,6 +30,10 @@ Compact 10Gb RJ45 switch for high-speed edge connectivity.
 
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **Access Switch**
     - <details>
@@ -37,9 +45,17 @@ Compact 10Gb RJ45 switch for high-speed edge connectivity.
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
 | -------------------------------------- | ----------------- | ------ | ----------- |
 | bitengine-sw08xm.bjoin.studio          |    10.20.51.16    |   51   |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

@@ -1,14 +1,13 @@
 # Inventory
 
 ## Table of Contents
-1. [**Introduction**](#introduction)
-2. [**Servers**](#servers)
-3. [**Software**](#software)
-4. [**Storage**](#storage)
-5. [**Switches**](#switches)
-6. [**Workstations**](#workstations)
-
-    - [**Back to READ ME File](../README.md)
+- [**Introduction**](#introduction)
+- [**Servers**](#servers)
+- [**Software**](#software)
+- [**Storage**](#storage)
+- [**Switches**](#switches)
+- [**Workstations**](#workstations)
+- [Back to READ ME File](../README.md)
 
 ---
 
@@ -18,7 +17,7 @@ This is the inventory of the bjoin.studio network.
 
 It provides links to more detailed inventory lists for different categories of equipment.
 
-   [Back to Table of Contents](#table-of-contents)
+- [Back to Table of Contents](#table-of-contents)
 
 ---
 
@@ -36,13 +35,13 @@ It provides links to more detailed inventory lists for different categories of e
 - [**Protectli F4WB**](servers/protectli-f4wb.md)
     - **Firewall (Failover)**
 
-    - [Back to Table of Contents](#table-of-contents)
+- [Back to Table of Contents](#table-of-contents)
 
 ---
 
 ## Software
 
-    - [Back to Table of Contents](#table-of-contents)
+- [Back to Table of Contents](#table-of-contents)
 
 ---
 
@@ -54,7 +53,7 @@ It provides links to more detailed inventory lists for different categories of e
 - [**Asustor Flash FS6712X**](storage/asustor-fs6712x.md)
     - **Network Attached Storage**
 
-    - [Back to Table of Contents](#table-of-contents)
+- [Back to Table of Contents](#table-of-contents)
 
 ---
 
@@ -91,7 +90,7 @@ It provides links to more detailed inventory lists for different categories of e
 - [**Netgear GS105**](switches/netgear-gs105.md)
     - **Unmanaged Switch**
 
-    - [Back to Table of Contents](#table-of-contents)
+- [Back to Table of Contents](#table-of-contents)
 
 ---
 
@@ -113,6 +112,6 @@ It provides links to more detailed inventory lists for different categories of e
     - **DIT/Camera**
     - **General Workstation**
 
-    - [**Back to Table of Contents](#table-of-contents)
+- [**Back to Table of Contents](#table-of-contents)
 
 ---

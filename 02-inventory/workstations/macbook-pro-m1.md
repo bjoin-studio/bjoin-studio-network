@@ -1,7 +1,13 @@
 # MacBook Pro M1 (2020)
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Description
 Compact and efficient laptop powered by Apple Silicon, ideal for mobile productivity and development.
+
+---
 
 - **System Details**
     - <details>
@@ -61,6 +67,10 @@ Compact and efficient laptop powered by Apple Silicon, ideal for mobile producti
 
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **Mobile Development Workstation**
     - <details>
@@ -73,9 +83,17 @@ Compact and efficient laptop powered by Apple Silicon, ideal for mobile producti
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
 | -------------------------------------- | ----------------- | ------ | ----------- |
 | macbookpro-m1.bjoin.studio             |    10.20.51.53    |   51   |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

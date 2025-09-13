@@ -1,5 +1,9 @@
 # Netgear GS105
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Description
 Unmanaged Gigabit Ethernet Switch  
 Reliable plug-and-play switch for basic connectivity.
@@ -41,6 +45,10 @@ Reliable plug-and-play switch for basic connectivity.
 
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **Unmanaged Access Switch**
     - <details>
@@ -52,9 +60,17 @@ Reliable plug-and-play switch for basic connectivity.
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
 | -------------------------------------- | ----------------- | ------ | ----------- |
 | netgear-gs105.bjoin.studio             |    10.20.51.18    |   51   |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

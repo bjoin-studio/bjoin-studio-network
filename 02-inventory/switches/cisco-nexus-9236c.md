@@ -1,5 +1,9 @@
 # Cisco Nexus 9236C
 
+## Table of Contents
+
+- [Back to Inventory File](../inventory.md)
+
 ## Description
 Enterprise-grade Layer 2 / Layer 3 Managed Ethernet Switch  
 Designed for data center spine or aggregation roles.
@@ -51,6 +55,10 @@ Designed for data center spine or aggregation roles.
 
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Role
 - **Data Center Spine Switch**
     - <details>
@@ -63,9 +71,17 @@ Designed for data center spine or aggregation roles.
         </details>
     </details>
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Identification
 ```
 | Hostname(s)                            | IP Address(es)    |  VLAN  |  Cable ID   |
 | -------------------------------------- | ----------------- | ------ | ----------- |
 | nexus-9236c.bjoin.studio               |    10.20.51.13    |   51   |  ----/----  |
 ```
+
+- [Back to Table of Contents](#table-of-contents)
+
+---

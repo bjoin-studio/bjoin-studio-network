@@ -1,11 +1,32 @@
 # Understanding DNS (Domain Name System)
 
+## Table of Contents
+- [**Introduction**](#introduction)
+
+- [Back to Research File](../research.md)
+
+---
+
+## Introduction
+
 **The Domain Name System (DNS)** is a hierarchical and decentralized naming system for computers, services, or any resource connected to the Internet or a private network. Its most prominent function is to translate human-readable domain names (like `www.example.com`) into numerical IP addresses (like `192.0.2.1`) that computers use to identify each other on the network. Essentially, DNS acts as the internet's phonebook, allowing users to access websites and other online resources by typing memorable names instead of complex numerical strings. This translation process is fundamental to how the internet operates, making it user-friendly and accessible.
+
+- [Back to Table of Contents](#table-of-contents)
+
+---
 
 ## The DNS Resolution Process
 
 When you type a domain name into your web browser, a series of DNS queries are initiated to resolve that name to an IP address. This involves communicating with various DNS servers, including recursive resolvers, root name servers, Top-Level Domain (TLD) name servers, and authoritative name servers, each responsible for a different part of the domain name hierarchy. Once the IP address is found, your browser can then establish a connection with the web server hosting the website. This distributed and redundant architecture ensures high availability and resilience, as no single server holds all the information, and queries can be routed to alternative servers if one fails.
 
+- [Back to Table of Contents](#table-of-contents)
+
+---
+
 ## Beyond Name Resolution
 
 Beyond simple name-to-IP resolution, DNS plays a crucial role in various other network functions, such as email routing (via MX records), load balancing, and security mechanisms like DNSSEC (DNS Security Extensions) which adds a layer of authentication to DNS data. Understanding DNS is vital for network administrators, web developers, and anyone involved in managing internet-facing services, as it directly impacts connectivity, performance, and security. Its ubiquitous presence and critical function make DNS one of the most important foundational protocols of the internet.
+
+- [Back to Table of Contents](#table-of-contents)
+
+---
