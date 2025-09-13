@@ -63,3 +63,31 @@ The bjoin.studio network is segmented into multiple VLANs, all of which are rout
 *   **Collapsed Core Design:** The network utilizes a collapsed core design, where the MikroTik CRS520-4XS-16XQ-RM serves as both the core and distribution layer.
 *   **VLAN Segmentation:** Traffic is logically separated into distinct VLANs for different purposes (e.g., Production, Stage, Studio, Workshop, Management, Guest).
 *   **Traffic Flow Policies:** By default, all inter-VLAN traffic is blocked by the firewall. Rules must be explicitly created to allow traffic to flow between VLANs.
+
+## 8. Inter-VLAN Routing and Purpose
+
+By default, all inter-VLAN traffic is **blocked** by the firewall. Rules must be explicitly created to allow traffic to flow between VLANs. The MikroTik CRS520-4XS-16XQ-RM handles high-speed routing between trusted VLANs.
+
+### Production VLANs (11-15)
+*   **Purpose:** For business-critical services, such as contracts, billing, and client records, as well as high-performance rendering.
+*   **Routing:** Routed by OPNsense. Has filtered access to the internet. Blocked from initiating traffic to the Studio, Stage, or Workshop VLANs to protect those environments.
+
+### Stage VLANs (21-25)
+*   **Purpose:** For devices used during production shoots, such as cameras, lighting, and control systems.
+*   **Routing:** Routed by OPNsense. Has very limited, filtered internet access. Can send data *to* the Studio VLANs (e.g., for media ingest) but cannot initiate connections to other zones.
+
+### Studio VLANs (31-35)
+*   **Purpose:** The core creative environment for editing, color grading, and VFX.
+*   **Routing:** Routed by the MikroTik CRS520-4XS-16XQ-RM for high-speed performance. Has limited, filtered internet access via OPNsense.
+
+### Workshop VLANs (41-45)
+*   **Purpose:** For engineering, prototyping, and fabrication.
+*   **Routing:** Routed by OPNsense. This zone is **isolated** and has **no internet access**. It cannot initiate connections to any other VLANs.
+
+### Management VLANs (51-55)
+*   **Purpose:** For secure access to network hardware and monitoring.
+*   **Routing:** Routed by OPNsense. This is a highly privileged zone. Access *to* this VLAN is heavily restricted by firewall rules, only allowing connections from designated admin workstations.
+
+### Guest VLANs (61-65)
+*   **Purpose:** For providing internet access to visitors.
+*   **Routing:** Routed by OPNsense. This zone is completely isolated from all internal VLANs. It can only access the internet.

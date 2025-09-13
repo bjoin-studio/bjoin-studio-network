@@ -6,13 +6,15 @@
 3. [**High-Level Plan**](#high-level-plan)
 4. [**New Network Design**](#new-network-design)
 
+- [Back to READ ME File](../README.md)
+
 ---
 
 ## Introduction
 
 This document outlines the redesign of the bjoin.studio network, including the rationale, strategic goals, and implementation plan. It serves as a living reference that will evolve alongside the infrastructure.
 
-[Back to Table of Contents](#table-of-contents)
+- [Back to Table of Contents](#table-of-contents)
 
 ---
 
@@ -22,7 +24,7 @@ The existing network was built around consumer-grade hardware and lacked intenti
 
 The network was effectively flat, with no VLANs or traffic isolation. There was no firewall between internal devices, no identity management, and no monitoring or logging. As a result, the infrastructure was difficult to scale, insecure by design, and prone to configuration drift. Troubleshooting was manual and inconsistent, and the lack of a unified management plane made even simple changes risky and error-prone.
 
-[Back to Table of Contents](#table-of-contents)
+- [Back to Table of Contents](#table-of-contents)
 
 ---
 
@@ -39,7 +41,7 @@ OPNsense handles routing and firewall duties, while FreeIPA provides identity an
 
 This infrastructure underpins all studio operations—from creative workflows to business systems—and positions bjoin.studio for long-term growth. Though the investment is substantial, the benefits in performance, reliability, and security will be transformative.
 
-[Back to Table of Contents](#table-of-contents)
+- [Back to Table of Contents](#table-of-contents)
 
 ---
 
@@ -57,4 +59,4 @@ Key components of the plan:
 
 - **Security Architecture:** Firewalls, ACLs, and intrusion detection/prevention systems will form a layered defense strategy.
 
-[Back to Table of Contents](#table-of-contents)
+- [Back to Table of Contents](#table-of-contents)
